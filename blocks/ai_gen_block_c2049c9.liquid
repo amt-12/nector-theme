@@ -1,0 +1,590 @@
+{% doc %}
+  @prompt
+    Create a "From the Kitchen" recipes section for a premium honey brand. Layout: one large hero article on the left (taking ~55% width) and 3 smaller sidebar article cards stacked vertically on the right (~45% width). Design: background #fafaf5, hero article with 3:2 aspect ratio image, article title overlaid at bottom with dark gradient, date and read time as small meta text. Sidebar articles: compact horizontal cards with small thumbnail image on left (120px wide, square crop), article title and meta on right, no overlay text on sidebar images. Section heading "From the Kitchen" in serif font, subheading "Recipes, rituals, and new ways to use honey." in smaller body font. "View all recipes →" link centered at bottom in warm brown ##8b7355. Clean dividers between sidebar cards in #e8dcc8. Section padding 80px top and bottom. Fully responsive: stacks to single column on mobile. Wire up: featured article = recipes/sidr-honey-wellness-tea, sidebar 1 = recipes/eucalyptus-honey-glazed-chicken, sidebar 2 = recipes/vanilla-honey-drizzle-cake, sidebar 3 = recipes/golden-honey-latte, view all link = /blogs/recipes
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-kitchen-recipes-{{ ai_gen_id }} {
+    display: block;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding }}px 20px;
+    width: 100%;
+  }
+
+  .ai-kitchen-recipes-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-kitchen-recipes-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .ai-kitchen-recipes-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, serif;
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 12px 0;
+    font-weight: 400;
+  }
+
+  .ai-kitchen-recipes-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    opacity: 0.8;
+  }
+
+  .ai-kitchen-recipes-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 55% 45%;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .ai-kitchen-recipes-hero-{{ ai_gen_id }} {
+    position: relative;
+    overflow: hidden;
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .ai-kitchen-recipes-hero-image-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-kitchen-recipes-hero-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 32px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  }
+
+  .ai-kitchen-recipes-hero-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, serif;
+    font-size: {{ block.settings.hero_title_size }}px;
+    color: #ffffff;
+    margin: 0 0 8px 0;
+    font-weight: 400;
+  }
+
+  .ai-kitchen-recipes-hero-title-{{ ai_gen_id }} a {
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  .ai-kitchen-recipes-hero-title-{{ ai_gen_id }} a:hover {
+    opacity: 0.9;
+  }
+
+  .ai-kitchen-recipes-meta-{{ ai_gen_id }} {
+    font-size: {{ block.settings.meta_size }}px;
+    color: #ffffff;
+    opacity: 0.9;
+  }
+
+  .ai-kitchen-recipes-sidebar-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .ai-kitchen-recipes-card-{{ ai_gen_id }} {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    background-color: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.border_radius }}px;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+  }
+
+  .ai-kitchen-recipes-card-{{ ai_gen_id }}:hover {
+    transform: translateX(4px);
+  }
+
+  .ai-kitchen-recipes-card-{{ ai_gen_id }}:not(:last-child) {
+    border-bottom: 1px solid {{ block.settings.divider_color }};
+    border-radius: {{ block.settings.border_radius }}px {{ block.settings.border_radius }}px 0 0;
+  }
+
+  .ai-kitchen-recipes-card-{{ ai_gen_id }}:last-child {
+    border-radius: 0 0 {{ block.settings.border_radius }}px {{ block.settings.border_radius }}px;
+  }
+
+  .ai-kitchen-recipes-card-{{ ai_gen_id }}:only-child {
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .ai-kitchen-recipes-card-image-{{ ai_gen_id }} {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+    border-radius: {{ block.settings.border_radius }}px;
+    overflow: hidden;
+  }
+
+  .ai-kitchen-recipes-card-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-kitchen-recipes-card-content-{{ ai_gen_id }} {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .ai-kitchen-recipes-card-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, serif;
+    font-size: {{ block.settings.card_title_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 8px 0;
+    font-weight: 400;
+  }
+
+  .ai-kitchen-recipes-card-meta-{{ ai_gen_id }} {
+    font-size: {{ block.settings.meta_size }}px;
+    color: {{ block.settings.text_color }};
+    opacity: 0.7;
+  }
+
+  .ai-kitchen-recipes-footer-{{ ai_gen_id }} {
+    text-align: center;
+  }
+
+  .ai-kitchen-recipes-link-{{ ai_gen_id }} {
+    display: inline-block;
+    font-size: {{ block.settings.link_size }}px;
+    color: {{ block.settings.link_color }};
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .ai-kitchen-recipes-link-{{ ai_gen_id }}:hover {
+    opacity: 0.8;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-kitchen-recipes-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-kitchen-recipes-hero-overlay-{{ ai_gen_id }} {
+      padding: 20px;
+    }
+
+    .ai-kitchen-recipes-hero-title-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.hero_title_size }}px * 0.7);
+    }
+
+    .ai-kitchen-recipes-card-{{ ai_gen_id }} {
+      padding: 16px;
+    }
+
+    .ai-kitchen-recipes-card-image-{{ ai_gen_id }} {
+      width: 100px;
+      height: 100px;
+    }
+  }
+{% endstyle %}
+
+<kitchen-recipes-{{ ai_gen_id }} class="ai-kitchen-recipes-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-kitchen-recipes-container-{{ ai_gen_id }}">
+    <div class="ai-kitchen-recipes-header-{{ ai_gen_id }}">
+      <h2 class="ai-kitchen-recipes-title-{{ ai_gen_id }}">{{ block.settings.section_title }}</h2>
+      <p class="ai-kitchen-recipes-subtitle-{{ ai_gen_id }}">{{ block.settings.section_subtitle }}</p>
+    </div>
+
+    <div class="ai-kitchen-recipes-grid-{{ ai_gen_id }}">
+      <div class="ai-kitchen-recipes-hero-{{ ai_gen_id }}">
+        {% if block.settings.featured_article %}
+          {% if block.settings.featured_article.image %}
+            <img
+              src="{{ block.settings.featured_article.image | image_url: width: 1200 }}"
+              alt="{{ block.settings.featured_article.image.alt | escape }}"
+              class="ai-kitchen-recipes-hero-image-{{ ai_gen_id }}"
+              loading="lazy"
+              width="1200"
+              height="800"
+            >
+          {% endif %}
+          <div class="ai-kitchen-recipes-hero-overlay-{{ ai_gen_id }}">
+            <h3 class="ai-kitchen-recipes-hero-title-{{ ai_gen_id }}">
+              <a href="{{ block.settings.featured_article.url }}">{{ block.settings.featured_article.title }}</a>
+            </h3>
+            <div class="ai-kitchen-recipes-meta-{{ ai_gen_id }}">
+              {{ block.settings.featured_article.published_at | date: '%B %d, %Y' }}
+              {% if block.settings.show_read_time %}
+                • {{ block.settings.featured_read_time }} min read
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="ai-kitchen-recipes-sidebar-{{ ai_gen_id }}">
+        {% if block.settings.sidebar_article_1 %}
+          <a href="{{ block.settings.sidebar_article_1.url }}" class="ai-kitchen-recipes-card-{{ ai_gen_id }}">
+            <div class="ai-kitchen-recipes-card-image-{{ ai_gen_id }}">
+              {% if block.settings.sidebar_article_1.image %}
+                <img
+                  src="{{ block.settings.sidebar_article_1.image | image_url: width: 240 }}"
+                  alt="{{ block.settings.sidebar_article_1.image.alt | escape }}"
+                  loading="lazy"
+                  width="240"
+                  height="240"
+                >
+              {% endif %}
+            </div>
+            <div class="ai-kitchen-recipes-card-content-{{ ai_gen_id }}">
+              <h4 class="ai-kitchen-recipes-card-title-{{ ai_gen_id }}">{{ block.settings.sidebar_article_1.title }}</h4>
+              <div class="ai-kitchen-recipes-card-meta-{{ ai_gen_id }}">
+                {{ block.settings.sidebar_article_1.published_at | date: '%B %d, %Y' }}
+                {% if block.settings.show_read_time %}
+                  • {{ block.settings.sidebar_1_read_time }} min read
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% endif %}
+
+        {% if block.settings.sidebar_article_2 %}
+          <a href="{{ block.settings.sidebar_article_2.url }}" class="ai-kitchen-recipes-card-{{ ai_gen_id }}">
+            <div class="ai-kitchen-recipes-card-image-{{ ai_gen_id }}">
+              {% if block.settings.sidebar_article_2.image %}
+                <img
+                  src="{{ block.settings.sidebar_article_2.image | image_url: width: 240 }}"
+                  alt="{{ block.settings.sidebar_article_2.image.alt | escape }}"
+                  loading="lazy"
+                  width="240"
+                  height="240"
+                >
+              {% endif %}
+            </div>
+            <div class="ai-kitchen-recipes-card-content-{{ ai_gen_id }}">
+              <h4 class="ai-kitchen-recipes-card-title-{{ ai_gen_id }}">{{ block.settings.sidebar_article_2.title }}</h4>
+              <div class="ai-kitchen-recipes-card-meta-{{ ai_gen_id }}">
+                {{ block.settings.sidebar_article_2.published_at | date: '%B %d, %Y' }}
+                {% if block.settings.show_read_time %}
+                  • {{ block.settings.sidebar_2_read_time }} min read
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% endif %}
+
+        {% if block.settings.sidebar_article_3 %}
+          <a href="{{ block.settings.sidebar_article_3.url }}" class="ai-kitchen-recipes-card-{{ ai_gen_id }}">
+            <div class="ai-kitchen-recipes-card-image-{{ ai_gen_id }}">
+              {% if block.settings.sidebar_article_3.image %}
+                <img
+                  src="{{ block.settings.sidebar_article_3.image | image_url: width: 240 }}"
+                  alt="{{ block.settings.sidebar_article_3.image.alt | escape }}"
+                  loading="lazy"
+                  width="240"
+                  height="240"
+                >
+              {% endif %}
+            </div>
+            <div class="ai-kitchen-recipes-card-content-{{ ai_gen_id }}">
+              <h4 class="ai-kitchen-recipes-card-title-{{ ai_gen_id }}">{{ block.settings.sidebar_article_3.title }}</h4>
+              <div class="ai-kitchen-recipes-card-meta-{{ ai_gen_id }}">
+                {{ block.settings.sidebar_article_3.published_at | date: '%B %d, %Y' }}
+                {% if block.settings.show_read_time %}
+                  • {{ block.settings.sidebar_3_read_time }} min read
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ai-kitchen-recipes-footer-{{ ai_gen_id }}">
+      <a href="{{ block.settings.view_all_link }}" class="ai-kitchen-recipes-link-{{ ai_gen_id }}">
+        {{ block.settings.view_all_text }}
+      </a>
+    </div>
+  </div>
+</kitchen-recipes-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class KitchenRecipes{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+      }
+    }
+
+    customElements.define('kitchen-recipes-{{ ai_gen_id }}', KitchenRecipes{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "From the Kitchen",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section heading"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Title",
+      "default": "From the Kitchen"
+    },
+    {
+      "type": "text",
+      "id": "section_subtitle",
+      "label": "Subtitle",
+      "default": "Recipes, rituals, and new ways to use honey."
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Title size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Featured article"
+    },
+    {
+      "type": "article",
+      "id": "featured_article",
+      "label": "Article"
+    },
+    {
+      "type": "range",
+      "id": "hero_title_size",
+      "label": "Title size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "featured_read_time",
+      "label": "Read time",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "unit": "min",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Sidebar article 1"
+    },
+    {
+      "type": "article",
+      "id": "sidebar_article_1",
+      "label": "Article"
+    },
+    {
+      "type": "range",
+      "id": "sidebar_1_read_time",
+      "label": "Read time",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "unit": "min",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Sidebar article 2"
+    },
+    {
+      "type": "article",
+      "id": "sidebar_article_2",
+      "label": "Article"
+    },
+    {
+      "type": "range",
+      "id": "sidebar_2_read_time",
+      "label": "Read time",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "unit": "min",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Sidebar article 3"
+    },
+    {
+      "type": "article",
+      "id": "sidebar_article_3",
+      "label": "Article"
+    },
+    {
+      "type": "range",
+      "id": "sidebar_3_read_time",
+      "label": "Read time",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "unit": "min",
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Footer"
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "View all text",
+      "default": "View all recipes →"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "View all link"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider",
+      "default": "#e8dcc8"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link",
+      "default": "#8b7355"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section padding",
+      "min": 20,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "label": "Card title size",
+      "min": 14,
+      "max": 28,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "meta_size",
+      "label": "Meta text size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "link_size",
+      "label": "Link size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "checkbox",
+      "id": "show_read_time",
+      "label": "Show read time",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "From the Kitchen"
+    }
+  ]
+}
+{% endschema %}

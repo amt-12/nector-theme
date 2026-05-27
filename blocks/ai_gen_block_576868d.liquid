@@ -1,0 +1,487 @@
+{% doc %}
+  @prompt
+    Rebuild a footer layout as a proper 3-column grid where all three column headings sit on the exact same horizontal baseline. First column: "Contact Us" heading, multi-line address, email line, and a small sub-line text "*Nectar & Comb is a brand by Farmure — a nature-first company." Second column: "Our Hive" heading with links (About Us, Jars, Snap-Click Sachets, The Nectar Edit, Recipes). Third column: "Learn More" heading with links (FAQs, How We Try to Do This Right, Contact Us, Returns & Refund Policy, Terms & Conditions, Privacy Policy). Use CSS grid with equal columns and align-items: flex-start so all columns top-align perfectly. All text fields and links should be editable from the theme editor sidebar.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-footer-grid-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    padding: {{ block.settings.padding_top }}px {{ block.settings.padding_horizontal }}px {{ block.settings.padding_bottom }}px;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-footer-grid__container-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: {{ block.settings.column_gap }}px;
+    align-items: flex-start;
+  }
+
+  .ai-footer-grid__column-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.content_gap }}px;
+  }
+
+  .ai-footer-grid__heading-{{ ai_gen_id }} {
+    margin: 0;
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    font-weight: {{ block.settings.heading_weight }};
+    line-height: 1.2;
+  }
+
+  .ai-footer-grid__text-{{ ai_gen_id }} {
+    margin: 0;
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.6;
+  }
+
+  .ai-footer-grid__link-{{ ai_gen_id }} {
+    display: block;
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.link_color }};
+    text-decoration: none;
+    line-height: 1.6;
+    transition: color 0.2s ease;
+  }
+
+  .ai-footer-grid__link-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.link_hover_color }};
+  }
+
+  .ai-footer-grid__subtext-{{ ai_gen_id }} {
+    margin: 0;
+    font-size: {{ block.settings.subtext_size }}px;
+    color: {{ block.settings.subtext_color }};
+    line-height: 1.5;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-footer-grid__container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ block.settings.mobile_column_gap }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-footer-grid-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-footer-grid__container-{{ ai_gen_id }}">
+    <div class="ai-footer-grid__column-{{ ai_gen_id }}">
+      {% if block.settings.column_1_heading != blank %}
+        <h3 class="ai-footer-grid__heading-{{ ai_gen_id }}">{{ block.settings.column_1_heading }}</h3>
+      {% endif %}
+      {% if block.settings.column_1_address != blank %}
+        <div class="ai-footer-grid__text-{{ ai_gen_id }}">{{ block.settings.column_1_address }}</div>
+      {% endif %}
+      {% if block.settings.column_1_email != blank %}
+        <a href="mailto:{{ block.settings.column_1_email }}" class="ai-footer-grid__link-{{ ai_gen_id }}">{{ block.settings.column_1_email }}</a>
+      {% endif %}
+      {% if block.settings.column_1_subtext != blank %}
+        <p class="ai-footer-grid__subtext-{{ ai_gen_id }}">{{ block.settings.column_1_subtext }}</p>
+      {% endif %}
+    </div>
+
+    <div class="ai-footer-grid__column-{{ ai_gen_id }}">
+      {% if block.settings.column_2_heading != blank %}
+        <h3 class="ai-footer-grid__heading-{{ ai_gen_id }}">{{ block.settings.column_2_heading }}</h3>
+      {% endif %}
+      {% if block.settings.column_2_link_1_text != blank %}
+        <a href="{{ block.settings.column_2_link_1_url }}" class="ai-footer-grid__link-{{ ai_gen_id }}">{{ block.settings.column_2_link_1_text }}</a>
+      {% endif %}
+      {% if block.settings.column_2_link_2_text != blank %}
+        <a href="{{ block.settings.column_2_link_2_url }}" class="ai-footer-grid__link-{{ ai_gen_id }}">{{ block.settings.column_2_link_2_text }}</a>
+      {% endif %}
+      {% if block.settings.column_2_link_3_text != blank %}
+        <a href="{{ block.settings.column_2_link_3_url }}" class="ai-footer-grid__link-{{ ai_gen_id }}">{{ block.settings.column_2_link_3_text }}</a>
+      {% endif %}
+      {% if block.settings.column_2_link_4_text != blank %}
+        <a href="{{ block.settings.column_2_link_4_url }}" class="ai-footer-grid__link-{{ ai_gen_id }}">{{ block.settings.column_2_link_4_text }}</a>
+      {% endif %}
+      {% if block.settings.column_2_link_5_text != blank %}
+        <a href="{{ block.settings.column_2_link_5_url }}" class="ai-footer-grid__link-{{ ai_gen_id }}">{{ block.settings.column_2_link_5_text }}</a>
+      {% endif %}
+    </div>
+
+    <div class="ai-footer-grid__column-{{ ai_gen_id }}">
+      {% if block.settings.column_3_heading != blank %}
+        <h3 class="ai-footer-grid__heading-{{ ai_gen_id }}">{{ block.settings.column_3_heading }}</h3>
+      {% endif %}
+      {% if block.settings.column_3_link_1_text != blank %}
+        <a href="{{ block.settings.column_3_link_1_url }}" class="ai-footer-grid__link-{{ ai_gen_id }}">{{ block.settings.column_3_link_1_text }}</a>
+      {% endif %}
+      {% if block.settings.column_3_link_2_text != blank %}
+        <a href="{{ block.settings.column_3_link_2_url }}" class="ai-footer-grid__link-{{ ai_gen_id }}">{{ block.settings.column_3_link_2_text }}</a>
+      {% endif %}
+      {% if block.settings.column_3_link_3_text != blank %}
+        <a href="{{ block.settings.column_3_link_3_url }}" class="ai-footer-grid__link-{{ ai_gen_id }}">{{ block.settings.column_3_link_3_text }}</a>
+      {% endif %}
+      {% if block.settings.column_3_link_4_text != blank %}
+        <a href="{{ block.settings.column_3_link_4_url }}" class="ai-footer-grid__link-{{ ai_gen_id }}">{{ block.settings.column_3_link_4_text }}</a>
+      {% endif %}
+      {% if block.settings.column_3_link_5_text != blank %}
+        <a href="{{ block.settings.column_3_link_5_url }}" class="ai-footer-grid__link-{{ ai_gen_id }}">{{ block.settings.column_3_link_5_text }}</a>
+      {% endif %}
+      {% if block.settings.column_3_link_6_text != blank %}
+        <a href="{{ block.settings.column_3_link_6_url }}" class="ai-footer-grid__link-{{ ai_gen_id }}">{{ block.settings.column_3_link_6_text }}</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Footer grid",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Padding horizontal",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "label": "Content gap",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "mobile_column_gap",
+      "label": "Mobile column gap",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Link hover",
+      "default": "#8b7355"
+    },
+    {
+      "type": "color",
+      "id": "subtext_color",
+      "label": "Subtext",
+      "default": "#6b6b6b"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semibold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "subtext_size",
+      "label": "Subtext size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Column 1: Contact Us"
+    },
+    {
+      "type": "text",
+      "id": "column_1_heading",
+      "label": "Heading",
+      "default": "Contact Us"
+    },
+    {
+      "type": "textarea",
+      "id": "column_1_address",
+      "label": "Address"
+    },
+    {
+      "type": "text",
+      "id": "column_1_email",
+      "label": "Email"
+    },
+    {
+      "type": "text",
+      "id": "column_1_subtext",
+      "label": "Subtext",
+      "default": "*Nectar & Comb is a brand by Farmure — a nature-first company."
+    },
+    {
+      "type": "header",
+      "content": "Column 2: Our Hive"
+    },
+    {
+      "type": "text",
+      "id": "column_2_heading",
+      "label": "Heading",
+      "default": "Our Hive"
+    },
+    {
+      "type": "text",
+      "id": "column_2_link_1_text",
+      "label": "Link 1 text",
+      "default": "About Us"
+    },
+    {
+      "type": "url",
+      "id": "column_2_link_1_url",
+      "label": "Link 1 URL"
+    },
+    {
+      "type": "text",
+      "id": "column_2_link_2_text",
+      "label": "Link 2 text",
+      "default": "Jars"
+    },
+    {
+      "type": "url",
+      "id": "column_2_link_2_url",
+      "label": "Link 2 URL"
+    },
+    {
+      "type": "text",
+      "id": "column_2_link_3_text",
+      "label": "Link 3 text",
+      "default": "Snap-Click Sachets"
+    },
+    {
+      "type": "url",
+      "id": "column_2_link_3_url",
+      "label": "Link 3 URL"
+    },
+    {
+      "type": "text",
+      "id": "column_2_link_4_text",
+      "label": "Link 4 text",
+      "default": "The Nectar Edit"
+    },
+    {
+      "type": "url",
+      "id": "column_2_link_4_url",
+      "label": "Link 4 URL"
+    },
+    {
+      "type": "text",
+      "id": "column_2_link_5_text",
+      "label": "Link 5 text",
+      "default": "Recipes"
+    },
+    {
+      "type": "url",
+      "id": "column_2_link_5_url",
+      "label": "Link 5 URL"
+    },
+    {
+      "type": "header",
+      "content": "Column 3: Learn More"
+    },
+    {
+      "type": "text",
+      "id": "column_3_heading",
+      "label": "Heading",
+      "default": "Learn More"
+    },
+    {
+      "type": "text",
+      "id": "column_3_link_1_text",
+      "label": "Link 1 text",
+      "default": "FAQs"
+    },
+    {
+      "type": "url",
+      "id": "column_3_link_1_url",
+      "label": "Link 1 URL"
+    },
+    {
+      "type": "text",
+      "id": "column_3_link_2_text",
+      "label": "Link 2 text",
+      "default": "How We Try to Do This Right"
+    },
+    {
+      "type": "url",
+      "id": "column_3_link_2_url",
+      "label": "Link 2 URL"
+    },
+    {
+      "type": "text",
+      "id": "column_3_link_3_text",
+      "label": "Link 3 text",
+      "default": "Contact Us"
+    },
+    {
+      "type": "url",
+      "id": "column_3_link_3_url",
+      "label": "Link 3 URL"
+    },
+    {
+      "type": "text",
+      "id": "column_3_link_4_text",
+      "label": "Link 4 text",
+      "default": "Returns & Refund Policy"
+    },
+    {
+      "type": "url",
+      "id": "column_3_link_4_url",
+      "label": "Link 4 URL"
+    },
+    {
+      "type": "text",
+      "id": "column_3_link_5_text",
+      "label": "Link 5 text",
+      "default": "Terms & Conditions"
+    },
+    {
+      "type": "url",
+      "id": "column_3_link_5_url",
+      "label": "Link 5 URL"
+    },
+    {
+      "type": "text",
+      "id": "column_3_link_6_text",
+      "label": "Link 6 text",
+      "default": "Privacy Policy"
+    },
+    {
+      "type": "url",
+      "id": "column_3_link_6_url",
+      "label": "Link 6 URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer grid"
+    }
+  ]
+}
+{% endschema %}

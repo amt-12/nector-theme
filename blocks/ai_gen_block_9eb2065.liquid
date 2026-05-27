@@ -1,0 +1,661 @@
+{% doc %}
+  @prompt
+    Create a standalone sustainability/commitments page section for a premium honey brand called NECTAR&COMB. The section should have:
+    
+    1. A centered hero area with:
+       - Heading: "How We Try to Do This Right"
+       - Subheading: "We're a small brand. What we have is a set of commitments."
+       - A thin gold/amber decorative divider line under the heading
+    
+    2. A vertically stacked list of 5 commitment blocks, each with:
+       - A small gold/amber horizontal rule above the title
+       - An all-caps spaced letter heading
+       - A short centered paragraph description
+       - Generous whitespace between blocks
+    
+    The 5 commitments are:
+    - MINIMAL INPUTS: "We believe in letting nature do the work. Our beekeeping practices prioritize the health of the hive, avoiding unnecessary interventions and chemicals to maintain the purity of the honey."
+    - COLD EXTRACTION ONLY: "Our honey is never heated or pasteurized. We use a gentle cold extraction process to preserve all the natural enzymes, pollen, and distinct flavors of the comb."
+    - GLASS PACKAGING: "We are committed to reducing plastic waste. All our honey is packaged in reusable and recyclable glass jars, ensuring freshness and sustainability."
+    - DIRECT SOURCING: "We build strong, direct relationships with local artisan beekeepers. This ensures fair compensation and transparency in every step of the journey from hive to jar."
+    - FSSAI CERTIFIED: "Our commitment to quality is backed by rigorous standards. We are fully FSSAI certified, guaranteeing that our honey meets the highest food safety and quality regulations."
+    
+    3. A closing italic line at the bottom: "We're not perfect. We're working on it."
+    
+    Design style: editorial, luxury, warm cream/off-white background (#F5F0E8 or similar), serif fonts for headings, clean sans-serif for body text, gold/amber accent color (#C8922A or similar). All text centered. Section should be fully customizable via theme editor settings (heading, subheading, each commitment title and description, accent color, background color).
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-sustainability-section-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding_top }}px 20px {{ block.settings.section_padding_bottom }}px;
+  }
+
+  .ai-sustainability-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .ai-sustainability-hero-{{ ai_gen_id }} {
+    margin-bottom: {{ block.settings.hero_spacing }}px;
+  }
+
+  .ai-sustainability-heading-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.heading_size }}px;
+    line-height: 1.2;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 {{ block.settings.heading_spacing }}px;
+  }
+
+  .ai-sustainability-divider-{{ ai_gen_id }} {
+    width: {{ block.settings.divider_width }}px;
+    height: {{ block.settings.divider_height }}px;
+    background-color: {{ block.settings.accent_color }};
+    margin: 0 auto {{ block.settings.divider_spacing }}px;
+  }
+
+  .ai-sustainability-subheading-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-size: {{ block.settings.subheading_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+  }
+
+  .ai-sustainability-commitments-{{ ai_gen_id }} {
+    margin-top: {{ block.settings.commitments_top_spacing }}px;
+  }
+
+  .ai-sustainability-commitment-{{ ai_gen_id }} {
+    margin-bottom: {{ block.settings.commitment_spacing }}px;
+  }
+
+  .ai-sustainability-commitment-{{ ai_gen_id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-sustainability-commitment-rule-{{ ai_gen_id }} {
+    width: {{ block.settings.rule_width }}px;
+    height: {{ block.settings.rule_height }}px;
+    background-color: {{ block.settings.accent_color }};
+    margin: 0 auto {{ block.settings.rule_spacing }}px;
+  }
+
+  .ai-sustainability-commitment-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-size: {{ block.settings.commitment_title_size }}px;
+    line-height: 1.4;
+    color: {{ block.settings.text_color }};
+    text-transform: uppercase;
+    letter-spacing: {{ block.settings.title_letter_spacing }}px;
+    margin: 0 0 {{ block.settings.title_spacing }}px;
+  }
+
+  .ai-sustainability-commitment-description-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-size: {{ block.settings.description_size }}px;
+    line-height: 1.7;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    max-width: {{ block.settings.description_max_width }}px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .ai-sustainability-closing-{{ ai_gen_id }} {
+    margin-top: {{ block.settings.closing_top_spacing }}px;
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-style: italic;
+    font-size: {{ block.settings.closing_size }}px;
+    line-height: 1.5;
+    color: {{ block.settings.text_color }};
+    opacity: {{ block.settings.closing_opacity }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-sustainability-section-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_top | times: 0.6 }}px 16px {{ block.settings.section_padding_bottom | times: 0.6 }}px;
+    }
+
+    .ai-sustainability-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.6 }}px;
+    }
+
+    .ai-sustainability-subheading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subheading_size | times: 0.9 }}px;
+    }
+
+    .ai-sustainability-commitment-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.commitment_title_size | times: 0.9 }}px;
+    }
+
+    .ai-sustainability-commitment-description-{{ ai_gen_id }} {
+      font-size: {{ block.settings.description_size | times: 0.9 }}px;
+    }
+
+    .ai-sustainability-closing-{{ ai_gen_id }} {
+      font-size: {{ block.settings.closing_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-sustainability-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-sustainability-container-{{ ai_gen_id }}">
+    <div class="ai-sustainability-hero-{{ ai_gen_id }}">
+      {% if block.settings.heading != blank %}
+        <h1 class="ai-sustainability-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h1>
+      {% endif %}
+      
+      <div class="ai-sustainability-divider-{{ ai_gen_id }}"></div>
+      
+      {% if block.settings.subheading != blank %}
+        <p class="ai-sustainability-subheading-{{ ai_gen_id }}">{{ block.settings.subheading }}</p>
+      {% endif %}
+    </div>
+
+    <div class="ai-sustainability-commitments-{{ ai_gen_id }}">
+      {% if block.settings.show_commitment_1 %}
+        <div class="ai-sustainability-commitment-{{ ai_gen_id }}">
+          <div class="ai-sustainability-commitment-rule-{{ ai_gen_id }}"></div>
+          {% if block.settings.commitment_1_title != blank %}
+            <h2 class="ai-sustainability-commitment-title-{{ ai_gen_id }}">{{ block.settings.commitment_1_title }}</h2>
+          {% endif %}
+          {% if block.settings.commitment_1_description != blank %}
+            <p class="ai-sustainability-commitment-description-{{ ai_gen_id }}">{{ block.settings.commitment_1_description }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_commitment_2 %}
+        <div class="ai-sustainability-commitment-{{ ai_gen_id }}">
+          <div class="ai-sustainability-commitment-rule-{{ ai_gen_id }}"></div>
+          {% if block.settings.commitment_2_title != blank %}
+            <h2 class="ai-sustainability-commitment-title-{{ ai_gen_id }}">{{ block.settings.commitment_2_title }}</h2>
+          {% endif %}
+          {% if block.settings.commitment_2_description != blank %}
+            <p class="ai-sustainability-commitment-description-{{ ai_gen_id }}">{{ block.settings.commitment_2_description }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_commitment_3 %}
+        <div class="ai-sustainability-commitment-{{ ai_gen_id }}">
+          <div class="ai-sustainability-commitment-rule-{{ ai_gen_id }}"></div>
+          {% if block.settings.commitment_3_title != blank %}
+            <h2 class="ai-sustainability-commitment-title-{{ ai_gen_id }}">{{ block.settings.commitment_3_title }}</h2>
+          {% endif %}
+          {% if block.settings.commitment_3_description != blank %}
+            <p class="ai-sustainability-commitment-description-{{ ai_gen_id }}">{{ block.settings.commitment_3_description }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_commitment_4 %}
+        <div class="ai-sustainability-commitment-{{ ai_gen_id }}">
+          <div class="ai-sustainability-commitment-rule-{{ ai_gen_id }}"></div>
+          {% if block.settings.commitment_4_title != blank %}
+            <h2 class="ai-sustainability-commitment-title-{{ ai_gen_id }}">{{ block.settings.commitment_4_title }}</h2>
+          {% endif %}
+          {% if block.settings.commitment_4_description != blank %}
+            <p class="ai-sustainability-commitment-description-{{ ai_gen_id }}">{{ block.settings.commitment_4_description }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_commitment_5 %}
+        <div class="ai-sustainability-commitment-{{ ai_gen_id }}">
+          <div class="ai-sustainability-commitment-rule-{{ ai_gen_id }}"></div>
+          {% if block.settings.commitment_5_title != blank %}
+            <h2 class="ai-sustainability-commitment-title-{{ ai_gen_id }}">{{ block.settings.commitment_5_title }}</h2>
+          {% endif %}
+          {% if block.settings.commitment_5_description != blank %}
+            <p class="ai-sustainability-commitment-description-{{ ai_gen_id }}">{{ block.settings.commitment_5_description }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    {% if block.settings.closing_text != blank %}
+      <p class="ai-sustainability-closing-{{ ai_gen_id }}">{{ block.settings.closing_text }}</p>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Our commitments",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero section"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How We Try to Do This Right"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "We're a small brand. What we have is a set of commitments."
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Subheading size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "hero_spacing",
+      "label": "Hero bottom spacing",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Divider line"
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "label": "Width",
+      "min": 20,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "divider_height",
+      "label": "Height",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "label": "Space below heading",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "divider_spacing",
+      "label": "Space below divider",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Commitment 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_commitment_1",
+      "label": "Show commitment 1",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "commitment_1_title",
+      "label": "Title",
+      "default": "MINIMAL INPUTS"
+    },
+    {
+      "type": "textarea",
+      "id": "commitment_1_description",
+      "label": "Description",
+      "default": "We believe in letting nature do the work. Our beekeeping practices prioritize the health of the hive, avoiding unnecessary interventions and chemicals to maintain the purity of the honey."
+    },
+    {
+      "type": "header",
+      "content": "Commitment 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_commitment_2",
+      "label": "Show commitment 2",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "commitment_2_title",
+      "label": "Title",
+      "default": "COLD EXTRACTION ONLY"
+    },
+    {
+      "type": "textarea",
+      "id": "commitment_2_description",
+      "label": "Description",
+      "default": "Our honey is never heated or pasteurized. We use a gentle cold extraction process to preserve all the natural enzymes, pollen, and distinct flavors of the comb."
+    },
+    {
+      "type": "header",
+      "content": "Commitment 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_commitment_3",
+      "label": "Show commitment 3",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "commitment_3_title",
+      "label": "Title",
+      "default": "GLASS PACKAGING"
+    },
+    {
+      "type": "textarea",
+      "id": "commitment_3_description",
+      "label": "Description",
+      "default": "We are committed to reducing plastic waste. All our honey is packaged in reusable and recyclable glass jars, ensuring freshness and sustainability."
+    },
+    {
+      "type": "header",
+      "content": "Commitment 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_commitment_4",
+      "label": "Show commitment 4",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "commitment_4_title",
+      "label": "Title",
+      "default": "DIRECT SOURCING"
+    },
+    {
+      "type": "textarea",
+      "id": "commitment_4_description",
+      "label": "Description",
+      "default": "We build strong, direct relationships with local artisan beekeepers. This ensures fair compensation and transparency in every step of the journey from hive to jar."
+    },
+    {
+      "type": "header",
+      "content": "Commitment 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_commitment_5",
+      "label": "Show commitment 5",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "commitment_5_title",
+      "label": "Title",
+      "default": "FSSAI CERTIFIED"
+    },
+    {
+      "type": "textarea",
+      "id": "commitment_5_description",
+      "label": "Description",
+      "default": "Our commitment to quality is backed by rigorous standards. We are fully FSSAI certified, guaranteeing that our honey meets the highest food safety and quality regulations."
+    },
+    {
+      "type": "header",
+      "content": "Commitment styling"
+    },
+    {
+      "type": "range",
+      "id": "rule_width",
+      "label": "Rule width",
+      "min": 20,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "rule_height",
+      "label": "Rule height",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "rule_spacing",
+      "label": "Space below rule",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "commitment_title_size",
+      "label": "Title size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "title_letter_spacing",
+      "label": "Title letter spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "label": "Space below title",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "description_max_width",
+      "label": "Description max width",
+      "min": 400,
+      "max": 900,
+      "step": 50,
+      "unit": "px",
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "commitment_spacing",
+      "label": "Space between commitments",
+      "min": 30,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Closing text"
+    },
+    {
+      "type": "text",
+      "id": "closing_text",
+      "label": "Closing text",
+      "default": "We're not perfect. We're working on it."
+    },
+    {
+      "type": "range",
+      "id": "closing_size",
+      "label": "Size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "closing_opacity",
+      "label": "Opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.7
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 600,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 900
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top padding",
+      "min": 20,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom padding",
+      "min": 20,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "commitments_top_spacing",
+      "label": "Commitments top spacing",
+      "min": 30,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "closing_top_spacing",
+      "label": "Closing top spacing",
+      "min": 30,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#F5F0E8"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#C8922A"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "serif"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "sans-serif"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Our commitments"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

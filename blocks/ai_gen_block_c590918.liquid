@@ -1,0 +1,384 @@
+{% doc %}
+  @prompt
+    Create a custom Liquid section for a Shopify collection page that displays horizontal filter tabs styled for a premium luxury brand. The tabs should be: "All", "Jars", "Sachets", "Gift Sets". When a tab is clicked, it filters the collection by product tag using URL parameters. Design: centered, cream background #f5f0e8, tabs separated by middle dot, active tab has dark brown underline, premium serif font, compact padding, mobile horizontal scroll, minimal editorial luxury feel.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-filter-tabs-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_vertical }}px 0;
+  }
+
+  .ai-filter-tabs-container-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: {{ block.settings.tab_spacing }}px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 20px;
+  }
+
+  .ai-filter-tabs-container-{{ ai_gen_id }}::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ai-filter-tab-{{ ai_gen_id }} {
+    position: relative;
+    background: none;
+    border: none;
+    padding: {{ block.settings.tab_padding_vertical }}px {{ block.settings.tab_padding_horizontal }}px;
+    font-family: {{ block.settings.tab_font.family }}, {{ block.settings.tab_font.fallback_families }};
+    font-weight: {{ block.settings.tab_font.weight }};
+    font-size: {{ block.settings.font_size }}px;
+    color: {{ block.settings.text_color }};
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .ai-filter-tab-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.text_hover_color }};
+  }
+
+  .ai-filter-tab-{{ ai_gen_id }}.active {
+    color: {{ block.settings.active_text_color }};
+  }
+
+  .ai-filter-tab-{{ ai_gen_id }}.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: {{ block.settings.underline_thickness }}px;
+    background-color: {{ block.settings.underline_color }};
+  }
+
+  .ai-filter-separator-{{ ai_gen_id }} {
+    color: {{ block.settings.separator_color }};
+    font-size: {{ block.settings.font_size }}px;
+    user-select: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-filter-tabs-container-{{ ai_gen_id }} {
+      justify-content: flex-start;
+      padding: 0 16px;
+    }
+
+    .ai-filter-tab-{{ ai_gen_id }} {
+      font-size: {{ block.settings.font_size_mobile }}px;
+    }
+
+    .ai-filter-separator-{{ ai_gen_id }} {
+      font-size: {{ block.settings.font_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<filter-tabs-{{ ai_gen_id }}
+  class="ai-filter-tabs-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-filter-tabs-container-{{ ai_gen_id }}">
+    {% liquid
+      assign current_tags = ''
+      if collection.current_type != blank
+        assign current_tags = collection.current_type
+      elsif collection.current_vendor != blank
+        assign current_tags = collection.current_vendor
+      else
+        for tag in collection.all_tags
+          if current_tags contains tag
+            assign current_tags = tag
+            break
+          endif
+        endfor
+      endif
+
+      assign filter_param = ''
+      if request.path contains '?'
+        assign url_parts = request.url | split: '?'
+        if url_parts.size > 1
+          assign params = url_parts[1] | split: '&'
+          for param in params
+            if param contains 'filter.'
+              assign filter_param = param
+              break
+            endif
+          endfor
+        endif
+      endif
+    %}
+
+    {% for i in (1..4) %}
+      {% liquid
+        assign tab_label_key = 'tab_' | append: i | append: '_label'
+        assign tab_tag_key = 'tab_' | append: i | append: '_tag'
+        assign tab_label = block.settings[tab_label_key]
+        assign tab_tag = block.settings[tab_tag_key]
+
+        if tab_label != blank
+          assign is_active = false
+
+          if tab_tag == blank and filter_param == blank
+            assign is_active = true
+          elsif tab_tag != blank and filter_param contains tab_tag
+            assign is_active = true
+          endif
+
+          if tab_tag == blank
+            assign tab_url = collection.url
+          else
+            assign tab_url = collection.url | append: '?filter.p.tag=' | append: tab_tag
+          endif
+        endif
+      %}
+
+      {% if tab_label != blank %}
+        {% if i > 1 %}
+          <span class="ai-filter-separator-{{ ai_gen_id }}">·</span>
+        {% endif %}
+
+        <a
+          href="{{ tab_url }}"
+          class="ai-filter-tab-{{ ai_gen_id }}{% if is_active %} active{% endif %}"
+          data-filter-tag="{{ tab_tag }}"
+        >
+          {{ tab_label }}
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</filter-tabs-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class FilterTabs{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.tabs = this.querySelectorAll('.ai-filter-tab-{{ ai_gen_id }}');
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.tabs.forEach((tab) => {
+          tab.addEventListener('click', (e) => {
+            this.tabs.forEach((t) => t.classList.remove('active'));
+            tab.classList.add('active');
+          });
+        });
+      }
+    }
+
+    customElements.define('filter-tabs-{{ ai_gen_id }}', FilterTabs{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collection filter tabs",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Tab 1"
+    },
+    {
+      "type": "text",
+      "id": "tab_1_label",
+      "label": "Label",
+      "default": "All"
+    },
+    {
+      "type": "text",
+      "id": "tab_1_tag",
+      "label": "Product tag",
+      "info": "Leave empty to show all products"
+    },
+    {
+      "type": "header",
+      "content": "Tab 2"
+    },
+    {
+      "type": "text",
+      "id": "tab_2_label",
+      "label": "Label",
+      "default": "Jars"
+    },
+    {
+      "type": "text",
+      "id": "tab_2_tag",
+      "label": "Product tag",
+      "default": "Jars"
+    },
+    {
+      "type": "header",
+      "content": "Tab 3"
+    },
+    {
+      "type": "text",
+      "id": "tab_3_label",
+      "label": "Label",
+      "default": "Sachets"
+    },
+    {
+      "type": "text",
+      "id": "tab_3_tag",
+      "label": "Product tag",
+      "default": "Sachets"
+    },
+    {
+      "type": "header",
+      "content": "Tab 4"
+    },
+    {
+      "type": "text",
+      "id": "tab_4_label",
+      "label": "Label",
+      "default": "Gift Sets"
+    },
+    {
+      "type": "text",
+      "id": "tab_4_tag",
+      "label": "Product tag",
+      "default": "Gift Sets"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#f5f0e8"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#3b2a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_hover_color",
+      "label": "Text hover",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "active_text_color",
+      "label": "Active text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "underline_color",
+      "label": "Active underline",
+      "default": "#3b2a1a"
+    },
+    {
+      "type": "color",
+      "id": "separator_color",
+      "label": "Separator",
+      "default": "#8b7355"
+    },
+    {
+      "type": "font_picker",
+      "id": "tab_font",
+      "label": "Font",
+      "default": "cormorant_n4"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "label": "Mobile font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "underline_thickness",
+      "label": "Underline thickness",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Vertical padding",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "tab_spacing",
+      "label": "Tab spacing",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "tab_padding_horizontal",
+      "label": "Tab horizontal padding",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "tab_padding_vertical",
+      "label": "Tab vertical padding",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection filter tabs"
+    }
+  ]
+}
+{% endschema %}

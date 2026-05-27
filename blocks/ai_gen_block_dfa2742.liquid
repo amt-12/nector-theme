@@ -1,0 +1,511 @@
+{% doc %}
+  @prompt
+    Create a "Featured Article with Grid" section for a blog. The section should include: 1) A configurable section heading/title at the top (editable in theme editor). 2) One large featured/hero article (with big featured image, title, excerpt, date, author, and a "Read More" link). 3) Below the featured article, a 3-column grid of 3 smaller article cards (each with featured image, title, excerpt, date, and a read more link) — all pulled from a selected blog. 4) At the bottom, a "View All" button displayed as underlined text with no arrow, with a fully customizable URL field. All settings (section heading, blog selection, button label, button URL) should be configurable in the theme editor. Style it to match a premium, editorial aesthetic with clean typography and earthy/natural tones.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-featured-article-grid-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: 60px 20px;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-featured-article-grid__container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-featured-article-grid__heading-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    text-align: {{ block.settings.heading_alignment }};
+    margin: 0 0 48px 0;
+    line-height: 1.2;
+  }
+
+  .ai-featured-article-grid__featured-{{ ai_gen_id }} {
+    margin-bottom: 60px;
+  }
+
+  .ai-featured-article-grid__featured-link-{{ ai_gen_id }} {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .ai-featured-article-grid__featured-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    background-color: #f4f4f4;
+  }
+
+  .ai-featured-article-grid__featured-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-featured-article-grid__featured-link-{{ ai_gen_id }}:hover .ai-featured-article-grid__featured-image-{{ ai_gen_id }} img {
+    transform: scale(1.02);
+  }
+
+  .ai-featured-article-grid__featured-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+  }
+
+  .ai-featured-article-grid__featured-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 400px;
+  }
+
+  .ai-featured-article-grid__featured-content-{{ ai_gen_id }} {
+    max-width: 800px;
+  }
+
+  .ai-featured-article-grid__featured-meta-{{ ai_gen_id }} {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: {{ block.settings.meta_color }};
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-featured-article-grid__featured-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: 40px;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 16px 0;
+    line-height: 1.3;
+  }
+
+  .ai-featured-article-grid__featured-excerpt-{{ ai_gen_id }} {
+    font-size: 18px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .ai-featured-article-grid__read-more-{{ ai_gen_id }} {
+    display: inline-block;
+    font-size: 16px;
+    color: {{ block.settings.link_color }};
+    text-decoration: underline;
+    transition: color 0.3s ease;
+  }
+
+  .ai-featured-article-grid__read-more-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.link_hover_color }};
+  }
+
+  .ai-featured-article-grid__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-bottom: 48px;
+  }
+
+  .ai-featured-article-grid__card-{{ ai_gen_id }} {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .ai-featured-article-grid__card-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 280px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background-color: #f4f4f4;
+  }
+
+  .ai-featured-article-grid__card-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-featured-article-grid__card-{{ ai_gen_id }}:hover .ai-featured-article-grid__card-image-{{ ai_gen_id }} img {
+    transform: scale(1.02);
+  }
+
+  .ai-featured-article-grid__card-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+  }
+
+  .ai-featured-article-grid__card-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    max-height: 200px;
+  }
+
+  .ai-featured-article-grid__card-meta-{{ ai_gen_id }} {
+    font-size: 12px;
+    color: {{ block.settings.meta_color }};
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-featured-article-grid__card-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: 24px;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 12px 0;
+    line-height: 1.3;
+  }
+
+  .ai-featured-article-grid__card-excerpt-{{ ai_gen_id }} {
+    font-size: 16px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .ai-featured-article-grid__view-all-{{ ai_gen_id }} {
+    text-align: center;
+  }
+
+  .ai-featured-article-grid__view-all-link-{{ ai_gen_id }} {
+    display: inline-block;
+    font-size: 16px;
+    color: {{ block.settings.link_color }};
+    text-decoration: underline;
+    transition: color 0.3s ease;
+  }
+
+  .ai-featured-article-grid__view-all-link-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.link_hover_color }};
+  }
+
+  .ai-featured-article-grid__empty-state-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 60px 20px;
+    color: {{ block.settings.meta_color }};
+    font-size: 16px;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-featured-article-grid__grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .ai-featured-article-grid__featured-image-{{ ai_gen_id }} {
+      height: 400px;
+    }
+
+    .ai-featured-article-grid__featured-title-{{ ai_gen_id }} {
+      font-size: 32px;
+    }
+
+    .ai-featured-article-grid__card-image-{{ ai_gen_id }} {
+      height: 240px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-featured-article-grid-{{ ai_gen_id }} {
+      padding: 40px 16px;
+    }
+
+    .ai-featured-article-grid__heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.7 }}px;
+      margin-bottom: 32px;
+    }
+
+    .ai-featured-article-grid__featured-{{ ai_gen_id }} {
+      margin-bottom: 40px;
+    }
+
+    .ai-featured-article-grid__featured-image-{{ ai_gen_id }} {
+      height: 300px;
+    }
+
+    .ai-featured-article-grid__featured-title-{{ ai_gen_id }} {
+      font-size: 28px;
+    }
+
+    .ai-featured-article-grid__featured-excerpt-{{ ai_gen_id }} {
+      font-size: 16px;
+    }
+
+    .ai-featured-article-grid__grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+
+    .ai-featured-article-grid__card-image-{{ ai_gen_id }} {
+      height: 220px;
+    }
+
+    .ai-featured-article-grid__card-title-{{ ai_gen_id }} {
+      font-size: 20px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-featured-article-grid-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-featured-article-grid__container-{{ ai_gen_id }}">
+    {% if block.settings.section_heading != blank %}
+      <h2 class="ai-featured-article-grid__heading-{{ ai_gen_id }}">{{ block.settings.section_heading }}</h2>
+    {% endif %}
+
+    {% if block.settings.blog != blank %}
+      {% assign blog = block.settings.blog %}
+      {% assign articles = blog.articles %}
+
+      {% if articles.size > 0 %}
+        {% assign featured_article = articles.first %}
+
+        <div class="ai-featured-article-grid__featured-{{ ai_gen_id }}">
+          <a href="{{ featured_article.url }}" class="ai-featured-article-grid__featured-link-{{ ai_gen_id }}">
+            <div class="ai-featured-article-grid__featured-image-{{ ai_gen_id }}">
+              {% if featured_article.image %}
+                <img
+                  src="{{ featured_article.image | image_url: width: 1200 }}"
+                  alt="{{ featured_article.image.alt | escape }}"
+                  loading="lazy"
+                  width="{{ featured_article.image.width }}"
+                  height="{{ featured_article.image.height }}"
+                >
+              {% else %}
+                <div class="ai-featured-article-grid__featured-placeholder-{{ ai_gen_id }}">
+                  {{ 'image' | placeholder_svg_tag }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="ai-featured-article-grid__featured-content-{{ ai_gen_id }}">
+              <div class="ai-featured-article-grid__featured-meta-{{ ai_gen_id }}">
+                <span>{{ featured_article.published_at | date: '%B %d, %Y' }}</span>
+                {% if featured_article.author != blank %}
+                  <span>{{ featured_article.author }}</span>
+                {% endif %}
+              </div>
+
+              <h3 class="ai-featured-article-grid__featured-title-{{ ai_gen_id }}">{{ featured_article.title }}</h3>
+
+              {% if featured_article.excerpt != blank %}
+                <div class="ai-featured-article-grid__featured-excerpt-{{ ai_gen_id }}">
+                  {{ featured_article.excerpt | strip_html | truncate: 200 }}
+                </div>
+              {% endif %}
+
+              <span class="ai-featured-article-grid__read-more-{{ ai_gen_id }}">Read More</span>
+            </div>
+          </a>
+        </div>
+
+        {% if articles.size > 1 %}
+          <div class="ai-featured-article-grid__grid-{{ ai_gen_id }}">
+            {% for article in articles offset: 1 limit: 3 %}
+              <a href="{{ article.url }}" class="ai-featured-article-grid__card-{{ ai_gen_id }}">
+                <div class="ai-featured-article-grid__card-image-{{ ai_gen_id }}">
+                  {% if article.image %}
+                    <img
+                      src="{{ article.image | image_url: width: 600 }}"
+                      alt="{{ article.image.alt | escape }}"
+                      loading="lazy"
+                      width="{{ article.image.width }}"
+                      height="{{ article.image.height }}"
+                    >
+                  {% else %}
+                    <div class="ai-featured-article-grid__card-placeholder-{{ ai_gen_id }}">
+                      {{ 'image' | placeholder_svg_tag }}
+                    </div>
+                  {% endif %}
+                </div>
+
+                <div class="ai-featured-article-grid__card-meta-{{ ai_gen_id }}">
+                  {{ article.published_at | date: '%B %d, %Y' }}
+                </div>
+
+                <h4 class="ai-featured-article-grid__card-title-{{ ai_gen_id }}">{{ article.title }}</h4>
+
+                {% if article.excerpt != blank %}
+                  <div class="ai-featured-article-grid__card-excerpt-{{ ai_gen_id }}">
+                    {{ article.excerpt | strip_html | truncate: 120 }}
+                  </div>
+                {% endif %}
+
+                <span class="ai-featured-article-grid__read-more-{{ ai_gen_id }}">Read More</span>
+              </a>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if block.settings.view_all_url != blank %}
+          <div class="ai-featured-article-grid__view-all-{{ ai_gen_id }}">
+            <a href="{{ block.settings.view_all_url }}" class="ai-featured-article-grid__view-all-link-{{ ai_gen_id }}">
+              {{ block.settings.view_all_label }}
+            </a>
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="ai-featured-article-grid__empty-state-{{ ai_gen_id }}">
+          The selected blog has no articles yet. Add articles to see them here.
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="ai-featured-article-grid__empty-state-{{ ai_gen_id }}">
+        Select a blog to display featured articles.
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured article grid",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_heading",
+      "label": "Section heading",
+      "default": "From the Journal"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog"
+    },
+    {
+      "type": "header",
+      "content": "View all button"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "view_all_label",
+      "label": "Button label",
+      "default": "View All Articles"
+    },
+    {
+      "type": "url",
+      "id": "view_all_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Section heading",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Article titles",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Article text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "meta_color",
+      "label": "Date and author",
+      "default": "#6b5345"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Links",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Links hover",
+      "default": "#6b5345"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "cormorant_n4"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Section heading size",
+      "min": 24,
+      "max": 72,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Section heading alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured article grid"
+    }
+  ]
+}
+{% endschema %}

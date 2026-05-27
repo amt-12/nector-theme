@@ -1,0 +1,489 @@
+{% doc %}
+  @prompt
+    Create a custom Liquid section block for a Shopify product page that displays an interactive flavor profile for premium honey products. The block should:
+    
+    1. Read a JSON metafield at `product.metafields.custom.flavor_profile` with keys: sweetness, floral, body, aftertaste — each a number from 0 to 5.
+    
+    2. Render 4 horizontal animated progress bars, one per attribute, with:
+       - Label on the left (e.g. "Sweetness", "Floral Notes", "Body", "Aftertaste")
+       - A thin track bar that fills proportionally (value/5 × 100%)
+       - Smooth CSS animation on page load (fill from 0 to value)
+       - Amber/gold gradient fill color (#C8860A to #F5C842) to match a premium honey brand
+       - Track background in a very light warm beige (#F5ECD7)
+    
+    3. Section heading: "Flavour Profile" in an elegant serif font, small caps style, with a thin amber underline
+    
+    4. Handle gracefully if the metafield is empty or null — hide the block entirely in that case
+    
+    5. Style should be minimal, editorial, and premium — no borders, no cards, generous whitespace, small uppercase labels in a light tracking style
+    
+    6. The block should be insertable as a product page block in a Shopify OS 2.0 theme (Dawn or similar), with proper schema definition including name "Flavour Profile" and target "mainSection"
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign flavor_profile = product.metafields.custom.flavor_profile %}
+
+{% if flavor_profile != blank %}
+  {% assign profile_data = flavor_profile | parse_json %}
+  
+  {% if profile_data.sweetness != blank or profile_data.floral != blank or profile_data.body != blank or profile_data.aftertaste != blank %}
+    {% style %}
+      .ai-flavor-profile-{{ ai_gen_id }} {
+        display: block;
+        width: 100%;
+        padding: {{ block.settings.section_padding }}px 0;
+      }
+
+      .ai-flavor-profile-container-{{ ai_gen_id }} {
+        max-width: {{ block.settings.max_width }}px;
+        margin: 0 auto;
+      }
+
+      .ai-flavor-profile-heading-{{ ai_gen_id }} {
+        font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+        font-weight: {{ block.settings.heading_font.weight }};
+        font-style: {{ block.settings.heading_font.style }};
+        font-size: {{ block.settings.heading_size }}px;
+        color: {{ block.settings.heading_color }};
+        text-transform: uppercase;
+        letter-spacing: {{ block.settings.letter_spacing }}px;
+        margin: 0 0 {{ block.settings.heading_margin }}px 0;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 8px;
+      }
+
+      .ai-flavor-profile-heading-{{ ai_gen_id }}::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, {{ block.settings.underline_color_start }}, {{ block.settings.underline_color_end }});
+      }
+
+      .ai-flavor-profile-bars-{{ ai_gen_id }} {
+        display: flex;
+        flex-direction: column;
+        gap: {{ block.settings.bar_spacing }}px;
+        margin-top: {{ block.settings.bars_top_margin }}px;
+      }
+
+      .ai-flavor-profile-bar-row-{{ ai_gen_id }} {
+        display: flex;
+        align-items: center;
+        gap: {{ block.settings.label_gap }}px;
+      }
+
+      .ai-flavor-profile-label-{{ ai_gen_id }} {
+        font-family: {{ block.settings.label_font.family }}, {{ block.settings.label_font.fallback_families }};
+        font-weight: {{ block.settings.label_font.weight }};
+        font-style: {{ block.settings.label_font.style }};
+        font-size: {{ block.settings.label_size }}px;
+        color: {{ block.settings.label_color }};
+        text-transform: uppercase;
+        letter-spacing: {{ block.settings.label_letter_spacing }}px;
+        min-width: {{ block.settings.label_width }}px;
+        flex-shrink: 0;
+      }
+
+      .ai-flavor-profile-track-{{ ai_gen_id }} {
+        flex-grow: 1;
+        height: {{ block.settings.bar_height }}px;
+        background-color: {{ block.settings.track_background }};
+        border-radius: {{ block.settings.bar_border_radius }}px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .ai-flavor-profile-fill-{{ ai_gen_id }} {
+        height: 100%;
+        background: linear-gradient(90deg, {{ block.settings.fill_color_start }}, {{ block.settings.fill_color_end }});
+        border-radius: {{ block.settings.bar_border_radius }}px;
+        width: 0;
+        animation: ai-flavor-fill-{{ ai_gen_id }} {{ block.settings.animation_duration }}s ease-out forwards;
+      }
+
+      @keyframes ai-flavor-fill-{{ ai_gen_id }} {
+        from {
+          width: 0;
+        }
+        to {
+          width: var(--ai-flavor-width-{{ ai_gen_id }});
+        }
+      }
+
+      @media screen and (max-width: 749px) {
+        .ai-flavor-profile-heading-{{ ai_gen_id }} {
+          font-size: {{ block.settings.heading_size | times: 0.8 }}px;
+        }
+
+        .ai-flavor-profile-label-{{ ai_gen_id }} {
+          font-size: {{ block.settings.label_size | times: 0.9 }}px;
+          min-width: {{ block.settings.label_width | times: 0.8 }}px;
+        }
+
+        .ai-flavor-profile-bar-row-{{ ai_gen_id }} {
+          gap: {{ block.settings.label_gap | times: 0.7 }}px;
+        }
+      }
+    {% endstyle %}
+
+    <flavor-profile-{{ ai_gen_id }} class="ai-flavor-profile-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+      <div class="ai-flavor-profile-container-{{ ai_gen_id }}">
+        <h3 class="ai-flavor-profile-heading-{{ ai_gen_id }}">
+          {{ block.settings.heading_text }}
+        </h3>
+
+        <div class="ai-flavor-profile-bars-{{ ai_gen_id }}">
+          {% if profile_data.sweetness != blank %}
+            {% assign sweetness_percent = profile_data.sweetness | times: 20 %}
+            <div class="ai-flavor-profile-bar-row-{{ ai_gen_id }}">
+              <div class="ai-flavor-profile-label-{{ ai_gen_id }}">{{ block.settings.label_sweetness }}</div>
+              <div class="ai-flavor-profile-track-{{ ai_gen_id }}">
+                <div 
+                  class="ai-flavor-profile-fill-{{ ai_gen_id }}"
+                  style="--ai-flavor-width-{{ ai_gen_id }}: {{ sweetness_percent }}%; animation-delay: 0.1s;"
+                ></div>
+              </div>
+            </div>
+          {% endif %}
+
+          {% if profile_data.floral != blank %}
+            {% assign floral_percent = profile_data.floral | times: 20 %}
+            <div class="ai-flavor-profile-bar-row-{{ ai_gen_id }}">
+              <div class="ai-flavor-profile-label-{{ ai_gen_id }}">{{ block.settings.label_floral }}</div>
+              <div class="ai-flavor-profile-track-{{ ai_gen_id }}">
+                <div 
+                  class="ai-flavor-profile-fill-{{ ai_gen_id }}"
+                  style="--ai-flavor-width-{{ ai_gen_id }}: {{ floral_percent }}%; animation-delay: 0.2s;"
+                ></div>
+              </div>
+            </div>
+          {% endif %}
+
+          {% if profile_data.body != blank %}
+            {% assign body_percent = profile_data.body | times: 20 %}
+            <div class="ai-flavor-profile-bar-row-{{ ai_gen_id }}">
+              <div class="ai-flavor-profile-label-{{ ai_gen_id }}">{{ block.settings.label_body }}</div>
+              <div class="ai-flavor-profile-track-{{ ai_gen_id }}">
+                <div 
+                  class="ai-flavor-profile-fill-{{ ai_gen_id }}"
+                  style="--ai-flavor-width-{{ ai_gen_id }}: {{ body_percent }}%; animation-delay: 0.3s;"
+                ></div>
+              </div>
+            </div>
+          {% endif %}
+
+          {% if profile_data.aftertaste != blank %}
+            {% assign aftertaste_percent = profile_data.aftertaste | times: 20 %}
+            <div class="ai-flavor-profile-bar-row-{{ ai_gen_id }}">
+              <div class="ai-flavor-profile-label-{{ ai_gen_id }}">{{ block.settings.label_aftertaste }}</div>
+              <div class="ai-flavor-profile-track-{{ ai_gen_id }}">
+                <div 
+                  class="ai-flavor-profile-fill-{{ ai_gen_id }}"
+                  style="--ai-flavor-width-{{ ai_gen_id }}: {{ aftertaste_percent }}%; animation-delay: 0.4s;"
+                ></div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </flavor-profile-{{ ai_gen_id }}>
+
+    <script>
+      (function() {
+        class FlavorProfile{{ ai_gen_id }} extends HTMLElement {
+          constructor() {
+            super();
+          }
+
+          connectedCallback() {
+            this.observeAnimations();
+          }
+
+          observeAnimations() {
+            const fills = this.querySelectorAll('.ai-flavor-profile-fill-{{ ai_gen_id }}');
+            
+            if ('IntersectionObserver' in window) {
+              const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                  if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                  }
+                });
+              }, {
+                threshold: 0.1
+              });
+
+              fills.forEach((fill) => {
+                fill.style.animationPlayState = 'paused';
+                observer.observe(fill);
+              });
+            }
+          }
+        }
+
+        customElements.define('flavor-profile-{{ ai_gen_id }}', FlavorProfile{{ ai_gen_id }});
+      })();
+    </script>
+  {% endif %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Flavour profile",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading text",
+      "default": "Flavour Profile"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "underline_color_start",
+      "label": "Underline start color",
+      "default": "#C8860A"
+    },
+    {
+      "type": "color",
+      "id": "underline_color_end",
+      "label": "Underline end color",
+      "default": "#F5C842"
+    },
+    {
+      "type": "range",
+      "id": "heading_margin",
+      "label": "Bottom margin",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Labels"
+    },
+    {
+      "type": "text",
+      "id": "label_sweetness",
+      "label": "Sweetness label",
+      "default": "Sweetness"
+    },
+    {
+      "type": "text",
+      "id": "label_floral",
+      "label": "Floral label",
+      "default": "Floral Notes"
+    },
+    {
+      "type": "text",
+      "id": "label_body",
+      "label": "Body label",
+      "default": "Body"
+    },
+    {
+      "type": "text",
+      "id": "label_aftertaste",
+      "label": "Aftertaste label",
+      "default": "Aftertaste"
+    },
+    {
+      "type": "font_picker",
+      "id": "label_font",
+      "label": "Font",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "label": "Size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "label_letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "label_width",
+      "label": "Width",
+      "min": 80,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "header",
+      "content": "Progress bars"
+    },
+    {
+      "type": "range",
+      "id": "bar_height",
+      "label": "Height",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "bar_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "track_background",
+      "label": "Track background",
+      "default": "#F5ECD7"
+    },
+    {
+      "type": "color",
+      "id": "fill_color_start",
+      "label": "Fill start color",
+      "default": "#C8860A"
+    },
+    {
+      "type": "color",
+      "id": "fill_color_end",
+      "label": "Fill end color",
+      "default": "#F5C842"
+    },
+    {
+      "type": "range",
+      "id": "bar_spacing",
+      "label": "Spacing between bars",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "label_gap",
+      "label": "Gap between label and bar",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "animation_duration",
+      "label": "Duration",
+      "min": 0.5,
+      "max": 3,
+      "step": 0.5,
+      "unit": "s",
+      "default": 1.5
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 400,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Vertical padding",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "bars_top_margin",
+      "label": "Bars top margin",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "Flavour profile"
+    }
+  ]
+}
+{% endschema %}

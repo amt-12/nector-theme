@@ -1,0 +1,1003 @@
+{% doc %}
+  @prompt
+    Create an editorial blog/journal page layout for a premium honey brand called "The Journal". The page should include:
+    
+    1. A centered hero header section with a large serif heading "The Journal" and a subtitle tagline beneath it (e.g. "Recipes, origin notes, and the quiet art of eating well.")
+    
+    2. A horizontal category filter tab bar below the header with tags like: All · Recipes · Craft · Ritual · Origin Stories — styled as minimal underline tabs, with the active tab highlighted
+    
+    3. A featured hero article block — large landscape image on the left (~60% width), with category label, article title (large serif), date + read time, and a short excerpt on the right
+    
+    4. A mixed editorial article grid below — two columns, with smaller article cards each showing: a category label in small caps above the image, a featured image, and the article title beneath. Cards should have minimal styling, no borders, clean whitespace.
+    
+    The overall aesthetic should be premium, editorial, minimal — cream/off-white background, serif typography for headings, restrained color palette. The layout should be responsive and work well on mobile., give me an option to turn off other articles and also add a link to filters, can we reduce the other articles number to 4
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-journal-layout-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding }}px 20px;
+  }
+
+  .ai-journal-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-journal-hero-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: {{ block.settings.hero_spacing }}px;
+  }
+
+  .ai-journal-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, serif;
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: {{ block.settings.heading_font.weight }};
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.title_spacing }}px 0;
+    line-height: 1.1;
+  }
+
+  .ai-journal-subtitle-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .ai-journal-filter-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    gap: {{ block.settings.filter_gap }}px;
+    margin-bottom: {{ block.settings.filter_spacing }}px;
+    flex-wrap: wrap;
+    padding-bottom: {{ block.settings.filter_padding }}px;
+  }
+
+  .ai-journal-filter-tab-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.filter_size }}px;
+    color: {{ block.settings.filter_color }};
+    background: none;
+    border: none;
+    padding: 8px 0;
+    cursor: pointer;
+    position: relative;
+    text-transform: {{ block.settings.filter_transform }};
+    letter-spacing: {{ block.settings.filter_spacing_letters }};
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .ai-journal-filter-tab-{{ ai_gen_id }}::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: {{ block.settings.underline_height }}px;
+    background-color: {{ block.settings.active_color }};
+    transition: width 0.3s ease;
+  }
+
+  .ai-journal-filter-tab-{{ ai_gen_id }}.active::after {
+    width: 100%;
+  }
+
+  .ai-journal-filter-tab-{{ ai_gen_id }}.active {
+    color: {{ block.settings.active_color }};
+  }
+
+  .ai-journal-featured-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: {{ block.settings.featured_image_width }}% 1fr;
+    gap: {{ block.settings.featured_gap }}px;
+    margin-bottom: {{ block.settings.featured_spacing }}px;
+    align-items: center;
+  }
+
+  .ai-journal-featured-image-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: {{ block.settings.featured_aspect_ratio }};
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ai-journal-featured-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-journal-featured-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-journal-featured-image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 300px;
+    max-height: 300px;
+  }
+
+  .ai-journal-featured-content-{{ ai_gen_id }} {
+    padding: 0 {{ block.settings.featured_content_padding }}px;
+  }
+
+  .ai-journal-category-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.category_size }}px;
+    color: {{ block.settings.category_color }};
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: {{ block.settings.category_spacing }}px;
+    display: block;
+  }
+
+  .ai-journal-featured-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, serif;
+    font-size: {{ block.settings.featured_title_size }}px;
+    font-weight: {{ block.settings.heading_font.weight }};
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.featured_title_spacing }}px 0;
+    line-height: 1.2;
+  }
+
+  .ai-journal-featured-title-{{ ai_gen_id }} a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .ai-journal-meta-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.meta_size }}px;
+    color: {{ block.settings.meta_color }};
+    margin-bottom: {{ block.settings.meta_spacing }}px;
+  }
+
+  .ai-journal-excerpt-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.excerpt_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .ai-journal-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.grid_columns }}, 1fr);
+    gap: {{ block.settings.grid_gap }}px;
+  }
+
+  .ai-journal-card-{{ ai_gen_id }} {
+    text-decoration: none;
+    display: block;
+  }
+
+  .ai-journal-card-image-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: {{ block.settings.card_aspect_ratio }};
+    overflow: hidden;
+    margin-bottom: {{ block.settings.card_image_spacing }}px;
+    position: relative;
+  }
+
+  .ai-journal-card-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-journal-card-{{ ai_gen_id }}:hover .ai-journal-card-image-{{ ai_gen_id }} img {
+    transform: scale(1.02);
+  }
+
+  .ai-journal-card-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-journal-card-image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    max-height: 200px;
+  }
+
+  .ai-journal-card-category-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.card_category_size }}px;
+    color: {{ block.settings.category_color }};
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: {{ block.settings.card_category_spacing }}px;
+    display: block;
+  }
+
+  .ai-journal-card-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, serif;
+    font-size: {{ block.settings.card_title_size }}px;
+    font-weight: {{ block.settings.heading_font.weight }};
+    color: {{ block.settings.heading_color }};
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-journal-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.6 }}px;
+    }
+
+    .ai-journal-subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.9 }}px;
+    }
+
+    .ai-journal-featured-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ block.settings.featured_gap | times: 0.7 }}px;
+    }
+
+    .ai-journal-featured-content-{{ ai_gen_id }} {
+      padding: 0;
+    }
+
+    .ai-journal-featured-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.featured_title_size | times: 0.7 }}px;
+    }
+
+    .ai-journal-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ block.settings.grid_gap | times: 0.7 }}px;
+    }
+
+    .ai-journal-filter-{{ ai_gen_id }} {
+      gap: {{ block.settings.filter_gap | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<journal-layout-{{ ai_gen_id }} class="ai-journal-layout-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-journal-container-{{ ai_gen_id }}">
+    <div class="ai-journal-hero-{{ ai_gen_id }}">
+      {% if block.settings.title != blank %}
+        <h1 class="ai-journal-title-{{ ai_gen_id }}">{{ block.settings.title }}</h1>
+      {% endif %}
+      {% if block.settings.subtitle != blank %}
+        <p class="ai-journal-subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+
+    {% if block.settings.show_filters %}
+      <div class="ai-journal-filter-{{ ai_gen_id }}">
+        {% if block.settings.filter_all_link != blank %}
+          <a href="{{ block.settings.filter_all_link }}" class="ai-journal-filter-tab-{{ ai_gen_id }} active">
+            {{ block.settings.filter_all }}
+          </a>
+        {% else %}
+          <button class="ai-journal-filter-tab-{{ ai_gen_id }} active" data-filter="all">
+            {{ block.settings.filter_all }}
+          </button>
+        {% endif %}
+        {% if block.settings.filter_1 != blank %}
+          {% if block.settings.filter_1_link != blank %}
+            <a href="{{ block.settings.filter_1_link }}" class="ai-journal-filter-tab-{{ ai_gen_id }}">
+              {{ block.settings.filter_1 }}
+            </a>
+          {% else %}
+            <button class="ai-journal-filter-tab-{{ ai_gen_id }}" data-filter="filter1">
+              {{ block.settings.filter_1 }}
+            </button>
+          {% endif %}
+        {% endif %}
+        {% if block.settings.filter_2 != blank %}
+          {% if block.settings.filter_2_link != blank %}
+            <a href="{{ block.settings.filter_2_link }}" class="ai-journal-filter-tab-{{ ai_gen_id }}">
+              {{ block.settings.filter_2 }}
+            </a>
+          {% else %}
+            <button class="ai-journal-filter-tab-{{ ai_gen_id }}" data-filter="filter2">
+              {{ block.settings.filter_2 }}
+            </button>
+          {% endif %}
+        {% endif %}
+        {% if block.settings.filter_3 != blank %}
+          {% if block.settings.filter_3_link != blank %}
+            <a href="{{ block.settings.filter_3_link }}" class="ai-journal-filter-tab-{{ ai_gen_id }}">
+              {{ block.settings.filter_3 }}
+            </a>
+          {% else %}
+            <button class="ai-journal-filter-tab-{{ ai_gen_id }}" data-filter="filter3">
+              {{ block.settings.filter_3 }}
+            </button>
+          {% endif %}
+        {% endif %}
+        {% if block.settings.filter_4 != blank %}
+          {% if block.settings.filter_4_link != blank %}
+            <a href="{{ block.settings.filter_4_link }}" class="ai-journal-filter-tab-{{ ai_gen_id }}">
+              {{ block.settings.filter_4 }}
+            </a>
+          {% else %}
+            <button class="ai-journal-filter-tab-{{ ai_gen_id }}" data-filter="filter4">
+              {{ block.settings.filter_4 }}
+            </button>
+          {% endif %}
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_featured %}
+      <div class="ai-journal-featured-{{ ai_gen_id }}">
+        <div class="ai-journal-featured-image-{{ ai_gen_id }}">
+          {% if block.settings.featured_article %}
+            {% if block.settings.featured_article.image %}
+              <img
+                src="{{ block.settings.featured_article.image | image_url: width: 1200 }}"
+                alt="{{ block.settings.featured_article.image.alt | escape }}"
+                loading="lazy"
+                width="{{ block.settings.featured_article.image.width }}"
+                height="{{ block.settings.featured_article.image.height }}"
+              >
+            {% else %}
+              <div class="ai-journal-featured-image-placeholder-{{ ai_gen_id }}">
+                {{ 'image' | placeholder_svg_tag }}
+              </div>
+            {% endif %}
+          {% else %}
+            <div class="ai-journal-featured-image-placeholder-{{ ai_gen_id }}">
+              {{ 'image' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+        </div>
+        <div class="ai-journal-featured-content-{{ ai_gen_id }}">
+          {% if block.settings.featured_category != blank %}
+            <span class="ai-journal-category-{{ ai_gen_id }}">{{ block.settings.featured_category }}</span>
+          {% endif %}
+          {% if block.settings.featured_article %}
+            <h2 class="ai-journal-featured-title-{{ ai_gen_id }}">
+              <a href="{{ block.settings.featured_article.url }}">{{ block.settings.featured_article.title }}</a>
+            </h2>
+            <div class="ai-journal-meta-{{ ai_gen_id }}">
+              {{ block.settings.featured_article.published_at | date: '%B %d, %Y' }}
+              {% if block.settings.featured_read_time != blank %}
+                · {{ block.settings.featured_read_time }}
+              {% endif %}
+            </div>
+            {% if block.settings.featured_article.excerpt != blank %}
+              <p class="ai-journal-excerpt-{{ ai_gen_id }}">{{ block.settings.featured_article.excerpt | strip_html | truncate: 200 }}</p>
+            {% endif %}
+          {% else %}
+            <h2 class="ai-journal-featured-title-{{ ai_gen_id }}">Featured article title</h2>
+            <div class="ai-journal-meta-{{ ai_gen_id }}">May 16, 2026 · 5 min read</div>
+            <p class="ai-journal-excerpt-{{ ai_gen_id }}">Next, select a featured article to display here. This will showcase your most important content with a large image and excerpt.</p>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_article_grid %}
+      <div class="ai-journal-grid-{{ ai_gen_id }}">
+        {% for i in (1..4) %}
+          {% liquid
+            assign article_key = 'article_' | append: i
+            assign category_key = 'article_' | append: i | append: '_category'
+            assign article = block.settings[article_key]
+            assign category = block.settings[category_key]
+          %}
+          {% if article %}
+            <a href="{{ article.url }}" class="ai-journal-card-{{ ai_gen_id }}">
+              {% if category != blank %}
+                <span class="ai-journal-card-category-{{ ai_gen_id }}">{{ category }}</span>
+              {% endif %}
+              <div class="ai-journal-card-image-{{ ai_gen_id }}">
+                {% if article.image %}
+                  <img
+                    src="{{ article.image | image_url: width: 800 }}"
+                    alt="{{ article.image.alt | escape }}"
+                    loading="lazy"
+                    width="{{ article.image.width }}"
+                    height="{{ article.image.height }}"
+                  >
+                {% else %}
+                  <div class="ai-journal-card-image-placeholder-{{ ai_gen_id }}">
+                    {{ 'image' | placeholder_svg_tag }}
+                  </div>
+                {% endif %}
+              </div>
+              <h3 class="ai-journal-card-title-{{ ai_gen_id }}">{{ article.title }}</h3>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</journal-layout-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class JournalLayout{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.filterButtons = this.querySelectorAll('.ai-journal-filter-tab-{{ ai_gen_id }}[data-filter]');
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.filterButtons.forEach((tab) => {
+          tab.addEventListener('click', () => {
+            this.filterButtons.forEach((t) => t.classList.remove('active'));
+            tab.classList.add('active');
+          });
+        });
+      }
+    }
+
+    customElements.define('journal-layout-{{ ai_gen_id }}', JournalLayout{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "The Journal",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero section"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "The Journal"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Recipes, origin notes, and the quiet art of eating well."
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 32,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "hero_spacing",
+      "label": "Bottom spacing",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "label": "Title bottom spacing",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Category filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filters",
+      "label": "Show category filters",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "filter_all",
+      "label": "All filter label",
+      "default": "All"
+    },
+    {
+      "type": "url",
+      "id": "filter_all_link",
+      "label": "All filter link"
+    },
+    {
+      "type": "text",
+      "id": "filter_1",
+      "label": "Filter 1",
+      "default": "Recipes"
+    },
+    {
+      "type": "url",
+      "id": "filter_1_link",
+      "label": "Filter 1 link"
+    },
+    {
+      "type": "text",
+      "id": "filter_2",
+      "label": "Filter 2",
+      "default": "Craft"
+    },
+    {
+      "type": "url",
+      "id": "filter_2_link",
+      "label": "Filter 2 link"
+    },
+    {
+      "type": "text",
+      "id": "filter_3",
+      "label": "Filter 3",
+      "default": "Ritual"
+    },
+    {
+      "type": "url",
+      "id": "filter_3_link",
+      "label": "Filter 3 link"
+    },
+    {
+      "type": "text",
+      "id": "filter_4",
+      "label": "Filter 4",
+      "default": "Origin Stories"
+    },
+    {
+      "type": "url",
+      "id": "filter_4_link",
+      "label": "Filter 4 link"
+    },
+    {
+      "type": "range",
+      "id": "filter_size",
+      "label": "Filter text size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "filter_gap",
+      "label": "Filter gap",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "filter_spacing",
+      "label": "Bottom spacing",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "filter_padding",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "underline_height",
+      "label": "Underline height",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "filter_transform",
+      "label": "Text transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "text",
+      "id": "filter_spacing_letters",
+      "label": "Letter spacing",
+      "default": "0.5px"
+    },
+    {
+      "type": "header",
+      "content": "Featured article"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_featured",
+      "label": "Show featured article",
+      "default": true
+    },
+    {
+      "type": "article",
+      "id": "featured_article",
+      "label": "Featured article"
+    },
+    {
+      "type": "text",
+      "id": "featured_category",
+      "label": "Category label"
+    },
+    {
+      "type": "text",
+      "id": "featured_read_time",
+      "label": "Read time",
+      "default": "5 min read"
+    },
+    {
+      "type": "range",
+      "id": "featured_image_width",
+      "label": "Image width",
+      "min": 40,
+      "max": 70,
+      "step": 5,
+      "unit": "%",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "featured_gap",
+      "label": "Gap",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "featured_spacing",
+      "label": "Bottom spacing",
+      "min": 40,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "featured_content_padding",
+      "label": "Content padding",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "featured_title_size",
+      "label": "Title size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "featured_title_spacing",
+      "label": "Title bottom spacing",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "text",
+      "id": "featured_aspect_ratio",
+      "label": "Image aspect ratio",
+      "default": "16 / 9"
+    },
+    {
+      "type": "header",
+      "content": "Article grid"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_article_grid",
+      "label": "Show article grid",
+      "default": true
+    },
+    {
+      "type": "article",
+      "id": "article_1",
+      "label": "Article 1"
+    },
+    {
+      "type": "text",
+      "id": "article_1_category",
+      "label": "Article 1 category"
+    },
+    {
+      "type": "article",
+      "id": "article_2",
+      "label": "Article 2"
+    },
+    {
+      "type": "text",
+      "id": "article_2_category",
+      "label": "Article 2 category"
+    },
+    {
+      "type": "article",
+      "id": "article_3",
+      "label": "Article 3"
+    },
+    {
+      "type": "text",
+      "id": "article_3_category",
+      "label": "Article 3 category"
+    },
+    {
+      "type": "article",
+      "id": "article_4",
+      "label": "Article 4"
+    },
+    {
+      "type": "text",
+      "id": "article_4_category",
+      "label": "Article 4 category"
+    },
+    {
+      "type": "range",
+      "id": "grid_columns",
+      "label": "Columns",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Gap",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "label": "Card title size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "card_category_size",
+      "label": "Card category size",
+      "min": 8,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "card_image_spacing",
+      "label": "Image bottom spacing",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_category_spacing",
+      "label": "Category bottom spacing",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "text",
+      "id": "card_aspect_ratio",
+      "label": "Card image aspect ratio",
+      "default": "4 / 3"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "serif"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "category_size",
+      "label": "Category size",
+      "min": 8,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "category_spacing",
+      "label": "Category bottom spacing",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "meta_size",
+      "label": "Meta text size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "meta_spacing",
+      "label": "Meta bottom spacing",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "excerpt_size",
+      "label": "Excerpt size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Headings",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "category_color",
+      "label": "Category labels",
+      "default": "#8b7355"
+    },
+    {
+      "type": "color",
+      "id": "meta_color",
+      "label": "Meta text",
+      "default": "#6b6b6b"
+    },
+    {
+      "type": "color",
+      "id": "filter_color",
+      "label": "Filter text",
+      "default": "#6b6b6b"
+    },
+    {
+      "type": "color",
+      "id": "active_color",
+      "label": "Active filter",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section padding",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "The Journal"
+    }
+  ]
+}
+{% endschema %}

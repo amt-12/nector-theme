@@ -1,0 +1,172 @@
+{% doc %}
+  @prompt
+    Create a text block with two text fields: a main text field with its own font size control, and a sub-line text field below it with an independent font size control (options: small, medium, large). Both fields should be editable from the theme editor sidebar.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-text-block-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    padding: 20px;
+    background-color: {{ block.settings.background_color }};
+    text-align: {{ block.settings.text_alignment }};
+  }
+
+  .ai-text-block__main-{{ ai_gen_id }} {
+    color: {{ block.settings.main_text_color }};
+    font-size: {{ block.settings.main_font_size }}px;
+    margin: 0 0 12px 0;
+    line-height: 1.4;
+  }
+
+  .ai-text-block__sub-{{ ai_gen_id }} {
+    color: {{ block.settings.sub_text_color }};
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  {% if block.settings.sub_font_size == 'small' %}
+    .ai-text-block__sub-{{ ai_gen_id }} {
+      font-size: 14px;
+    }
+  {% elsif block.settings.sub_font_size == 'medium' %}
+    .ai-text-block__sub-{{ ai_gen_id }} {
+      font-size: 16px;
+    }
+  {% else %}
+    .ai-text-block__sub-{{ ai_gen_id }} {
+      font-size: 20px;
+    }
+  {% endif %}
+{% endstyle %}
+
+<div class="ai-text-block-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if block.settings.main_text != blank %}
+    <div class="ai-text-block__main-{{ ai_gen_id }}">
+      {{ block.settings.main_text }}
+    </div>
+  {% endif %}
+  
+  {% if block.settings.sub_text != blank %}
+    <div class="ai-text-block__sub-{{ ai_gen_id }}">
+      {{ block.settings.sub_text }}
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Text block",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Main text"
+    },
+    {
+      "type": "richtext",
+      "id": "main_text",
+      "label": "Main text",
+      "default": "<p>Premium natural honey</p>"
+    },
+    {
+      "type": "range",
+      "id": "main_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "main_text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Sub text"
+    },
+    {
+      "type": "richtext",
+      "id": "sub_text",
+      "label": "Sub text",
+      "default": "<p>Single-origin, cold-extracted varieties</p>"
+    },
+    {
+      "type": "select",
+      "id": "sub_font_size",
+      "label": "Font size",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "color",
+      "id": "sub_text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Text block"
+    }
+  ]
+}
+{% endschema %}

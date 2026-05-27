@@ -1,0 +1,1152 @@
+{% doc %}
+  @prompt
+    Create a custom editorial article template for a luxury honey brand blog called "Origin Stories". The template should have these sections in order:
+    
+    1. HERO - Full-width article hero image with dark overlay, article tag (e.g. "ORIGIN STORIES") and date in small caps above the title, large serif headline, read time below. Light text on dark overlay.
+    
+    2. BODY COPY - Wide centered column (max 720px), elegant serif body font, generous line height, cream background.
+    
+    3. PULL QUOTE - Large italic serif quote centered, with attribution below in small caps. Slightly indented or full width with subtle left border in gold/amber.
+    
+    4. INLINE IMAGE - Full width or wide image block with optional italic caption below. Can be repeated.
+    
+    5. MORE BODY COPY - Same as section 2.
+    
+    6. FROM THIS STORY - A product callout card with dark background, product image on left, product name, price, and "Shop Now" button on right. Heading "From this story" above it.
+    
+    7. CONTINUE READING - A horizontal strip of 3 related article cards, each with thumbnail, tag, title, and read time. Heading "Continue reading" above.
+    
+    Design language: premium editorial, luxury brand, cream and dark brown (#1c1812) palette, gold accents, serif headings, clean sans-serif body, generous whitespace. Similar to high-end food and lifestyle magazine layouts like Kinfolk or Monocle.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-origin-story-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+  }
+
+  .ai-origin-story-hero-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    height: {{ block.settings.hero_height }}px;
+    overflow: hidden;
+  }
+
+  .ai-origin-story-hero-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-origin-story-hero-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, {{ block.settings.overlay_opacity }});
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+  }
+
+  .ai-origin-story-hero-content-{{ ai_gen_id }} {
+    max-width: 900px;
+    text-align: center;
+  }
+
+  .ai-origin-story-hero-tag-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.tag_size }}px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: {{ block.settings.hero_text_color }};
+    margin-bottom: 8px;
+  }
+
+  .ai-origin-story-hero-date-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.date_size }}px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: {{ block.settings.hero_text_color }};
+    opacity: 0.8;
+    margin-bottom: 24px;
+  }
+
+  .ai-origin-story-hero-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, serif;
+    font-size: {{ block.settings.hero_title_size }}px;
+    line-height: 1.2;
+    color: {{ block.settings.hero_text_color }};
+    margin: 0 0 16px;
+    font-weight: 400;
+  }
+
+  .ai-origin-story-hero-read-time-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.read_time_size }}px;
+    color: {{ block.settings.hero_text_color }};
+    opacity: 0.7;
+  }
+
+  .ai-origin-story-body-{{ ai_gen_id }} {
+    max-width: {{ block.settings.body_max_width }}px;
+    margin: {{ block.settings.section_spacing }}px auto;
+    padding: 0 20px;
+    background-color: {{ block.settings.body_bg_color }};
+  }
+
+  .ai-origin-story-body-text-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.body_text_size }}px;
+    line-height: {{ block.settings.body_line_height }};
+    color: {{ block.settings.body_text_color }};
+  }
+
+  .ai-origin-story-body-text-{{ ai_gen_id }} p {
+    margin-bottom: 24px;
+  }
+
+  .ai-origin-story-pull-quote-{{ ai_gen_id }} {
+    max-width: {{ block.settings.quote_max_width }}px;
+    margin: {{ block.settings.section_spacing }}px auto;
+    padding: {{ block.settings.quote_padding }}px 40px;
+    background-color: {{ block.settings.body_bg_color }};
+    {% if block.settings.quote_border_style == 'left' %}
+      border-left: {{ block.settings.quote_border_width }}px solid {{ block.settings.quote_border_color }};
+    {% endif %}
+  }
+
+  .ai-origin-story-quote-text-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, serif;
+    font-size: {{ block.settings.quote_text_size }}px;
+    line-height: 1.5;
+    font-style: italic;
+    color: {{ block.settings.body_text_color }};
+    text-align: {{ block.settings.quote_alignment }};
+    margin: 0 0 16px;
+  }
+
+  .ai-origin-story-quote-attribution-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.attribution_size }}px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: {{ block.settings.body_text_color }};
+    opacity: 0.7;
+    text-align: {{ block.settings.quote_alignment }};
+  }
+
+  .ai-origin-story-inline-image-{{ ai_gen_id }} {
+    max-width: {{ block.settings.inline_image_max_width }}px;
+    margin: {{ block.settings.section_spacing }}px auto;
+    padding: 0 20px;
+  }
+
+  .ai-origin-story-inline-image-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+  }
+
+  .ai-origin-story-inline-image-img-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ai-origin-story-inline-image-caption-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.caption_size }}px;
+    font-style: italic;
+    color: {{ block.settings.body_text_color }};
+    opacity: 0.7;
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  .ai-origin-story-product-callout-{{ ai_gen_id }} {
+    max-width: {{ block.settings.callout_max_width }}px;
+    margin: {{ block.settings.section_spacing }}px auto;
+    padding: 0 20px;
+  }
+
+  .ai-origin-story-callout-heading-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.callout_heading_size }}px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: {{ block.settings.body_text_color }};
+    margin-bottom: 24px;
+  }
+
+  .ai-origin-story-callout-card-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    background-color: {{ block.settings.callout_bg_color }};
+    padding: 40px;
+  }
+
+  .ai-origin-story-callout-image-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: {{ block.settings.callout_image_width }}px;
+    height: {{ block.settings.callout_image_width }}px;
+  }
+
+  .ai-origin-story-callout-image-img-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-origin-story-callout-info-{{ ai_gen_id }} {
+    flex-grow: 1;
+  }
+
+  .ai-origin-story-callout-product-name-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, serif;
+    font-size: {{ block.settings.callout_product_name_size }}px;
+    color: {{ block.settings.callout_text_color }};
+    margin: 0 0 8px;
+  }
+
+  .ai-origin-story-callout-price-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.callout_price_size }}px;
+    color: {{ block.settings.callout_text_color }};
+    margin-bottom: 20px;
+  }
+
+  .ai-origin-story-callout-button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 12px 32px;
+    background-color: {{ block.settings.callout_button_bg }};
+    color: {{ block.settings.callout_button_text }};
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.callout_button_size }}px;
+    text-decoration: none;
+    border: {{ block.settings.callout_button_border_width }}px solid {{ block.settings.callout_button_border }};
+    transition: all 0.3s ease;
+  }
+
+  .ai-origin-story-callout-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.callout_button_hover_bg }};
+    color: {{ block.settings.callout_button_hover_text }};
+    border-color: {{ block.settings.callout_button_hover_border }};
+  }
+
+  .ai-origin-story-related-{{ ai_gen_id }} {
+    max-width: {{ block.settings.related_max_width }}px;
+    margin: {{ block.settings.section_spacing }}px auto 80px;
+    padding: 0 20px;
+  }
+
+  .ai-origin-story-related-heading-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.related_heading_size }}px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: {{ block.settings.body_text_color }};
+    margin-bottom: 32px;
+  }
+
+  .ai-origin-story-related-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  .ai-origin-story-related-card-{{ ai_gen_id }} {
+    text-decoration: none;
+    display: block;
+  }
+
+  .ai-origin-story-related-thumbnail-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .ai-origin-story-related-thumbnail-img-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-origin-story-related-card-{{ ai_gen_id }}:hover .ai-origin-story-related-thumbnail-img-{{ ai_gen_id }} {
+    transform: scale(1.05);
+  }
+
+  .ai-origin-story-related-tag-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.related_tag_size }}px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: {{ block.settings.body_text_color }};
+    opacity: 0.6;
+    margin-bottom: 8px;
+  }
+
+  .ai-origin-story-related-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, serif;
+    font-size: {{ block.settings.related_title_size }}px;
+    line-height: 1.3;
+    color: {{ block.settings.body_text_color }};
+    margin: 0 0 8px;
+  }
+
+  .ai-origin-story-related-read-time-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, sans-serif;
+    font-size: {{ block.settings.related_read_time_size }}px;
+    color: {{ block.settings.body_text_color }};
+    opacity: 0.5;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-origin-story-hero-{{ ai_gen_id }} {
+      height: {{ block.settings.hero_height | times: 0.6 }}px;
+    }
+
+    .ai-origin-story-hero-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.hero_title_size | times: 0.5 }}px;
+    }
+
+    .ai-origin-story-callout-card-{{ ai_gen_id }} {
+      flex-direction: column;
+      padding: 24px;
+    }
+
+    .ai-origin-story-callout-image-{{ ai_gen_id }} {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1;
+    }
+
+    .ai-origin-story-related-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+{% endstyle %}
+
+<article-origin-story-{{ ai_gen_id }} class="ai-origin-story-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-origin-story-hero-{{ ai_gen_id }}">
+    {% if block.settings.hero_image %}
+      <img
+        src="{{ block.settings.hero_image | image_url: width: 2400 }}"
+        alt="{{ block.settings.hero_image.alt | escape }}"
+        class="ai-origin-story-hero-image-{{ ai_gen_id }}"
+        loading="eager"
+        width="{{ block.settings.hero_image.width }}"
+        height="{{ block.settings.hero_image.height }}"
+      >
+    {% else %}
+      <div class="ai-origin-story-hero-image-placeholder-{{ ai_gen_id }}">
+        {{ 'hero-apparel-1' | placeholder_svg_tag }}
+      </div>
+    {% endif %}
+    <div class="ai-origin-story-hero-overlay-{{ ai_gen_id }}">
+      <div class="ai-origin-story-hero-content-{{ ai_gen_id }}">
+        {% if block.settings.article_tag != blank %}
+          <div class="ai-origin-story-hero-tag-{{ ai_gen_id }}">{{ block.settings.article_tag }}</div>
+        {% endif %}
+        {% if block.settings.article_date != blank %}
+          <div class="ai-origin-story-hero-date-{{ ai_gen_id }}">{{ block.settings.article_date }}</div>
+        {% endif %}
+        {% if block.settings.article_title != blank %}
+          <h1 class="ai-origin-story-hero-title-{{ ai_gen_id }}">{{ block.settings.article_title }}</h1>
+        {% endif %}
+        {% if block.settings.read_time != blank %}
+          <div class="ai-origin-story-hero-read-time-{{ ai_gen_id }}">{{ block.settings.read_time }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if block.settings.body_copy_1 != blank %}
+    <div class="ai-origin-story-body-{{ ai_gen_id }}">
+      <div class="ai-origin-story-body-text-{{ ai_gen_id }}">
+        {{ block.settings.body_copy_1 }}
+      </div>
+    </div>
+  {% endif %}
+
+  {% if block.settings.show_pull_quote and block.settings.quote_text != blank %}
+    <div class="ai-origin-story-pull-quote-{{ ai_gen_id }}">
+      <blockquote class="ai-origin-story-quote-text-{{ ai_gen_id }}">
+        {{ block.settings.quote_text }}
+      </blockquote>
+      {% if block.settings.quote_attribution != blank %}
+        <cite class="ai-origin-story-quote-attribution-{{ ai_gen_id }}">{{ block.settings.quote_attribution }}</cite>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if block.settings.show_inline_image_1 %}
+    <div class="ai-origin-story-inline-image-{{ ai_gen_id }}">
+      <div class="ai-origin-story-inline-image-wrapper-{{ ai_gen_id }}">
+        {% if block.settings.inline_image_1 %}
+          <img
+            src="{{ block.settings.inline_image_1 | image_url: width: 1400 }}"
+            alt="{{ block.settings.inline_image_1.alt | escape }}"
+            class="ai-origin-story-inline-image-img-{{ ai_gen_id }}"
+            loading="lazy"
+            width="{{ block.settings.inline_image_1.width }}"
+            height="{{ block.settings.inline_image_1.height }}"
+          >
+        {% else %}
+          <div class="ai-origin-story-inline-image-placeholder-{{ ai_gen_id }}">
+            {{ 'image' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+      </div>
+      {% if block.settings.inline_caption_1 != blank %}
+        <div class="ai-origin-story-inline-image-caption-{{ ai_gen_id }}">{{ block.settings.inline_caption_1 }}</div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if block.settings.body_copy_2 != blank %}
+    <div class="ai-origin-story-body-{{ ai_gen_id }}">
+      <div class="ai-origin-story-body-text-{{ ai_gen_id }}">
+        {{ block.settings.body_copy_2 }}
+      </div>
+    </div>
+  {% endif %}
+
+  {% if block.settings.show_inline_image_2 %}
+    <div class="ai-origin-story-inline-image-{{ ai_gen_id }}">
+      <div class="ai-origin-story-inline-image-wrapper-{{ ai_gen_id }}">
+        {% if block.settings.inline_image_2 %}
+          <img
+            src="{{ block.settings.inline_image_2 | image_url: width: 1400 }}"
+            alt="{{ block.settings.inline_image_2.alt | escape }}"
+            class="ai-origin-story-inline-image-img-{{ ai_gen_id }}"
+            loading="lazy"
+            width="{{ block.settings.inline_image_2.width }}"
+            height="{{ block.settings.inline_image_2.height }}"
+          >
+        {% else %}
+          <div class="ai-origin-story-inline-image-placeholder-{{ ai_gen_id }}">
+            {{ 'image' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+      </div>
+      {% if block.settings.inline_caption_2 != blank %}
+        <div class="ai-origin-story-inline-image-caption-{{ ai_gen_id }}">{{ block.settings.inline_caption_2 }}</div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if block.settings.show_product_callout %}
+    <div class="ai-origin-story-product-callout-{{ ai_gen_id }}">
+      {% if block.settings.callout_heading != blank %}
+        <h2 class="ai-origin-story-callout-heading-{{ ai_gen_id }}">{{ block.settings.callout_heading }}</h2>
+      {% endif %}
+      <div class="ai-origin-story-callout-card-{{ ai_gen_id }}">
+        <div class="ai-origin-story-callout-image-{{ ai_gen_id }}">
+          {% if block.settings.featured_product %}
+            {% if block.settings.featured_product.featured_image %}
+              <img
+                src="{{ block.settings.featured_product.featured_image | image_url: width: 400 }}"
+                alt="{{ block.settings.featured_product.featured_image.alt | escape }}"
+                class="ai-origin-story-callout-image-img-{{ ai_gen_id }}"
+                loading="lazy"
+                width="400"
+                height="400"
+              >
+            {% else %}
+              <div class="ai-origin-story-callout-image-placeholder-{{ ai_gen_id }}">
+                {{ 'product-1' | placeholder_svg_tag }}
+              </div>
+            {% endif %}
+          {% else %}
+            <div class="ai-origin-story-callout-image-placeholder-{{ ai_gen_id }}">
+              {{ 'product-1' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+        </div>
+        <div class="ai-origin-story-callout-info-{{ ai_gen_id }}">
+          {% if block.settings.featured_product %}
+            <h3 class="ai-origin-story-callout-product-name-{{ ai_gen_id }}">{{ block.settings.featured_product.title }}</h3>
+            <div class="ai-origin-story-callout-price-{{ ai_gen_id }}">{{ block.settings.featured_product.price | money }}</div>
+            <a href="{{ block.settings.featured_product.url }}" class="ai-origin-story-callout-button-{{ ai_gen_id }}">
+              {{ block.settings.button_text }}
+            </a>
+          {% else %}
+            <h3 class="ai-origin-story-callout-product-name-{{ ai_gen_id }}">Select a product</h3>
+            <div class="ai-origin-story-callout-price-{{ ai_gen_id }}">₹0.00</div>
+            <span class="ai-origin-story-callout-button-{{ ai_gen_id }}">{{ block.settings.button_text }}</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if block.settings.show_related_articles %}
+    <div class="ai-origin-story-related-{{ ai_gen_id }}">
+      {% if block.settings.related_heading != blank %}
+        <h2 class="ai-origin-story-related-heading-{{ ai_gen_id }}">{{ block.settings.related_heading }}</h2>
+      {% endif %}
+      <div class="ai-origin-story-related-grid-{{ ai_gen_id }}">
+        {% for i in (1..3) %}
+          {% liquid
+            assign article_key = 'related_article_' | append: i
+            assign article = block.settings[article_key]
+          %}
+          {% if article %}
+            <a href="{{ article.url }}" class="ai-origin-story-related-card-{{ ai_gen_id }}">
+              <div class="ai-origin-story-related-thumbnail-{{ ai_gen_id }}">
+                {% if article.image %}
+                  <img
+                    src="{{ article.image | image_url: width: 600 }}"
+                    alt="{{ article.image.alt | escape }}"
+                    class="ai-origin-story-related-thumbnail-img-{{ ai_gen_id }}"
+                    loading="lazy"
+                    width="600"
+                    height="450"
+                  >
+                {% else %}
+                  <div class="ai-origin-story-related-thumbnail-placeholder-{{ ai_gen_id }}">
+                    {{ 'image' | placeholder_svg_tag }}
+                  </div>
+                {% endif %}
+              </div>
+              {% if article.tags.size > 0 %}
+                <div class="ai-origin-story-related-tag-{{ ai_gen_id }}">{{ article.tags.first }}</div>
+              {% endif %}
+              <h3 class="ai-origin-story-related-title-{{ ai_gen_id }}">{{ article.title }}</h3>
+              <div class="ai-origin-story-related-read-time-{{ ai_gen_id }}">{{ block.settings.default_read_time }}</div>
+            </a>
+          {% else %}
+            <div class="ai-origin-story-related-card-{{ ai_gen_id }}">
+              <div class="ai-origin-story-related-thumbnail-{{ ai_gen_id }}">
+                <div class="ai-origin-story-related-thumbnail-placeholder-{{ ai_gen_id }}">
+                  {{ 'image' | placeholder_svg_tag }}
+                </div>
+              </div>
+              <div class="ai-origin-story-related-tag-{{ ai_gen_id }}">Origin Stories</div>
+              <h3 class="ai-origin-story-related-title-{{ ai_gen_id }}">Select article {{ i }}</h3>
+              <div class="ai-origin-story-related-read-time-{{ ai_gen_id }}">{{ block.settings.default_read_time }}</div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</article-origin-story-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ArticleOriginStory{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+      }
+    }
+
+    customElements.define('article-origin-story-{{ ai_gen_id }}', ArticleOriginStory{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Origin story article",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero section"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+    {
+      "type": "range",
+      "id": "hero_height",
+      "label": "Hero height",
+      "min": 300,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.5
+    },
+    {
+      "type": "text",
+      "id": "article_tag",
+      "label": "Article tag",
+      "default": "Origin Stories"
+    },
+    {
+      "type": "text",
+      "id": "article_date",
+      "label": "Article date",
+      "default": "May 16, 2026"
+    },
+    {
+      "type": "text",
+      "id": "article_title",
+      "label": "Article title",
+      "default": "The Journey of Sidr Honey"
+    },
+    {
+      "type": "text",
+      "id": "read_time",
+      "label": "Read time",
+      "default": "8 min read"
+    },
+    {
+      "type": "color",
+      "id": "hero_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "tag_size",
+      "label": "Tag size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "date_size",
+      "label": "Date size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "hero_title_size",
+      "label": "Title size",
+      "min": 32,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "read_time_size",
+      "label": "Read time size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Body content"
+    },
+    {
+      "type": "richtext",
+      "id": "body_copy_1",
+      "label": "Body copy 1",
+      "default": "<p>In the remote valleys of Yemen, where ancient traditions meet modern beekeeping, our Sidr honey begins its journey. This is the story of how we source the world's most prized honey.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "body_copy_2",
+      "label": "Body copy 2",
+      "default": "<p>Each jar represents months of careful cultivation, traditional harvesting methods, and a deep respect for the land and the bees that make this extraordinary honey possible.</p>"
+    },
+    {
+      "type": "range",
+      "id": "body_max_width",
+      "label": "Body max width",
+      "min": 600,
+      "max": 900,
+      "step": 20,
+      "unit": "px",
+      "default": 720
+    },
+    {
+      "type": "color",
+      "id": "body_bg_color",
+      "label": "Background color",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "color",
+      "id": "body_text_color",
+      "label": "Text color",
+      "default": "#1c1812"
+    },
+    {
+      "type": "range",
+      "id": "body_text_size",
+      "label": "Text size",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "body_line_height",
+      "label": "Line height",
+      "min": 1.5,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.8
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "label": "Section spacing",
+      "min": 40,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Pull quote"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pull_quote",
+      "label": "Show pull quote",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "quote_text",
+      "label": "Quote text",
+      "default": "<p>The bees know the land better than we ever could. We simply follow their wisdom.</p>"
+    },
+    {
+      "type": "text",
+      "id": "quote_attribution",
+      "label": "Attribution"
+    },
+    {
+      "type": "select",
+      "id": "quote_border_style",
+      "label": "Border style",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "left",
+          "label": "Left border"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "quote_border_width",
+      "label": "Border width",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "unit": "px",
+      "default": 3
+    },
+    {
+      "type": "color",
+      "id": "quote_border_color",
+      "label": "Border color",
+      "default": "#d4af37"
+    },
+    {
+      "type": "range",
+      "id": "quote_max_width",
+      "label": "Max width",
+      "min": 600,
+      "max": 900,
+      "step": 20,
+      "unit": "px",
+      "default": 800
+    },
+    {
+      "type": "range",
+      "id": "quote_padding",
+      "label": "Padding",
+      "min": 20,
+      "max": 80,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "select",
+      "id": "quote_alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "quote_text_size",
+      "label": "Quote size",
+      "min": 20,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "attribution_size",
+      "label": "Attribution size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Inline image 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_inline_image_1",
+      "label": "Show inline image 1",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "inline_image_1",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "inline_caption_1",
+      "label": "Caption"
+    },
+    {
+      "type": "range",
+      "id": "inline_image_max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1400,
+      "step": 100,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "caption_size",
+      "label": "Caption size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Inline image 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_inline_image_2",
+      "label": "Show inline image 2",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "inline_image_2",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "inline_caption_2",
+      "label": "Caption"
+    },
+    {
+      "type": "header",
+      "content": "Product callout"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_callout",
+      "label": "Show product callout",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "callout_heading",
+      "label": "Heading",
+      "default": "From this story"
+    },
+    {
+      "type": "product",
+      "id": "featured_product",
+      "label": "Featured product"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop now"
+    },
+    {
+      "type": "range",
+      "id": "callout_max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "default": 1000
+    },
+    {
+      "type": "color",
+      "id": "callout_bg_color",
+      "label": "Background color",
+      "default": "#1c1812"
+    },
+    {
+      "type": "color",
+      "id": "callout_text_color",
+      "label": "Text color",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "range",
+      "id": "callout_image_width",
+      "label": "Image width",
+      "min": 150,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "default": 200
+    },
+    {
+      "type": "range",
+      "id": "callout_heading_size",
+      "label": "Heading size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "callout_product_name_size",
+      "label": "Product name size",
+      "min": 20,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "callout_price_size",
+      "label": "Price size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "callout_button_size",
+      "label": "Button size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "callout_button_bg",
+      "label": "Button background",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "color",
+      "id": "callout_button_text",
+      "label": "Button text",
+      "default": "#1c1812"
+    },
+    {
+      "type": "color",
+      "id": "callout_button_border",
+      "label": "Button border",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "range",
+      "id": "callout_button_border_width",
+      "label": "Button border width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "callout_button_hover_bg",
+      "label": "Button hover background",
+      "default": "#1c1812"
+    },
+    {
+      "type": "color",
+      "id": "callout_button_hover_text",
+      "label": "Button hover text",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "color",
+      "id": "callout_button_hover_border",
+      "label": "Button hover border",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "header",
+      "content": "Related articles"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_related_articles",
+      "label": "Show related articles",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "related_heading",
+      "label": "Heading",
+      "default": "Continue reading"
+    },
+    {
+      "type": "article",
+      "id": "related_article_1",
+      "label": "Article 1"
+    },
+    {
+      "type": "article",
+      "id": "related_article_2",
+      "label": "Article 2"
+    },
+    {
+      "type": "article",
+      "id": "related_article_3",
+      "label": "Article 3"
+    },
+    {
+      "type": "text",
+      "id": "default_read_time",
+      "label": "Default read time",
+      "default": "5 min read"
+    },
+    {
+      "type": "range",
+      "id": "related_max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1400,
+      "step": 100,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "related_heading_size",
+      "label": "Heading size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "related_tag_size",
+      "label": "Tag size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "related_title_size",
+      "label": "Title size",
+      "min": 16,
+      "max": 28,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "related_read_time_size",
+      "label": "Read time size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "serif"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "sans-serif"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Origin story article"
+    }
+  ]
+}
+{% endschema %}

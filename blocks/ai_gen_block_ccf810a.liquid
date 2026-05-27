@@ -1,0 +1,437 @@
+{% doc %}
+  @prompt
+    Create a contact page layout with two parts:
+    
+    Part 1 — Split Hero Full-width split layout. Left half: dark warm olive/charcoal background (#2c2a25), small uppercase tracking-widest label "CONTACT" in muted gold (#8b7355), large serif heading "Contact us", and one line of body text "We'd love to hear from you. Reach us by email or fill in the form below." in light gray. Right half: a placeholder for an image that fills the full height. Mobile: stacks vertically, image on top.
+    
+    Part 2 — Contact Cards Grid 3-column grid below the hero (2-col tablet, 1-col mobile). Cream background (#f5f0e8). Each card has: a thin-line SVG icon, a bold label, and body text. Thin top border on each card. 40px padding inside each card. Cards are editable via theme block settings.
+    
+    Card 1 — Icon: envelope SVG | Label: "Email Us" | Body: "info@nectarandcomb.in" Card 2 — Icon: instagram icon SVG | Label: "Write to Us" | Body: "Fill in the form below and we'll get back to you within 24 hours." Card 3 — Icon: map pin SVG | Label: "Our Address" | Body: "Plot No. 101, Sector-82, JLPL Industrial Area, SAS Nagar, Mohali, Punjab — 140308"
+    
+    Overall style: serif headings, generous whitespace, muted earth tones, no buttons or arrow links, understated luxury feel.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-contact-layout-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+  }
+
+  .ai-contact-hero-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .ai-contact-hero-left-{{ ai_gen_id }} {
+    background-color: {{ block.settings.hero_bg_color }};
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .ai-contact-hero-label-{{ ai_gen_id }} {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: {{ block.settings.label_color }};
+    margin: 0;
+  }
+
+  .ai-contact-hero-heading-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, serif;
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.heading_size }}px;
+    line-height: 1.2;
+    color: {{ block.settings.heading_color }};
+    margin: 0;
+  }
+
+  .ai-contact-hero-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.body_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.body_color }};
+    margin: 0;
+  }
+
+  .ai-contact-hero-right-{{ ai_gen_id }} {
+    position: relative;
+    min-height: 500px;
+  }
+
+  .ai-contact-hero-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-contact-hero-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #e8e3d8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-contact-hero-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 400px;
+  }
+
+  .ai-contact-cards-{{ ai_gen_id }} {
+    background-color: {{ block.settings.cards_bg_color }};
+    padding: 80px 60px;
+  }
+
+  .ai-contact-cards-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-contact-card-{{ ai_gen_id }} {
+    border-top: 1px solid {{ block.settings.card_border_color }};
+    padding: 40px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .ai-contact-card-icon-{{ ai_gen_id }} {
+    width: 32px;
+    height: 32px;
+    color: {{ block.settings.icon_color }};
+  }
+
+  .ai-contact-card-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.5;
+  }
+
+  .ai-contact-card-label-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, serif;
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: 18px;
+    color: {{ block.settings.card_label_color }};
+    margin: 0;
+  }
+
+  .ai-contact-card-body-{{ ai_gen_id }} {
+    font-size: 15px;
+    line-height: 1.6;
+    color: {{ block.settings.card_body_color }};
+    margin: 0;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-contact-cards-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
+
+    .ai-contact-hero-left-{{ ai_gen_id }} {
+      padding: 60px 40px;
+    }
+
+    .ai-contact-cards-{{ ai_gen_id }} {
+      padding: 60px 40px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-contact-hero-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-contact-hero-right-{{ ai_gen_id }} {
+      order: -1;
+      min-height: 400px;
+    }
+
+    .ai-contact-hero-left-{{ ai_gen_id }} {
+      padding: 50px 24px;
+    }
+
+    .ai-contact-cards-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .ai-contact-cards-{{ ai_gen_id }} {
+      padding: 50px 24px;
+    }
+
+    .ai-contact-card-{{ ai_gen_id }} {
+      padding: 32px 0 0 0;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-contact-layout-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-contact-hero-{{ ai_gen_id }}">
+    <div class="ai-contact-hero-left-{{ ai_gen_id }}">
+      {% if block.settings.hero_label != blank %}
+        <p class="ai-contact-hero-label-{{ ai_gen_id }}">{{ block.settings.hero_label }}</p>
+      {% endif %}
+      {% if block.settings.hero_heading != blank %}
+        <h1 class="ai-contact-hero-heading-{{ ai_gen_id }}">{{ block.settings.hero_heading }}</h1>
+      {% endif %}
+      {% if block.settings.hero_text != blank %}
+        <p class="ai-contact-hero-text-{{ ai_gen_id }}">{{ block.settings.hero_text }}</p>
+      {% endif %}
+    </div>
+    <div class="ai-contact-hero-right-{{ ai_gen_id }}">
+      {% if block.settings.hero_image %}
+        <img
+          src="{{ block.settings.hero_image | image_url: width: 1200 }}"
+          alt="{{ block.settings.hero_image.alt | escape }}"
+          loading="lazy"
+          width="{{ block.settings.hero_image.width }}"
+          height="{{ block.settings.hero_image.height }}"
+          class="ai-contact-hero-image-{{ ai_gen_id }}"
+        >
+      {% else %}
+        <div class="ai-contact-hero-placeholder-{{ ai_gen_id }}">
+          {{ 'image' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="ai-contact-cards-{{ ai_gen_id }}">
+    <div class="ai-contact-cards-grid-{{ ai_gen_id }}">
+      <div class="ai-contact-card-{{ ai_gen_id }}">
+        <div class="ai-contact-card-icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="m2 7 10 6 10-6"/>
+          </svg>
+        </div>
+        {% if block.settings.card_1_label != blank %}
+          <h3 class="ai-contact-card-label-{{ ai_gen_id }}">{{ block.settings.card_1_label }}</h3>
+        {% endif %}
+        {% if block.settings.card_1_body != blank %}
+          <p class="ai-contact-card-body-{{ ai_gen_id }}">{{ block.settings.card_1_body }}</p>
+        {% endif %}
+      </div>
+
+      <div class="ai-contact-card-{{ ai_gen_id }}">
+        <div class="ai-contact-card-icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+            <path d="m15 5 4 4"/>
+          </svg>
+        </div>
+        {% if block.settings.card_2_label != blank %}
+          <h3 class="ai-contact-card-label-{{ ai_gen_id }}">{{ block.settings.card_2_label }}</h3>
+        {% endif %}
+        {% if block.settings.card_2_body != blank %}
+          <p class="ai-contact-card-body-{{ ai_gen_id }}">{{ block.settings.card_2_body }}</p>
+        {% endif %}
+      </div>
+
+      <div class="ai-contact-card-{{ ai_gen_id }}">
+        <div class="ai-contact-card-icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+        {% if block.settings.card_3_label != blank %}
+          <h3 class="ai-contact-card-label-{{ ai_gen_id }}">{{ block.settings.card_3_label }}</h3>
+        {% endif %}
+        {% if block.settings.card_3_body != blank %}
+          <p class="ai-contact-card-body-{{ ai_gen_id }}">{{ block.settings.card_3_body }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Contact layout",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero section"
+    },
+    {
+      "type": "text",
+      "id": "hero_label",
+      "label": "Label",
+      "default": "CONTACT"
+    },
+    {
+      "type": "text",
+      "id": "hero_heading",
+      "label": "Heading",
+      "default": "Contact us"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_text",
+      "label": "Body text",
+      "default": "We'd love to hear from you. Reach us by email or fill in the form below."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Image"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 32,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Body size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Hero colors"
+    },
+    {
+      "type": "color",
+      "id": "hero_bg_color",
+      "label": "Background",
+      "default": "#2c2a25"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label",
+      "default": "#8b7355"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#f5f0e8"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body text",
+      "default": "#c4bfb5"
+    },
+    {
+      "type": "header",
+      "content": "Contact cards"
+    },
+    {
+      "type": "color",
+      "id": "cards_bg_color",
+      "label": "Background",
+      "default": "#f5f0e8"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Border",
+      "default": "#d4cfc5"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon",
+      "default": "#8b7355"
+    },
+    {
+      "type": "color",
+      "id": "card_label_color",
+      "label": "Label",
+      "default": "#2c2a25"
+    },
+    {
+      "type": "color",
+      "id": "card_body_color",
+      "label": "Body text",
+      "default": "#5a5650"
+    },
+    {
+      "type": "header",
+      "content": "Card 1"
+    },
+    {
+      "type": "text",
+      "id": "card_1_label",
+      "label": "Label",
+      "default": "Email Us"
+    },
+    {
+      "type": "textarea",
+      "id": "card_1_body",
+      "label": "Body text",
+      "default": "info@nectarandcomb.in"
+    },
+    {
+      "type": "header",
+      "content": "Card 2"
+    },
+    {
+      "type": "text",
+      "id": "card_2_label",
+      "label": "Label",
+      "default": "Write to Us"
+    },
+    {
+      "type": "textarea",
+      "id": "card_2_body",
+      "label": "Body text",
+      "default": "Fill in the form below and we'll get back to you within 24 hours."
+    },
+    {
+      "type": "header",
+      "content": "Card 3"
+    },
+    {
+      "type": "text",
+      "id": "card_3_label",
+      "label": "Label",
+      "default": "Our Address"
+    },
+    {
+      "type": "textarea",
+      "id": "card_3_body",
+      "label": "Body text",
+      "default": "Plot No. 101, Sector-82, JLPL Industrial Area, SAS Nagar, Mohali, Punjab — 140308"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact layout"
+    }
+  ]
+}
+{% endschema %}

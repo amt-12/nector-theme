@@ -1,0 +1,447 @@
+{% doc %}
+  @prompt
+    Create an editorial article body block for a premium honey brand blog. It should have two distinct parts:
+    
+    1. DROP CAP OPENING PARAGRAPH: The first paragraph is displayed in a large italic serif font (larger than body text). The very first letter is a decorative oversized drop cap in a warm gold/amber color, spanning 3-4 lines tall. The rest of the opening paragraph continues in the same large italic serif style. This is a fixed/hardcoded intro paragraph set via a block text setting.
+    
+    2. BODY PARAGRAPHS: Below the opening, 3-4 regular body paragraphs in a smaller, clean serif or sans-serif font, left-aligned, with generous line height and comfortable reading width (max ~680px centered). These are also editable via a rich text block setting.
+    
+    3. PULL QUOTE: A centered blockquote section with a thin horizontal rule above and below. The quote text is in a large italic serif font. Below the quote, the attribution is in small caps (e.g. "— RAMESH KUMAR, BEEKEEPER, 31 YEARS"). The quote and attribution should be editable via block settings.
+    
+    Background: warm off-white/cream (#FAF8F4 or similar). No borders on the container. Generous vertical padding. Fully responsive.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-editorial-article-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.vertical_padding }}px 20px;
+  }
+
+  .ai-editorial-article__container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-editorial-article__opening-{{ ai_gen_id }} {
+    font-family: {{ block.settings.opening_font.family }}, {{ block.settings.opening_font.fallback_families }};
+    font-weight: {{ block.settings.opening_font.weight }};
+    font-style: italic;
+    font-size: {{ block.settings.opening_font_size }}px;
+    line-height: {{ block.settings.opening_line_height }};
+    color: {{ block.settings.text_color }};
+    margin-bottom: {{ block.settings.opening_margin_bottom }}px;
+  }
+
+  .ai-editorial-article__opening-{{ ai_gen_id }}::first-letter {
+    float: left;
+    font-size: {{ block.settings.drop_cap_size }}px;
+    line-height: {{ block.settings.drop_cap_line_height }};
+    font-weight: {{ block.settings.drop_cap_font.weight }};
+    font-family: {{ block.settings.drop_cap_font.family }}, {{ block.settings.drop_cap_font.fallback_families }};
+    color: {{ block.settings.drop_cap_color }};
+    margin-right: 12px;
+    margin-top: 8px;
+  }
+
+  .ai-editorial-article__body-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-size: {{ block.settings.body_font_size }}px;
+    line-height: {{ block.settings.body_line_height }};
+    color: {{ block.settings.text_color }};
+    margin-bottom: {{ block.settings.body_margin_bottom }}px;
+  }
+
+  .ai-editorial-article__body-{{ ai_gen_id }} p {
+    margin-bottom: {{ block.settings.paragraph_spacing }}px;
+  }
+
+  .ai-editorial-article__body-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-editorial-article__pullquote-{{ ai_gen_id }} {
+    text-align: center;
+    margin: {{ block.settings.pullquote_margin }}px 0;
+    padding: {{ block.settings.pullquote_padding }}px 0;
+    border-top: {{ block.settings.rule_thickness }}px solid {{ block.settings.rule_color }};
+    border-bottom: {{ block.settings.rule_thickness }}px solid {{ block.settings.rule_color }};
+  }
+
+  .ai-editorial-article__quote-text-{{ ai_gen_id }} {
+    font-family: {{ block.settings.quote_font.family }}, {{ block.settings.quote_font.fallback_families }};
+    font-weight: {{ block.settings.quote_font.weight }};
+    font-style: italic;
+    font-size: {{ block.settings.quote_font_size }}px;
+    line-height: {{ block.settings.quote_line_height }};
+    color: {{ block.settings.text_color }};
+    margin-bottom: {{ block.settings.quote_attribution_spacing }}px;
+  }
+
+  .ai-editorial-article__attribution-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-size: {{ block.settings.attribution_font_size }}px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: {{ block.settings.attribution_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-editorial-article-{{ ai_gen_id }} {
+      padding: {{ block.settings.vertical_padding | times: 0.6 }}px 16px;
+    }
+
+    .ai-editorial-article__opening-{{ ai_gen_id }} {
+      font-size: {{ block.settings.opening_font_size | times: 0.8 }}px;
+    }
+
+    .ai-editorial-article__opening-{{ ai_gen_id }}::first-letter {
+      font-size: {{ block.settings.drop_cap_size | times: 0.7 }}px;
+      margin-right: 8px;
+      margin-top: 4px;
+    }
+
+    .ai-editorial-article__body-{{ ai_gen_id }} {
+      font-size: {{ block.settings.body_font_size | times: 0.9 }}px;
+    }
+
+    .ai-editorial-article__quote-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.quote_font_size | times: 0.8 }}px;
+    }
+
+    .ai-editorial-article__attribution-{{ ai_gen_id }} {
+      font-size: {{ block.settings.attribution_font_size | times: 0.9 }}px;
+    }
+
+    .ai-editorial-article__pullquote-{{ ai_gen_id }} {
+      margin: {{ block.settings.pullquote_margin | times: 0.7 }}px 0;
+      padding: {{ block.settings.pullquote_padding | times: 0.7 }}px 0;
+    }
+  }
+{% endstyle %}
+
+<editorial-article-{{ ai_gen_id }} class="ai-editorial-article-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-editorial-article__container-{{ ai_gen_id }}">
+    {% if block.settings.opening_paragraph != blank %}
+      <div class="ai-editorial-article__opening-{{ ai_gen_id }}">
+        {{ block.settings.opening_paragraph }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.body_paragraphs != blank %}
+      <div class="ai-editorial-article__body-{{ ai_gen_id }}">
+        {{ block.settings.body_paragraphs }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_pullquote and block.settings.quote_text != blank %}
+      <div class="ai-editorial-article__pullquote-{{ ai_gen_id }}">
+        <div class="ai-editorial-article__quote-text-{{ ai_gen_id }}">
+          {{ block.settings.quote_text }}
+        </div>
+        {% if block.settings.quote_attribution != blank %}
+          <div class="ai-editorial-article__attribution-{{ ai_gen_id }}">
+            {{ block.settings.quote_attribution }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</editorial-article-{{ ai_gen_id }}>
+
+{% schema %}
+{
+  "name": "Editorial article body",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Opening paragraph"
+    },
+    {
+      "type": "richtext",
+      "id": "opening_paragraph",
+      "label": "Opening paragraph",
+      "default": "<p>In the foothills of the Western Ghats, where mist clings to ancient forests and wildflowers bloom in quiet abundance, a tradition as old as time itself continues. Here, beekeepers move with the seasons, following the nectar flows that paint the landscape in waves of color and fragrance.</p>"
+    },
+    {
+      "type": "font_picker",
+      "id": "opening_font",
+      "label": "Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "opening_font_size",
+      "label": "Font size",
+      "min": 16,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "opening_line_height",
+      "label": "Line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "range",
+      "id": "opening_margin_bottom",
+      "label": "Bottom spacing",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Drop cap"
+    },
+    {
+      "type": "font_picker",
+      "id": "drop_cap_font",
+      "label": "Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "drop_cap_size",
+      "label": "Size",
+      "min": 40,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "drop_cap_line_height",
+      "label": "Line height",
+      "min": 0.5,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.8
+    },
+    {
+      "type": "color",
+      "id": "drop_cap_color",
+      "label": "Color",
+      "default": "#D4A574"
+    },
+    {
+      "type": "header",
+      "content": "Body paragraphs"
+    },
+    {
+      "type": "richtext",
+      "id": "body_paragraphs",
+      "label": "Body text",
+      "default": "<p>The practice of migratory beekeeping is both an art and a science. As eucalyptus groves give way to sidr trees, and multiflora meadows bloom in succession, the hives are carefully transported to capture each unique harvest. This ancient rhythm ensures that every jar of honey carries the distinct character of its origin.</p><p>What emerges is not merely sweetness, but a liquid chronicle of place and season. Each variety tells its own story: the robust depth of eucalyptus, the delicate floral notes of multiflora, the rare complexity of sidr. These are honeys that speak of terroir as eloquently as any vintage wine.</p><p>In an age of industrial production, this commitment to traditional methods and single-origin purity represents something increasingly precious: an unbroken connection to the natural world, preserved in amber.</p>"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "body_font_size",
+      "label": "Font size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 17
+    },
+    {
+      "type": "range",
+      "id": "body_line_height",
+      "label": "Line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.7
+    },
+    {
+      "type": "range",
+      "id": "paragraph_spacing",
+      "label": "Paragraph spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "body_margin_bottom",
+      "label": "Bottom spacing",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Pull quote"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pullquote",
+      "label": "Show pull quote",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "quote_text",
+      "label": "Quote text",
+      "default": "<p>The bees know the land better than we ever could. We simply follow their wisdom.</p>"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "quote_attribution",
+      "label": "Attribution",
+      "default": "— Ramesh Kumar, Beekeeper, 31 years"
+    },
+    {
+      "type": "font_picker",
+      "id": "quote_font",
+      "label": "Quote font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "quote_font_size",
+      "label": "Quote font size",
+      "min": 18,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "quote_line_height",
+      "label": "Quote line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "attribution_font_size",
+      "label": "Attribution font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "attribution_color",
+      "label": "Attribution color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "quote_attribution_spacing",
+      "label": "Quote to attribution spacing",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "pullquote_margin",
+      "label": "Pullquote margin",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "pullquote_padding",
+      "label": "Pullquote padding",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "rule_thickness",
+      "label": "Rule thickness",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "rule_color",
+      "label": "Rule color",
+      "default": "#E8DCC8"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 500,
+      "max": 900,
+      "step": 20,
+      "unit": "px",
+      "default": 680
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "label": "Vertical padding",
+      "min": 40,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FAF8F4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1A1A1A"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial article body"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,591 @@
+{% doc %}
+  @prompt
+    Create a contact page layout with two parts:
+    
+    Part 1 — Split Hero Full-width split layout. Left half: dark warm olive/charcoal background (#2c2a25), small uppercase tracking-widest label "CONTACT" in muted gold (#8b7355), large serif heading "Contact us", and one line of body text "We'd love to hear from you. Reach us by email or fill in the form below." in light gray. Right half: a placeholder for an image that fills the full height. Mobile: stacks vertically, image on top.
+    
+    Part 2 — Contact Cards Grid 3-column grid below the hero (2-col tablet, 1-col mobile). Cream background (#f5f0e8). Each card has: a thin-line SVG icon, a bold label, and body text. Thin top border on each card. 40px padding inside each card. Cards are editable via theme block settings.
+    
+    Card 1 — Icon: envelope SVG | Label: "Email Us" | Body: "info@nectarandcomb.in" Card 2 — Icon: instagram SVG | Label: "Follow us on Instagram" | Body: "@nectarandcomb.in" Card 3 — Icon: map pin SVG | Label: "Our Address" | Body: "Plot No. 101, Sector-82, JLPL Industrial Area, SAS Nagar, Mohali, Punjab — 140308"
+    
+    Overall style: serif headings, generous whitespace, muted earth tones, no buttons or arrow links, understated luxury feel.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-contact-layout-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+  }
+
+  .ai-contact-hero-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .ai-contact-hero-left-{{ ai_gen_id }} {
+    background-color: {{ block.settings.hero_bg_color }};
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .ai-contact-hero-label-{{ ai_gen_id }} {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: {{ block.settings.label_color }};
+    font-weight: 500;
+  }
+
+  .ai-contact-hero-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    font-family: {{ block.settings.heading_font.family }}, serif;
+    font-weight: {{ block.settings.heading_font.weight }};
+    color: {{ block.settings.heading_color }};
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .ai-contact-hero-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.body_size }}px;
+    color: {{ block.settings.body_color }};
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .ai-contact-hero-right-{{ ai_gen_id }} {
+    position: relative;
+    min-height: 500px;
+  }
+
+  .ai-contact-hero-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-contact-hero-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #e8e3d8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-contact-hero-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 400px;
+    opacity: 0.3;
+  }
+
+  .ai-contact-cards-section-{{ ai_gen_id }} {
+    background-color: {{ block.settings.cards_bg_color }};
+    padding: 80px 60px;
+  }
+
+  .ai-contact-cards-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-contact-card-{{ ai_gen_id }} {
+    border-top: 1px solid {{ block.settings.card_border_color }};
+    padding: 40px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .ai-contact-card-icon-{{ ai_gen_id }} {
+    width: 32px;
+    height: 32px;
+    color: {{ block.settings.icon_color }};
+  }
+
+  .ai-contact-card-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.5;
+  }
+
+  .ai-contact-card-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.card_label_size }}px;
+    font-weight: 600;
+    color: {{ block.settings.card_label_color }};
+    margin: 0;
+  }
+
+  .ai-contact-card-body-{{ ai_gen_id }} {
+    font-size: {{ block.settings.card_body_size }}px;
+    color: {{ block.settings.card_body_color }};
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-contact-cards-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
+
+    .ai-contact-hero-left-{{ ai_gen_id }} {
+      padding: 60px 40px;
+    }
+
+    .ai-contact-cards-section-{{ ai_gen_id }} {
+      padding: 60px 40px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-contact-hero-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-contact-hero-right-{{ ai_gen_id }} {
+      order: -1;
+      min-height: 400px;
+    }
+
+    .ai-contact-hero-left-{{ ai_gen_id }} {
+      padding: 50px 24px;
+    }
+
+    .ai-contact-cards-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .ai-contact-cards-section-{{ ai_gen_id }} {
+      padding: 50px 24px;
+    }
+
+    .ai-contact-card-{{ ai_gen_id }} {
+      padding: 32px 0;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-contact-layout-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-contact-hero-{{ ai_gen_id }}">
+    <div class="ai-contact-hero-left-{{ ai_gen_id }}">
+      {% if block.settings.hero_label != blank %}
+        <div class="ai-contact-hero-label-{{ ai_gen_id }}">{{ block.settings.hero_label }}</div>
+      {% endif %}
+      
+      {% if block.settings.hero_heading != blank %}
+        <h1 class="ai-contact-hero-heading-{{ ai_gen_id }}">{{ block.settings.hero_heading }}</h1>
+      {% endif %}
+      
+      {% if block.settings.hero_text != blank %}
+        <p class="ai-contact-hero-text-{{ ai_gen_id }}">{{ block.settings.hero_text }}</p>
+      {% endif %}
+    </div>
+
+    <div class="ai-contact-hero-right-{{ ai_gen_id }}">
+      {% if block.settings.hero_image %}
+        <img
+          src="{{ block.settings.hero_image | image_url: width: 1200 }}"
+          alt="{{ block.settings.hero_image.alt | escape }}"
+          loading="lazy"
+          width="{{ block.settings.hero_image.width }}"
+          height="{{ block.settings.hero_image.height }}"
+          class="ai-contact-hero-image-{{ ai_gen_id }}"
+        >
+      {% else %}
+        <div class="ai-contact-hero-placeholder-{{ ai_gen_id }}">
+          {{ 'image' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="ai-contact-cards-section-{{ ai_gen_id }}">
+    <div class="ai-contact-cards-grid-{{ ai_gen_id }}">
+      {% if block.settings.card_1_enabled %}
+        <div class="ai-contact-card-{{ ai_gen_id }}">
+          <div class="ai-contact-card-icon-{{ ai_gen_id }}">
+            {% if block.settings.card_1_icon == 'envelope' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="m2 7 10 7 10-7"/>
+              </svg>
+            {% elsif block.settings.card_1_icon == 'instagram' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+            {% elsif block.settings.card_1_icon == 'map-pin' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            {% elsif block.settings.card_1_icon == 'phone' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            {% endif %}
+          </div>
+          <h3 class="ai-contact-card-label-{{ ai_gen_id }}">{{ block.settings.card_1_label }}</h3>
+          <p class="ai-contact-card-body-{{ ai_gen_id }}">{{ block.settings.card_1_body }}</p>
+        </div>
+      {% endif %}
+
+      {% if block.settings.card_2_enabled %}
+        <div class="ai-contact-card-{{ ai_gen_id }}">
+          <div class="ai-contact-card-icon-{{ ai_gen_id }}">
+            {% if block.settings.card_2_icon == 'envelope' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="m2 7 10 7 10-7"/>
+              </svg>
+            {% elsif block.settings.card_2_icon == 'instagram' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+            {% elsif block.settings.card_2_icon == 'map-pin' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            {% elsif block.settings.card_2_icon == 'phone' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            {% endif %}
+          </div>
+          <h3 class="ai-contact-card-label-{{ ai_gen_id }}">{{ block.settings.card_2_label }}</h3>
+          <p class="ai-contact-card-body-{{ ai_gen_id }}">{{ block.settings.card_2_body }}</p>
+        </div>
+      {% endif %}
+
+      {% if block.settings.card_3_enabled %}
+        <div class="ai-contact-card-{{ ai_gen_id }}">
+          <div class="ai-contact-card-icon-{{ ai_gen_id }}">
+            {% if block.settings.card_3_icon == 'envelope' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="m2 7 10 7 10-7"/>
+              </svg>
+            {% elsif block.settings.card_3_icon == 'instagram' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+            {% elsif block.settings.card_3_icon == 'map-pin' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            {% elsif block.settings.card_3_icon == 'phone' %}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            {% endif %}
+          </div>
+          <h3 class="ai-contact-card-label-{{ ai_gen_id }}">{{ block.settings.card_3_label }}</h3>
+          <p class="ai-contact-card-body-{{ ai_gen_id }}">{{ block.settings.card_3_body }}</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Contact layout",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero section"
+    },
+    {
+      "type": "text",
+      "id": "hero_label",
+      "label": "Label",
+      "default": "CONTACT"
+    },
+    {
+      "type": "text",
+      "id": "hero_heading",
+      "label": "Heading",
+      "default": "Contact us"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_text",
+      "label": "Body text",
+      "default": "We'd love to hear from you. Reach us by email or fill in the form below."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+    {
+      "type": "color",
+      "id": "hero_bg_color",
+      "label": "Background color",
+      "default": "#2c2a25"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label color",
+      "default": "#8b7355"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#f5f0e8"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body text color",
+      "default": "#c4bfb5"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 32,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Body text size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Cards section"
+    },
+    {
+      "type": "color",
+      "id": "cards_bg_color",
+      "label": "Background color",
+      "default": "#f5f0e8"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border color",
+      "default": "#d4cfc3"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#8b7355"
+    },
+    {
+      "type": "color",
+      "id": "card_label_color",
+      "label": "Card label color",
+      "default": "#2c2a25"
+    },
+    {
+      "type": "color",
+      "id": "card_body_color",
+      "label": "Card body color",
+      "default": "#5a5650"
+    },
+    {
+      "type": "range",
+      "id": "card_label_size",
+      "label": "Card label size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "card_body_size",
+      "label": "Card body size",
+      "min": 13,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Card 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_1_enabled",
+      "label": "Enable card 1",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "card_1_icon",
+      "label": "Icon",
+      "options": [
+        {
+          "value": "envelope",
+          "label": "Envelope"
+        },
+        {
+          "value": "instagram",
+          "label": "Instagram"
+        },
+        {
+          "value": "map-pin",
+          "label": "Map pin"
+        },
+        {
+          "value": "phone",
+          "label": "Phone"
+        }
+      ],
+      "default": "envelope"
+    },
+    {
+      "type": "text",
+      "id": "card_1_label",
+      "label": "Label",
+      "default": "Email us"
+    },
+    {
+      "type": "textarea",
+      "id": "card_1_body",
+      "label": "Body text",
+      "default": "info@nectarandcomb.in"
+    },
+    {
+      "type": "header",
+      "content": "Card 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_2_enabled",
+      "label": "Enable card 2",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "card_2_icon",
+      "label": "Icon",
+      "options": [
+        {
+          "value": "envelope",
+          "label": "Envelope"
+        },
+        {
+          "value": "instagram",
+          "label": "Instagram"
+        },
+        {
+          "value": "map-pin",
+          "label": "Map pin"
+        },
+        {
+          "value": "phone",
+          "label": "Phone"
+        }
+      ],
+      "default": "instagram"
+    },
+    {
+      "type": "text",
+      "id": "card_2_label",
+      "label": "Label",
+      "default": "Follow us on Instagram"
+    },
+    {
+      "type": "textarea",
+      "id": "card_2_body",
+      "label": "Body text",
+      "default": "@nectarandcomb.in"
+    },
+    {
+      "type": "header",
+      "content": "Card 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_3_enabled",
+      "label": "Enable card 3",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "card_3_icon",
+      "label": "Icon",
+      "options": [
+        {
+          "value": "envelope",
+          "label": "Envelope"
+        },
+        {
+          "value": "instagram",
+          "label": "Instagram"
+        },
+        {
+          "value": "map-pin",
+          "label": "Map pin"
+        },
+        {
+          "value": "phone",
+          "label": "Phone"
+        }
+      ],
+      "default": "map-pin"
+    },
+    {
+      "type": "text",
+      "id": "card_3_label",
+      "label": "Label",
+      "default": "Our address"
+    },
+    {
+      "type": "textarea",
+      "id": "card_3_body",
+      "label": "Body text",
+      "default": "Plot No. 101, Sector-82, JLPL Industrial Area, SAS Nagar, Mohali, Punjab — 140308"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact layout"
+    }
+  ]
+}
+{% endschema %}

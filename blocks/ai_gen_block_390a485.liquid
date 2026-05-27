@@ -1,0 +1,276 @@
+{% doc %}
+  @prompt
+    Update an existing Liquid block on the product page that displays a Flavour Profile. The block reads a JSON metafield at `product.metafields.custom.flavor_profile.value` with keys: sweetness, floral, texture, aftertaste — each a number from 0 to 5. The label for the "texture" key must display as "Texture" (not "Body"). All 4 bars should be: Sweetness, Floral Notes, Texture, Aftertaste. Keep all existing styling: amber/gold gradient fill (
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign flavor_data = product.metafields.custom.flavor_profile.value %}
+
+{% style %}
+  .ai-flavor-profile-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    padding: {{ block.settings.padding }}px;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .ai-flavor-profile__title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 {{ block.settings.spacing }}px 0;
+    font-weight: 600;
+  }
+
+  .ai-flavor-profile__bars-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.bar_spacing }}px;
+  }
+
+  .ai-flavor-profile__bar-item-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ai-flavor-profile__bar-header-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .ai-flavor-profile__bar-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.label_size }}px;
+    color: {{ block.settings.text_color }};
+    font-weight: 500;
+  }
+
+  .ai-flavor-profile__bar-value-{{ ai_gen_id }} {
+    font-size: {{ block.settings.value_size }}px;
+    color: {{ block.settings.text_color }};
+    opacity: 0.7;
+  }
+
+  .ai-flavor-profile__bar-track-{{ ai_gen_id }} {
+    width: 100%;
+    height: {{ block.settings.bar_height }}px;
+    background-color: {{ block.settings.track_color }};
+    border-radius: {{ block.settings.bar_border_radius }}px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ai-flavor-profile__bar-fill-{{ ai_gen_id }} {
+    height: 100%;
+    background: linear-gradient(90deg, {{ block.settings.gradient_start }} 0%, {{ block.settings.gradient_end }} 100%);
+    border-radius: {{ block.settings.bar_border_radius }}px;
+    transition: width 0.6s ease-out;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-flavor-profile-{{ ai_gen_id }} {
+      width: 100%;
+    }
+  }
+{% endstyle %}
+
+{% if flavor_data %}
+  <div class="ai-flavor-profile-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+    {% if block.settings.title != blank %}
+      <h3 class="ai-flavor-profile__title-{{ ai_gen_id }}">{{ block.settings.title }}</h3>
+    {% endif %}
+
+    <div class="ai-flavor-profile__bars-{{ ai_gen_id }}">
+      {% assign attributes = 'sweetness,floral,texture,aftertaste' | split: ',' %}
+      {% assign labels = 'Sweetness,Floral Notes,Texture,Aftertaste' | split: ',' %}
+
+      {% for attribute in attributes %}
+        {% assign index = forloop.index0 %}
+        {% assign label = labels[index] %}
+        {% assign value = flavor_data[attribute] %}
+
+        {% if value != blank %}
+          {% assign percentage = value | times: 20 %}
+
+          <div class="ai-flavor-profile__bar-item-{{ ai_gen_id }}">
+            <div class="ai-flavor-profile__bar-header-{{ ai_gen_id }}">
+              <span class="ai-flavor-profile__bar-label-{{ ai_gen_id }}">{{ label }}</span>
+              <span class="ai-flavor-profile__bar-value-{{ ai_gen_id }}">{{ value }}/5</span>
+            </div>
+            <div class="ai-flavor-profile__bar-track-{{ ai_gen_id }}">
+              <div
+                class="ai-flavor-profile__bar-fill-{{ ai_gen_id }}"
+                style="width: {{ percentage }}%;"
+              ></div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Flavour profile",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Flavour Profile"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Padding",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "spacing",
+      "label": "Title spacing",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "bar_spacing",
+      "label": "Bar spacing",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Bar style"
+    },
+    {
+      "type": "range",
+      "id": "bar_height",
+      "label": "Bar height",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "bar_border_radius",
+      "label": "Bar border radius",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "track_color",
+      "label": "Track",
+      "default": "#e8dcc8"
+    },
+    {
+      "type": "color",
+      "id": "gradient_start",
+      "label": "Gradient start",
+      "default": "#d4a574"
+    },
+    {
+      "type": "color",
+      "id": "gradient_end",
+      "label": "Gradient end",
+      "default": "#f4c542"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "label": "Label size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "value_size",
+      "label": "Value size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Flavour profile"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,759 @@
+{% doc %}
+  @prompt
+    Create a new accordion block that matches the existing "Product accordion"
+    AI-generated block style on this product page. It should have 6 rows with the following content:
+    Create a product page block called "Product Accordion" for a premium honey brand. Display three collapsible accordion panels: Panel 1 — "Description" with a rich text / textarea setting for product description content. Panel 2 — "Flavour Profile" with 4 parameters (Sweetness, Floral Notes, Texture, Aftertaste), each with a label text field and a 0–5 range slider displayed as a thin filled progress bar, closed by default. Panel 3 — "Purity Parameters" with 5 parameters (Moisture %, Colour Grade, Texture, Crystallisation, Purity Score), each with a label text field and a 0–100 range slider displayed as a thin filled progress bar, closed by default. Panel 4 — "Why is my honey crystallised" with a rich text / textarea setting for description content.  Panel 5 — "Our Beekeepers" with a rich text / textarea setting for description content. Panel 6 — "Shipping & Delivery" with a rich text / textarea setting for description content. Each panel has a heading text field, a chevron/arrow icon that rotates on open/close, smooth expand/collapse animation. Add a small italic footnote below all panels (configurable text, default "Parameters reflect our sourcing standards and intake checks for every batch.") — shown only when Purity Parameters panel is open. Style: warm honey tones, muted, editorial, premium — no bright colors. Clean thin divider lines between panels. Thin top border divider above the whole block. Works inside a product page template. Mobile-first layout.
+    
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-accordion-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    border-top: 1px solid {{ block.settings.divider_color }};
+  }
+
+  .ai-product-accordion__panel-{{ ai_gen_id }} {
+    border-bottom: 1px solid {{ block.settings.divider_color }};
+  }
+
+  .ai-product-accordion__header-{{ ai_gen_id }} {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: {{ block.settings.panel_padding }}px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    color: {{ block.settings.heading_color }};
+    font-size: {{ block.settings.heading_size }}px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .ai-product-accordion__header-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.heading_hover_color }};
+  }
+
+  .ai-product-accordion__icon-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-left: 16px;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-product-accordion__icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
+    stroke-width: 1.5;
+  }
+
+  .ai-product-accordion__header-{{ ai_gen_id }}[aria-expanded="true"] .ai-product-accordion__icon-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  .ai-product-accordion__content-{{ ai_gen_id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .ai-product-accordion__content-{{ ai_gen_id }}.active {
+    max-height: 2000px;
+  }
+
+  .ai-product-accordion__body-{{ ai_gen_id }} {
+    padding-bottom: {{ block.settings.panel_padding }}px;
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.6;
+  }
+
+  .ai-product-accordion__body-{{ ai_gen_id }} p {
+    margin: 0 0 12px;
+  }
+
+  .ai-product-accordion__body-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-product-accordion__parameter-{{ ai_gen_id }} {
+    margin-bottom: 16px;
+  }
+
+  .ai-product-accordion__parameter-{{ ai_gen_id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-product-accordion__parameter-label-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: {{ block.settings.parameter_label_size }}px;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-product-accordion__parameter-value-{{ ai_gen_id }} {
+    font-weight: 500;
+    color: {{ block.settings.heading_color }};
+  }
+
+  .ai-product-accordion__progress-bar-{{ ai_gen_id }} {
+    width: 100%;
+    height: {{ block.settings.progress_bar_height }}px;
+    background-color: {{ block.settings.progress_bg_color }};
+    border-radius: {{ block.settings.progress_bar_height | divided_by: 2 }}px;
+    overflow: hidden;
+  }
+
+  .ai-product-accordion__progress-fill-{{ ai_gen_id }} {
+    height: 100%;
+    background-color: {{ block.settings.progress_fill_color }};
+    transition: width 0.6s ease;
+  }
+
+  .ai-product-accordion__footnote-{{ ai_gen_id }} {
+    margin-top: 16px;
+    padding-top: 12px;
+    font-size: {{ block.settings.footnote_size }}px;
+    font-style: italic;
+    color: {{ block.settings.footnote_color }};
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, max-height 0.3s ease;
+  }
+
+  .ai-product-accordion__footnote-{{ ai_gen_id }}.visible {
+    opacity: 1;
+    max-height: 100px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-product-accordion__header-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.9 }}px;
+    }
+
+    .ai-product-accordion__body-{{ ai_gen_id }} {
+      font-size: {{ block.settings.text_size | times: 0.95 }}px;
+    }
+
+    .ai-product-accordion__parameter-label-{{ ai_gen_id }} {
+      font-size: {{ block.settings.parameter_label_size | times: 0.95 }}px;
+    }
+  }
+{% endstyle %}
+
+<product-accordion-{{ ai_gen_id }} class="ai-product-accordion-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-product-accordion__panel-{{ ai_gen_id }}">
+    <button
+      class="ai-product-accordion__header-{{ ai_gen_id }}"
+      aria-expanded="true"
+      data-panel="panel-1"
+    >
+      <span>{{ block.settings.panel_1_heading }}</span>
+      <span class="ai-product-accordion__icon-{{ ai_gen_id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </span>
+    </button>
+    <div class="ai-product-accordion__content-{{ ai_gen_id }} active" data-content="panel-1">
+      <div class="ai-product-accordion__body-{{ ai_gen_id }}">
+        {{ block.settings.panel_1_content }}
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-product-accordion__panel-{{ ai_gen_id }}">
+    <button
+      class="ai-product-accordion__header-{{ ai_gen_id }}"
+      aria-expanded="false"
+      data-panel="panel-2"
+    >
+      <span>{{ block.settings.panel_2_heading }}</span>
+      <span class="ai-product-accordion__icon-{{ ai_gen_id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </span>
+    </button>
+    <div class="ai-product-accordion__content-{{ ai_gen_id }}" data-content="panel-2">
+      <div class="ai-product-accordion__body-{{ ai_gen_id }}">
+        <div class="ai-product-accordion__parameter-{{ ai_gen_id }}">
+          <div class="ai-product-accordion__parameter-label-{{ ai_gen_id }}">
+            <span>{{ block.settings.flavour_param_1_label }}</span>
+            <span class="ai-product-accordion__parameter-value-{{ ai_gen_id }}">{{ block.settings.flavour_param_1_value }}/5</span>
+          </div>
+          <div class="ai-product-accordion__progress-bar-{{ ai_gen_id }}">
+            <div class="ai-product-accordion__progress-fill-{{ ai_gen_id }}" style="width: {{ block.settings.flavour_param_1_value | times: 20 }}%;"></div>
+          </div>
+        </div>
+
+        <div class="ai-product-accordion__parameter-{{ ai_gen_id }}">
+          <div class="ai-product-accordion__parameter-label-{{ ai_gen_id }}">
+            <span>{{ block.settings.flavour_param_2_label }}</span>
+            <span class="ai-product-accordion__parameter-value-{{ ai_gen_id }}">{{ block.settings.flavour_param_2_value }}/5</span>
+          </div>
+          <div class="ai-product-accordion__progress-bar-{{ ai_gen_id }}">
+            <div class="ai-product-accordion__progress-fill-{{ ai_gen_id }}" style="width: {{ block.settings.flavour_param_2_value | times: 20 }}%;"></div>
+          </div>
+        </div>
+
+        <div class="ai-product-accordion__parameter-{{ ai_gen_id }}">
+          <div class="ai-product-accordion__parameter-label-{{ ai_gen_id }}">
+            <span>{{ block.settings.flavour_param_3_label }}</span>
+            <span class="ai-product-accordion__parameter-value-{{ ai_gen_id }}">{{ block.settings.flavour_param_3_value }}/5</span>
+          </div>
+          <div class="ai-product-accordion__progress-bar-{{ ai_gen_id }}">
+            <div class="ai-product-accordion__progress-fill-{{ ai_gen_id }}" style="width: {{ block.settings.flavour_param_3_value | times: 20 }}%;"></div>
+          </div>
+        </div>
+
+        <div class="ai-product-accordion__parameter-{{ ai_gen_id }}">
+          <div class="ai-product-accordion__parameter-label-{{ ai_gen_id }}">
+            <span>{{ block.settings.flavour_param_4_label }}</span>
+            <span class="ai-product-accordion__parameter-value-{{ ai_gen_id }}">{{ block.settings.flavour_param_4_value }}/5</span>
+          </div>
+          <div class="ai-product-accordion__progress-bar-{{ ai_gen_id }}">
+            <div class="ai-product-accordion__progress-fill-{{ ai_gen_id }}" style="width: {{ block.settings.flavour_param_4_value | times: 20 }}%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-product-accordion__panel-{{ ai_gen_id }}">
+    <button
+      class="ai-product-accordion__header-{{ ai_gen_id }}"
+      aria-expanded="false"
+      data-panel="panel-3"
+    >
+      <span>{{ block.settings.panel_3_heading }}</span>
+      <span class="ai-product-accordion__icon-{{ ai_gen_id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </span>
+    </button>
+    <div class="ai-product-accordion__content-{{ ai_gen_id }}" data-content="panel-3">
+      <div class="ai-product-accordion__body-{{ ai_gen_id }}">
+        <div class="ai-product-accordion__parameter-{{ ai_gen_id }}">
+          <div class="ai-product-accordion__parameter-label-{{ ai_gen_id }}">
+            <span>{{ block.settings.purity_param_1_label }}</span>
+            <span class="ai-product-accordion__parameter-value-{{ ai_gen_id }}">{{ block.settings.purity_param_1_value }}%</span>
+          </div>
+          <div class="ai-product-accordion__progress-bar-{{ ai_gen_id }}">
+            <div class="ai-product-accordion__progress-fill-{{ ai_gen_id }}" style="width: {{ block.settings.purity_param_1_value }}%;"></div>
+          </div>
+        </div>
+
+        <div class="ai-product-accordion__parameter-{{ ai_gen_id }}">
+          <div class="ai-product-accordion__parameter-label-{{ ai_gen_id }}">
+            <span>{{ block.settings.purity_param_2_label }}</span>
+            <span class="ai-product-accordion__parameter-value-{{ ai_gen_id }}">{{ block.settings.purity_param_2_value }}%</span>
+          </div>
+          <div class="ai-product-accordion__progress-bar-{{ ai_gen_id }}">
+            <div class="ai-product-accordion__progress-fill-{{ ai_gen_id }}" style="width: {{ block.settings.purity_param_2_value }}%;"></div>
+          </div>
+        </div>
+
+        <div class="ai-product-accordion__parameter-{{ ai_gen_id }}">
+          <div class="ai-product-accordion__parameter-label-{{ ai_gen_id }}">
+            <span>{{ block.settings.purity_param_3_label }}</span>
+            <span class="ai-product-accordion__parameter-value-{{ ai_gen_id }}">{{ block.settings.purity_param_3_value }}%</span>
+          </div>
+          <div class="ai-product-accordion__progress-bar-{{ ai_gen_id }}">
+            <div class="ai-product-accordion__progress-fill-{{ ai_gen_id }}" style="width: {{ block.settings.purity_param_3_value }}%;"></div>
+          </div>
+        </div>
+
+        <div class="ai-product-accordion__parameter-{{ ai_gen_id }}">
+          <div class="ai-product-accordion__parameter-label-{{ ai_gen_id }}">
+            <span>{{ block.settings.purity_param_4_label }}</span>
+            <span class="ai-product-accordion__parameter-value-{{ ai_gen_id }}">{{ block.settings.purity_param_4_value }}%</span>
+          </div>
+          <div class="ai-product-accordion__progress-bar-{{ ai_gen_id }}">
+            <div class="ai-product-accordion__progress-fill-{{ ai_gen_id }}" style="width: {{ block.settings.purity_param_4_value }}%;"></div>
+          </div>
+        </div>
+
+        <div class="ai-product-accordion__parameter-{{ ai_gen_id }}">
+          <div class="ai-product-accordion__parameter-label-{{ ai_gen_id }}">
+            <span>{{ block.settings.purity_param_5_label }}</span>
+            <span class="ai-product-accordion__parameter-value-{{ ai_gen_id }}">{{ block.settings.purity_param_5_value }}%</span>
+          </div>
+          <div class="ai-product-accordion__progress-bar-{{ ai_gen_id }}">
+            <div class="ai-product-accordion__progress-fill-{{ ai_gen_id }}" style="width: {{ block.settings.purity_param_5_value }}%;"></div>
+          </div>
+        </div>
+
+        {% if block.settings.footnote_text != blank %}
+          <div class="ai-product-accordion__footnote-{{ ai_gen_id }}" data-footnote>
+            {{ block.settings.footnote_text }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-product-accordion__panel-{{ ai_gen_id }}">
+    <button
+      class="ai-product-accordion__header-{{ ai_gen_id }}"
+      aria-expanded="false"
+      data-panel="panel-4"
+    >
+      <span>{{ block.settings.panel_4_heading }}</span>
+      <span class="ai-product-accordion__icon-{{ ai_gen_id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </span>
+    </button>
+    <div class="ai-product-accordion__content-{{ ai_gen_id }}" data-content="panel-4">
+      <div class="ai-product-accordion__body-{{ ai_gen_id }}">
+        {{ block.settings.panel_4_content }}
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-product-accordion__panel-{{ ai_gen_id }}">
+    <button
+      class="ai-product-accordion__header-{{ ai_gen_id }}"
+      aria-expanded="false"
+      data-panel="panel-5"
+    >
+      <span>{{ block.settings.panel_5_heading }}</span>
+      <span class="ai-product-accordion__icon-{{ ai_gen_id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </span>
+    </button>
+    <div class="ai-product-accordion__content-{{ ai_gen_id }}" data-content="panel-5">
+      <div class="ai-product-accordion__body-{{ ai_gen_id }}">
+        {{ block.settings.panel_5_content }}
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-product-accordion__panel-{{ ai_gen_id }}">
+    <button
+      class="ai-product-accordion__header-{{ ai_gen_id }}"
+      aria-expanded="false"
+      data-panel="panel-6"
+    >
+      <span>{{ block.settings.panel_6_heading }}</span>
+      <span class="ai-product-accordion__icon-{{ ai_gen_id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </span>
+    </button>
+    <div class="ai-product-accordion__content-{{ ai_gen_id }}" data-content="panel-6">
+      <div class="ai-product-accordion__body-{{ ai_gen_id }}">
+        {{ block.settings.panel_6_content }}
+      </div>
+    </div>
+  </div>
+</product-accordion-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ProductAccordion{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.headers = this.querySelectorAll('.ai-product-accordion__header-{{ ai_gen_id }}');
+        this.purityPanel = this.querySelector('[data-panel="panel-3"]');
+        this.footnote = this.querySelector('[data-footnote]');
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.headers.forEach((header) => {
+          header.addEventListener('click', () => {
+            const panelId = header.getAttribute('data-panel');
+            const content = this.querySelector(`[data-content="${panelId}"]`);
+            const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+            if (isExpanded) {
+              header.setAttribute('aria-expanded', 'false');
+              content.classList.remove('active');
+            } else {
+              header.setAttribute('aria-expanded', 'true');
+              content.classList.add('active');
+            }
+
+            if (this.footnote && panelId === 'panel-3') {
+              if (!isExpanded) {
+                this.footnote.classList.add('visible');
+              } else {
+                this.footnote.classList.remove('visible');
+              }
+            }
+          });
+        });
+      }
+    }
+
+    customElements.define('product-accordion-{{ ai_gen_id }}', ProductAccordion{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product accordion",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Panel 1 — Description"
+    },
+    {
+      "type": "text",
+      "id": "panel_1_heading",
+      "label": "Heading",
+      "default": "Description"
+    },
+    {
+      "type": "richtext",
+      "id": "panel_1_content",
+      "label": "Content",
+      "default": "<p>Our premium honey is sourced from artisanal beekeepers who practice sustainable and ethical beekeeping. Each jar captures the pure essence of nature.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Panel 2 — Flavour profile"
+    },
+    {
+      "type": "text",
+      "id": "panel_2_heading",
+      "label": "Heading",
+      "default": "Flavour Profile"
+    },
+    {
+      "type": "text",
+      "id": "flavour_param_1_label",
+      "label": "Parameter 1 label",
+      "default": "Sweetness"
+    },
+    {
+      "type": "range",
+      "id": "flavour_param_1_value",
+      "label": "Parameter 1 value",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "flavour_param_2_label",
+      "label": "Parameter 2 label",
+      "default": "Floral Notes"
+    },
+    {
+      "type": "range",
+      "id": "flavour_param_2_value",
+      "label": "Parameter 2 value",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "flavour_param_3_label",
+      "label": "Parameter 3 label",
+      "default": "Texture"
+    },
+    {
+      "type": "range",
+      "id": "flavour_param_3_value",
+      "label": "Parameter 3 value",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "flavour_param_4_label",
+      "label": "Parameter 4 label",
+      "default": "Aftertaste"
+    },
+    {
+      "type": "range",
+      "id": "flavour_param_4_value",
+      "label": "Parameter 4 value",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Panel 3 — Purity parameters"
+    },
+    {
+      "type": "text",
+      "id": "panel_3_heading",
+      "label": "Heading",
+      "default": "Purity Parameters"
+    },
+    {
+      "type": "text",
+      "id": "purity_param_1_label",
+      "label": "Parameter 1 label",
+      "default": "Moisture %"
+    },
+    {
+      "type": "range",
+      "id": "purity_param_1_value",
+      "label": "Parameter 1 value",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 85
+    },
+    {
+      "type": "text",
+      "id": "purity_param_2_label",
+      "label": "Parameter 2 label",
+      "default": "Colour Grade"
+    },
+    {
+      "type": "range",
+      "id": "purity_param_2_value",
+      "label": "Parameter 2 value",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 90
+    },
+    {
+      "type": "text",
+      "id": "purity_param_3_label",
+      "label": "Parameter 3 label",
+      "default": "Texture"
+    },
+    {
+      "type": "range",
+      "id": "purity_param_3_value",
+      "label": "Parameter 3 value",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 95
+    },
+    {
+      "type": "text",
+      "id": "purity_param_4_label",
+      "label": "Parameter 4 label",
+      "default": "Crystallisation"
+    },
+    {
+      "type": "range",
+      "id": "purity_param_4_value",
+      "label": "Parameter 4 value",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 80
+    },
+    {
+      "type": "text",
+      "id": "purity_param_5_label",
+      "label": "Parameter 5 label",
+      "default": "Purity Score"
+    },
+    {
+      "type": "range",
+      "id": "purity_param_5_value",
+      "label": "Parameter 5 value",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 95
+    },
+    {
+      "type": "richtext",
+      "id": "footnote_text",
+      "label": "Footnote",
+      "default": "<p>Parameters reflect our sourcing standards and intake checks for every batch.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Panel 4 — Crystallisation"
+    },
+    {
+      "type": "text",
+      "id": "panel_4_heading",
+      "label": "Heading",
+      "default": "Why is my honey crystallised?"
+    },
+    {
+      "type": "richtext",
+      "id": "panel_4_content",
+      "label": "Content",
+      "default": "<p>Crystallisation is a natural process that occurs in pure, raw honey. It's actually a sign of quality and authenticity. Simply warm the jar gently to return it to liquid form.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Panel 5 — Beekeepers"
+    },
+    {
+      "type": "text",
+      "id": "panel_5_heading",
+      "label": "Heading",
+      "default": "Our Beekeepers"
+    },
+    {
+      "type": "richtext",
+      "id": "panel_5_content",
+      "label": "Content",
+      "default": "<p>We partner with artisanal beekeepers who practice sustainable and ethical beekeeping methods. Each harvest is carefully timed to ensure the health of the hive and the purity of the honey.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Panel 6 — Shipping"
+    },
+    {
+      "type": "text",
+      "id": "panel_6_heading",
+      "label": "Heading",
+      "default": "Shipping & Delivery"
+    },
+    {
+      "type": "richtext",
+      "id": "panel_6_content",
+      "label": "Content",
+      "default": "<p>We ship across India with careful packaging to ensure your honey arrives in perfect condition. Orders are typically dispatched within 2-3 business days.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "panel_padding",
+      "label": "Panel padding",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "parameter_label_size",
+      "label": "Parameter label size",
+      "min": 11,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "footnote_size",
+      "label": "Footnote size",
+      "min": 10,
+      "max": 14,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "progress_bar_height",
+      "label": "Progress bar height",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "heading_hover_color",
+      "label": "Heading hover",
+      "default": "#8b7355"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#2c2a25"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider",
+      "default": "#e8dcc8"
+    },
+    {
+      "type": "color",
+      "id": "progress_bg_color",
+      "label": "Progress bar background",
+      "default": "#f5f0e8"
+    },
+    {
+      "type": "color",
+      "id": "progress_fill_color",
+      "label": "Progress bar fill",
+      "default": "#d4a574"
+    },
+    {
+      "type": "color",
+      "id": "footnote_color",
+      "label": "Footnote",
+      "default": "#6b5a48"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product accordion"
+    }
+  ]
+}
+{% endschema %}

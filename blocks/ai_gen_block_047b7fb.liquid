@@ -1,0 +1,613 @@
+{% doc %}
+  @prompt
+    Build a premium FAQ section for an ultra-luxury honey brand called NECTAR&COMB. The section must support category group headers between question groups, with each group containing accordion-style expandable Q&A rows.
+    
+    STRUCTURE:
+    - Questions are grouped into 4 categories, each with a small category label above the group
+    - Each category label: Raleway font, 11px, uppercase, loose letter spacing, muted color #6b6b6b, 40px top margin, 12px bottom margin
+    - Each question row is an accordion (click to expand/collapse)
+    - A thin divider line between each question row
+    - A caret icon on the right side of each question, colored warm amber #b5813a, rotates when expanded
+    - Merchant can add more accordion rows to any category group in future via theme editor blocks
+    
+    TYPOGRAPHY:
+    - Question headings: Cormorant font (var(--font-heading--family)), 18px, font-weight 400, Title Case (NO uppercase), color #1a1a1a, letter-spacing 0.02em
+    - Answer text: Raleway (var(--font-body--family)), 16px, line-height 1.7, color #1a1a1a, padding 16px top and bottom
+    - Category labels: Raleway, 11px, uppercase, letter-spacing 0.15em, color #6b6b6b
+    
+    COLORS & DESIGN:
+    - Background: #fafaf5 (warm cream)
+    - Dividers: #e8dcc8 (warm beige)
+    - Border around entire accordion: 1px solid #e8dcc8
+    - Border radius: 0px
+    - Section padding: 60px top, 100px bottom
+    - Page-width constrained
+    
+    CATEGORY 1 — "Product & Sourcing"
+    Q1: What is the difference between your honey varieties?
+    A1: NECTAR&COMB offers a range of honey varieties, each with a distinct flavour profile, colour, and nutritional character depending on the floral source. Details on each variety — including tasting notes and origin — are available on the individual product pages.
+    Q2: Where is your honey sourced from?
+    A2: Our honey is sourced from carefully selected apiaries across India's most distinctive landscapes — from the Himalayan foothills to the Nilgiris. We work exclusively with migratory beekeepers who follow the seasons and the bloom, moving their hives to ensure each variety captures the full character of its floral source. Every batch is traceable from hive to jar.
+    Q3: What is the shelf life of your honey?
+    A3: Honey has an indefinite shelf life when stored correctly. We recommend consuming within 24 months of the harvest date printed on the jar or sachet.
+    
+    CATEGORY 2 — "Purity & Quality"
+    Q4: How do I know your honey is not adulterated?
+    A4: Our honey is tested for purity using standard FSSAI-approved methods. We source directly from verified apiaries and maintain full traceability from hive to jar. No sugar syrups, no blending, no additives — ever. Crystallisation is a natural sign of purity; if your honey crystallises, it is behaving exactly as pure honey should.
+    Q5: Why doesn't supermarket honey crystallise?
+    A5: Most commercial honey is ultra-filtered and heat-treated to remove pollen and extend shelf life — but this also strips out the very compounds that cause natural crystallisation. If your honey never crystallises, it has likely been heavily processed. Pure honey crystallises. It is supposed to.
+    Q6: What is the difference between raw and processed honey?
+    A6: Raw honey is extracted and cold-filtered to remove debris, leaving all natural enzymes, pollen, antioxidants, and beneficial compounds intact. Processed honey is heated above 40°C and ultra-filtered, which extends shelf life and keeps it liquid — but destroys much of what makes honey nutritionally valuable. NECTAR&COMB honey is always cold-filtered, never heat-treated.
+    Q7: Why is your honey never heated?
+    A7: Heating honey above 40°C begins to destroy its natural enzymes — including diastase and invertase — as well as antioxidants and volatile aromatic compounds. The result is a product that looks like honey but has lost much of its nutritional character. We cold-filter only, so everything the bees put in stays in.
+    Q8: My honey has crystallised — what should I do?
+    A8: Crystallisation is completely natural and is actually a sign of pure, unadulterated honey. To bring it back to liquid form, place the jar or sachet in a bowl of warm (not boiling) water and let it sit for a few minutes. Do not microwave or place in direct sunlight, as excessive heat can degrade the natural enzymes and flavour. Your honey is perfectly safe to eat in its crystallised form too.
+    
+    CATEGORY 3 — "Health & Safety"
+    Q9: Is honey safe for babies and young children?
+    A9: No. Honey should never be given to infants under 12 months of age due to the risk of infant botulism, a rare but serious illness. This applies to all varieties of honey, including raw, processed, and infused. For children above 1 year, honey is generally safe in moderation. If you have any concerns, please consult your pediatrician.
+    Q10: How can I test if my honey is pure at home?
+    A10: Two simple tests: (1) Drop a small amount into a glass of water — pure honey sinks and dissolves slowly, adulterated honey disperses quickly. (2) Watch for crystallisation over time — pure honey crystallises naturally;
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-faq-section-{{ ai_gen_id }} {
+    display: block;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_top }}px 0 {{ block.settings.padding_bottom }}px;
+    width: 100%;
+  }
+
+  .ai-faq-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-faq-category-label-{{ ai_gen_id }} {
+    font-family: var(--font-body-family);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: {{ block.settings.category_label_color }};
+    margin-top: 40px;
+    margin-bottom: 12px;
+    font-weight: 400;
+  }
+
+  .ai-faq-category-label-{{ ai_gen_id }}:first-child {
+    margin-top: 0;
+  }
+
+  .ai-faq-accordion-group-{{ ai_gen_id }} {
+    border: 1px solid {{ block.settings.divider_color }};
+    border-radius: 0;
+  }
+
+  .ai-faq-accordion-item-{{ ai_gen_id }} {
+    border-bottom: 1px solid {{ block.settings.divider_color }};
+  }
+
+  .ai-faq-accordion-item-{{ ai_gen_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .ai-faq-question-button-{{ ai_gen_id }} {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    text-align: left;
+    gap: 16px;
+  }
+
+  .ai-faq-question-text-{{ ai_gen_id }} {
+    font-family: var(--font-heading-family);
+    font-size: 18px;
+    font-weight: 400;
+    color: {{ block.settings.question_color }};
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+
+  .ai-faq-caret-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+    color: {{ block.settings.caret_color }};
+  }
+
+  .ai-faq-accordion-item-{{ ai_gen_id }}.active .ai-faq-caret-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  .ai-faq-answer-wrapper-{{ ai_gen_id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .ai-faq-answer-content-{{ ai_gen_id }} {
+    padding: 0 24px 16px;
+    font-family: var(--font-body-family);
+    font-size: 16px;
+    line-height: 1.7;
+    color: {{ block.settings.answer_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-faq-section-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_top | times: 0.7 }}px 0 {{ block.settings.padding_bottom | times: 0.7 }}px;
+    }
+
+    .ai-faq-question-button-{{ ai_gen_id }} {
+      padding: 16px 20px;
+    }
+
+    .ai-faq-question-text-{{ ai_gen_id }} {
+      font-size: 16px;
+    }
+
+    .ai-faq-answer-content-{{ ai_gen_id }} {
+      padding: 0 20px 16px;
+      font-size: 15px;
+    }
+  }
+{% endstyle %}
+
+<faq-accordion-{{ ai_gen_id }} class="ai-faq-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-faq-container-{{ ai_gen_id }}">
+    {% if block.settings.category_1_label != blank %}
+      <div class="ai-faq-category-label-{{ ai_gen_id }}">{{ block.settings.category_1_label }}</div>
+      <div class="ai-faq-accordion-group-{{ ai_gen_id }}">
+        {% if block.settings.q1_question != blank %}
+          <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+            <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+              <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings.q1_question }}</span>
+              <svg class="ai-faq-caret-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </button>
+            <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+              <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.q1_answer }}</div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if block.settings.q2_question != blank %}
+          <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+            <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+              <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings.q2_question }}</span>
+              <svg class="ai-faq-caret-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </button>
+            <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+              <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.q2_answer }}</div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if block.settings.q3_question != blank %}
+          <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+            <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+              <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings.q3_question }}</span>
+              <svg class="ai-faq-caret-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </button>
+            <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+              <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.q3_answer }}</div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.category_2_label != blank %}
+      <div class="ai-faq-category-label-{{ ai_gen_id }}">{{ block.settings.category_2_label }}</div>
+      <div class="ai-faq-accordion-group-{{ ai_gen_id }}">
+        {% if block.settings.q4_question != blank %}
+          <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+            <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+              <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings.q4_question }}</span>
+              <svg class="ai-faq-caret-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </button>
+            <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+              <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.q4_answer }}</div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if block.settings.q5_question != blank %}
+          <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+            <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+              <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings.q5_question }}</span>
+              <svg class="ai-faq-caret-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </button>
+            <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+              <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.q5_answer }}</div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if block.settings.q6_question != blank %}
+          <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+            <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+              <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings.q6_question }}</span>
+              <svg class="ai-faq-caret-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </button>
+            <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+              <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.q6_answer }}</div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if block.settings.q7_question != blank %}
+          <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+            <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+              <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings.q7_question }}</span>
+              <svg class="ai-faq-caret-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </button>
+            <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+              <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.q7_answer }}</div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if block.settings.q8_question != blank %}
+          <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+            <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+              <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings.q8_question }}</span>
+              <svg class="ai-faq-caret-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </button>
+            <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+              <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.q8_answer }}</div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.category_3_label != blank %}
+      <div class="ai-faq-category-label-{{ ai_gen_id }}">{{ block.settings.category_3_label }}</div>
+      <div class="ai-faq-accordion-group-{{ ai_gen_id }}">
+        {% if block.settings.q9_question != blank %}
+          <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+            <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+              <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings.q9_question }}</span>
+              <svg class="ai-faq-caret-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </button>
+            <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+              <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.q9_answer }}</div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if block.settings.q10_question != blank %}
+          <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+            <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+              <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings.q10_question }}</span>
+              <svg class="ai-faq-caret-{{ ai_gen_id }}" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 6 8 10 12 6"></polyline>
+              </svg>
+            </button>
+            <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+              <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.q10_answer }}</div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.category_4_label != blank %}
+      <div class="ai-faq-category-label-{{ ai_gen_id }}">{{ block.settings.category_4_label }}</div>
+      <div class="ai-faq-accordion-group-{{ ai_gen_id }}">
+      </div>
+    {% endif %}
+  </div>
+</faq-accordion-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class FaqAccordion{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.items = this.querySelectorAll('[data-faq-item]');
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.items.forEach((item) => {
+          const button = item.querySelector('.ai-faq-question-button-{{ ai_gen_id }}');
+          const wrapper = item.querySelector('.ai-faq-answer-wrapper-{{ ai_gen_id }}');
+          const content = item.querySelector('.ai-faq-answer-content-{{ ai_gen_id }}');
+
+          button.addEventListener('click', () => {
+            const isActive = item.classList.contains('active');
+
+            if (isActive) {
+              item.classList.remove('active');
+              wrapper.style.maxHeight = '0';
+              button.setAttribute('aria-expanded', 'false');
+            } else {
+              item.classList.add('active');
+              wrapper.style.maxHeight = content.scrollHeight + 'px';
+              button.setAttribute('aria-expanded', 'true');
+            }
+          });
+        });
+      }
+    }
+
+    customElements.define('faq-accordion-{{ ai_gen_id }}', FaqAccordion{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "FAQ accordion",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 600,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 900
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "color",
+      "id": "category_label_color",
+      "label": "Category label",
+      "default": "#6b6b6b"
+    },
+    {
+      "type": "color",
+      "id": "question_color",
+      "label": "Question",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "answer_color",
+      "label": "Answer",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider",
+      "default": "#e8dcc8"
+    },
+    {
+      "type": "color",
+      "id": "caret_color",
+      "label": "Caret icon",
+      "default": "#b5813a"
+    },
+    {
+      "type": "header",
+      "content": "Product & Sourcing"
+    },
+    {
+      "type": "text",
+      "id": "category_1_label",
+      "label": "Category label",
+      "default": "Product & Sourcing"
+    },
+    {
+      "type": "text",
+      "id": "q1_question",
+      "label": "Question 1",
+      "default": "What is the difference between your honey varieties?"
+    },
+    {
+      "type": "textarea",
+      "id": "q1_answer",
+      "label": "Answer 1",
+      "default": "NECTAR&COMB offers a range of honey varieties, each with a distinct flavour profile, colour, and nutritional character depending on the floral source. Details on each variety — including tasting notes and origin — are available on the individual product pages."
+    },
+    {
+      "type": "text",
+      "id": "q2_question",
+      "label": "Question 2",
+      "default": "Where is your honey sourced from?"
+    },
+    {
+      "type": "textarea",
+      "id": "q2_answer",
+      "label": "Answer 2",
+      "default": "Our honey is sourced from carefully selected apiaries across India's most distinctive landscapes — from the Himalayan foothills to the Nilgiris. We work exclusively with migratory beekeepers who follow the seasons and the bloom, moving their hives to ensure each variety captures the full character of its floral source. Every batch is traceable from hive to jar."
+    },
+    {
+      "type": "text",
+      "id": "q3_question",
+      "label": "Question 3",
+      "default": "What is the shelf life of your honey?"
+    },
+    {
+      "type": "textarea",
+      "id": "q3_answer",
+      "label": "Answer 3",
+      "default": "Honey has an indefinite shelf life when stored correctly. We recommend consuming within 24 months of the harvest date printed on the jar or sachet."
+    },
+    {
+      "type": "header",
+      "content": "Purity & Quality"
+    },
+    {
+      "type": "text",
+      "id": "category_2_label",
+      "label": "Category label",
+      "default": "Purity & Quality"
+    },
+    {
+      "type": "text",
+      "id": "q4_question",
+      "label": "Question 4",
+      "default": "How do I know your honey is not adulterated?"
+    },
+    {
+      "type": "textarea",
+      "id": "q4_answer",
+      "label": "Answer 4",
+      "default": "Our honey is tested for purity using standard FSSAI-approved methods. We source directly from verified apiaries and maintain full traceability from hive to jar. No sugar syrups, no blending, no additives — ever. Crystallisation is a natural sign of purity; if your honey crystallises, it is behaving exactly as pure honey should."
+    },
+    {
+      "type": "text",
+      "id": "q5_question",
+      "label": "Question 5",
+      "default": "Why doesn't supermarket honey crystallise?"
+    },
+    {
+      "type": "textarea",
+      "id": "q5_answer",
+      "label": "Answer 5",
+      "default": "Most commercial honey is ultra-filtered and heat-treated to remove pollen and extend shelf life — but this also strips out the very compounds that cause natural crystallisation. If your honey never crystallises, it has likely been heavily processed. Pure honey crystallises. It is supposed to."
+    },
+    {
+      "type": "text",
+      "id": "q6_question",
+      "label": "Question 6",
+      "default": "What is the difference between raw and processed honey?"
+    },
+    {
+      "type": "textarea",
+      "id": "q6_answer",
+      "label": "Answer 6",
+      "default": "Raw honey is extracted and cold-filtered to remove debris, leaving all natural enzymes, pollen, antioxidants, and beneficial compounds intact. Processed honey is heated above 40°C and ultra-filtered, which extends shelf life and keeps it liquid — but destroys much of what makes honey nutritionally valuable. NECTAR&COMB honey is always cold-filtered, never heat-treated."
+    },
+    {
+      "type": "text",
+      "id": "q7_question",
+      "label": "Question 7",
+      "default": "Why is your honey never heated?"
+    },
+    {
+      "type": "textarea",
+      "id": "q7_answer",
+      "label": "Answer 7",
+      "default": "Heating honey above 40°C begins to destroy its natural enzymes — including diastase and invertase — as well as antioxidants and volatile aromatic compounds. The result is a product that looks like honey but has lost much of its nutritional character. We cold-filter only, so everything the bees put in stays in."
+    },
+    {
+      "type": "text",
+      "id": "q8_question",
+      "label": "Question 8",
+      "default": "My honey has crystallised — what should I do?"
+    },
+    {
+      "type": "textarea",
+      "id": "q8_answer",
+      "label": "Answer 8",
+      "default": "Crystallisation is completely natural and is actually a sign of pure, unadulterated honey. To bring it back to liquid form, place the jar or sachet in a bowl of warm (not boiling) water and let it sit for a few minutes. Do not microwave or place in direct sunlight, as excessive heat can degrade the natural enzymes and flavour. Your honey is perfectly safe to eat in its crystallised form too."
+    },
+    {
+      "type": "header",
+      "content": "Health & Safety"
+    },
+    {
+      "type": "text",
+      "id": "category_3_label",
+      "label": "Category label",
+      "default": "Health & Safety"
+    },
+    {
+      "type": "text",
+      "id": "q9_question",
+      "label": "Question 9",
+      "default": "Is honey safe for babies and young children?"
+    },
+    {
+      "type": "textarea",
+      "id": "q9_answer",
+      "label": "Answer 9",
+      "default": "No. Honey should never be given to infants under 12 months of age due to the risk of infant botulism, a rare but serious illness. This applies to all varieties of honey, including raw, processed, and infused. For children above 1 year, honey is generally safe in moderation. If you have any concerns, please consult your pediatrician."
+    },
+    {
+      "type": "text",
+      "id": "q10_question",
+      "label": "Question 10",
+      "default": "How can I test if my honey is pure at home?"
+    },
+    {
+      "type": "textarea",
+      "id": "q10_answer",
+      "label": "Answer 10",
+      "default": "Two simple tests: (1) Drop a small amount into a glass of water — pure honey sinks and dissolves slowly, adulterated honey disperses quickly. (2) Watch for crystallisation over time — pure honey crystallises naturally; if it never does, it may have been heavily processed or adulterated."
+    },
+    {
+      "type": "header",
+      "content": "Additional category"
+    },
+    {
+      "type": "text",
+      "id": "category_4_label",
+      "label": "Category label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ accordion"
+    }
+  ]
+}
+{% endschema %}

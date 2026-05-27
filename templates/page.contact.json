@@ -1,0 +1,215 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 100,
+        "padding-block-end": 20
+      }
+    },
+    "1778001069d58f1c7e": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_c738c29_3qJYcq": {
+          "type": "ai_gen_block_c738c29",
+          "settings": {
+            "hero_image": "shopify://shop_images/nectar-comb-vanilla-honey-clean-label-strip.png",
+            "overlay_color": "#1a1612b3",
+            "label": "CORRESPONDENCE",
+            "label_color": "#c9a96e",
+            "label_font": "raleway_n4",
+            "heading": "We Welcome Your Enquiry",
+            "heading_size": 52,
+            "heading_color": "#fafaf5",
+            "heading_font": "cormorant_n4",
+            "body": "Our team is at your service. Whether you seek to learn more about our single-origin honeys, explore gifting, or simply wish to connect — we are here.",
+            "body_size": 17,
+            "body_color": "#c9bfb0",
+            "body_font": "raleway_n4",
+            "cards_bg_color": "#fafaf5",
+            "card_border_color": "#e8dcc8",
+            "card_icon_color": "#8b7355",
+            "card_label_color": "#8b7355",
+            "card_body_color": "#1a1a1a",
+            "card_1_label": "WRITE TO US",
+            "card_1_email": "info@farmure.in",
+            "card_2_label": "FOLLOW OUR JOURNEY",
+            "card_2_handle": "@nectarandcomb.in",
+            "card_2_link": "https://www.instagram.com/nectarandcomb.in/",
+            "card_3_label": "OUR ADDRESS",
+            "card_3_address": "Plot No. 101, Sector-82, JLPL Industrial Area, SAS Nagar, Mohali, Punjab — 140308"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_c738c29_3qJYcq"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "full-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "section_aezpMd": {
+      "type": "section",
+      "blocks": {
+        "text_yRNmwj": {
+          "type": "text",
+          "settings": {
+            "text": "<h2>Send Us a Message</h2>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "custom",
+            "font": "var(--font-heading--family)",
+            "font_size": "2.5rem",
+            "line_height": "loose",
+            "letter_spacing": "loose",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "text_DMpCeh": {
+          "type": "text",
+          "name": "t:names.text",
+          "settings": {
+            "text": "<p>Share your thoughts, questions, or enquiries below. We endeavour to respond within one business day.</p>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "custom",
+            "font": "var(--font-body--family)",
+            "font_size": "1.125rem",
+            "line_height": "loose",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "contact_form_d4hqYJ": {
+          "type": "contact-form",
+          "settings": {
+            "width": "custom",
+            "custom_width": 75,
+            "width_mobile": "custom",
+            "custom_width_mobile": 100,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "submit-button": {
+              "type": "contact-form-submit-button",
+              "static": true,
+              "settings": {
+                "label": "Send Enquiry",
+                "style_class": "button",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": []
+        }
+      },
+      "block_order": [
+        "text_yRNmwj",
+        "text_DMpCeh",
+        "contact_form_d4hqYJ"
+      ],
+      "name": "t:names.contact_form",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 24,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-1",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 80
+      }
+    }
+  },
+  "order": [
+    "main",
+    "1778001069d58f1c7e",
+    "section_aezpMd"
+  ]
+}

@@ -1,0 +1,264 @@
+{% doc %}
+  @prompt
+    Create a founder's quote block for an About Us page. An italic, centered quote that reads: "We started Nectar & Comb after encountering a jar of raw Sidr honey sourced from a remote, small-batch beekeeper — unlike anything we had tasted before. Pure, unprocessed, and completely alive. We knew this quality deserved a wider audience. This is our attempt to make that possible." followed by attribution line "— The Founders". Style: premium, editorial, minimal, large italic serif font, centered text, generous padding, warm off-white #FAFAF5 background.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-founders-quote-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_top }}px {{ block.settings.padding_horizontal }}px {{ block.settings.padding_bottom }}px {{ block.settings.padding_horizontal }}px;
+  }
+
+  .ai-founders-quote__container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .ai-founders-quote__text-{{ ai_gen_id }} {
+    font-family: {{ block.settings.quote_font.family }}, {{ block.settings.quote_font.fallback_families }};
+    font-weight: {{ block.settings.quote_font.weight }};
+    font-style: {{ block.settings.quote_font.style }};
+    font-size: {{ block.settings.quote_size }}px;
+    line-height: {{ block.settings.line_height }};
+    color: {{ block.settings.text_color }};
+    margin: 0 0 {{ block.settings.spacing_between }}px 0;
+  }
+
+  .ai-founders-quote__attribution-{{ ai_gen_id }} {
+    font-family: {{ block.settings.attribution_font.family }}, {{ block.settings.attribution_font.fallback_families }};
+    font-weight: {{ block.settings.attribution_font.weight }};
+    font-style: {{ block.settings.attribution_font.style }};
+    font-size: {{ block.settings.attribution_size }}px;
+    color: {{ block.settings.attribution_color }};
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-founders-quote-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_top_mobile }}px {{ block.settings.padding_horizontal_mobile }}px {{ block.settings.padding_bottom_mobile }}px {{ block.settings.padding_horizontal_mobile }}px;
+    }
+
+    .ai-founders-quote__text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.quote_size_mobile }}px;
+    }
+
+    .ai-founders-quote__attribution-{{ ai_gen_id }} {
+      font-size: {{ block.settings.attribution_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-founders-quote-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-founders-quote__container-{{ ai_gen_id }}">
+    {% if block.settings.quote_text != blank %}
+      <blockquote class="ai-founders-quote__text-{{ ai_gen_id }}">
+        {{ block.settings.quote_text }}
+      </blockquote>
+    {% endif %}
+    {% if block.settings.attribution_text != blank %}
+      <p class="ai-founders-quote__attribution-{{ ai_gen_id }}">
+        {{ block.settings.attribution_text }}
+      </p>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Founder's quote",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Quote"
+    },
+    {
+      "type": "textarea",
+      "id": "quote_text",
+      "label": "Quote text",
+      "default": "We started Nectar & Comb after encountering a jar of raw Sidr honey sourced from a remote, small-batch beekeeper — unlike anything we had tasted before. Pure, unprocessed, and completely alive. We knew this quality deserved a wider audience. This is our attempt to make that possible."
+    },
+    {
+      "type": "font_picker",
+      "id": "quote_font",
+      "label": "Quote font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "quote_size",
+      "label": "Desktop quote size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "quote_size_mobile",
+      "label": "Mobile quote size",
+      "min": 14,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "line_height",
+      "label": "Line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Quote color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Attribution"
+    },
+    {
+      "type": "text",
+      "id": "attribution_text",
+      "label": "Attribution text",
+      "default": "— The Founders"
+    },
+    {
+      "type": "font_picker",
+      "id": "attribution_font",
+      "label": "Attribution font",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "attribution_size",
+      "label": "Desktop attribution size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "attribution_size_mobile",
+      "label": "Mobile attribution size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "attribution_color",
+      "label": "Attribution color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "spacing_between",
+      "label": "Space between quote and attribution",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 400,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "default": 800
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FAFAF5"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Desktop top padding",
+      "min": 20,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Desktop bottom padding",
+      "min": 20,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Desktop horizontal padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Mobile top padding",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Mobile bottom padding",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "label": "Mobile horizontal padding",
+      "min": 15,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Founder's quote"
+    }
+  ]
+}
+{% endschema %}

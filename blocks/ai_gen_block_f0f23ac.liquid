@@ -1,0 +1,389 @@
+{% doc %}
+  @prompt
+    Create a premium collection filter navigation tab bar block with 4 tabs. Each tab must have its own schema settings for label (text) and URL (url input) so the merchant can edit them in the theme editor sidebar. Default values: Tab 1 label "All" url "/collections/all-products", Tab 2 label "Jars" url "/collections/jars", Tab 3 label "Snap-Click Sachets" url "/collections/snap-click-sachets", Tab 4 label "The Nectar Edit" url "/collections/the-nectar-edit". Highlight the active tab based on the current page URL using a thin underline. Style: minimal, elegant, luxury honey brand — clean horizontal tabs, generous spacing, no dropdowns, no buttons.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-collection-nav-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+  }
+
+  .ai-collection-nav__container-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: {{ block.settings.alignment }};
+    align-items: center;
+    gap: {{ block.settings.tab_spacing }}px;
+    padding: {{ block.settings.vertical_padding }}px 0;
+    border-bottom: 1px solid {{ block.settings.border_color }};
+  }
+
+  .ai-collection-nav__tab-{{ ai_gen_id }} {
+    position: relative;
+    display: inline-block;
+    padding: {{ block.settings.tab_padding_vertical }}px {{ block.settings.tab_padding_horizontal }}px;
+    font-family: {{ block.settings.tab_font.family }}, {{ block.settings.tab_font.fallback_families }};
+    font-weight: {{ block.settings.tab_font.weight }};
+    font-size: {{ block.settings.tab_font_size }}px;
+    color: {{ block.settings.tab_text_color }};
+    text-decoration: none;
+    text-transform: {{ block.settings.tab_text_transform }};
+    letter-spacing: {{ block.settings.tab_letter_spacing }}px;
+    transition: color 0.3s ease;
+  }
+
+  .ai-collection-nav__tab-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.tab_hover_color }};
+  }
+
+  .ai-collection-nav__tab-{{ ai_gen_id }}::after {
+    content: '';
+    position: absolute;
+    bottom: calc(-1 * {{ block.settings.vertical_padding }}px - 1px);
+    left: 0;
+    width: 100%;
+    height: {{ block.settings.underline_thickness }}px;
+    background-color: {{ block.settings.active_underline_color }};
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-collection-nav__tab-{{ ai_gen_id }}.active::after {
+    opacity: 1;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-collection-nav__container-{{ ai_gen_id }} {
+      gap: {{ block.settings.tab_spacing | times: 0.7 }}px;
+    }
+
+    .ai-collection-nav__tab-{{ ai_gen_id }} {
+      font-size: {{ block.settings.tab_font_size | times: 0.9 }}px;
+      padding: {{ block.settings.tab_padding_vertical | times: 0.8 }}px {{ block.settings.tab_padding_horizontal | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<collection-nav-{{ ai_gen_id }}
+  class="ai-collection-nav-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <nav class="ai-collection-nav__container-{{ ai_gen_id }}">
+    {% if block.settings.tab_1_label != blank %}
+      <a
+        href="{{ block.settings.tab_1_url }}"
+        class="ai-collection-nav__tab-{{ ai_gen_id }}"
+        data-url="{{ block.settings.tab_1_url }}"
+      >
+        {{ block.settings.tab_1_label }}
+      </a>
+    {% endif %}
+
+    {% if block.settings.tab_2_label != blank %}
+      <a
+        href="{{ block.settings.tab_2_url }}"
+        class="ai-collection-nav__tab-{{ ai_gen_id }}"
+        data-url="{{ block.settings.tab_2_url }}"
+      >
+        {{ block.settings.tab_2_label }}
+      </a>
+    {% endif %}
+
+    {% if block.settings.tab_3_label != blank %}
+      <a
+        href="{{ block.settings.tab_3_url }}"
+        class="ai-collection-nav__tab-{{ ai_gen_id }}"
+        data-url="{{ block.settings.tab_3_url }}"
+      >
+        {{ block.settings.tab_3_label }}
+      </a>
+    {% endif %}
+
+    {% if block.settings.tab_4_label != blank %}
+      <a
+        href="{{ block.settings.tab_4_url }}"
+        class="ai-collection-nav__tab-{{ ai_gen_id }}"
+        data-url="{{ block.settings.tab_4_url }}"
+      >
+        {{ block.settings.tab_4_label }}
+      </a>
+    {% endif %}
+  </nav>
+</collection-nav-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CollectionNav{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.tabs = this.querySelectorAll('.ai-collection-nav__tab-{{ ai_gen_id }}');
+        this.highlightActiveTab();
+      }
+
+      highlightActiveTab() {
+        const currentPath = window.location.pathname;
+
+        this.tabs.forEach((tab) => {
+          const tabUrl = tab.getAttribute('data-url');
+          
+          if (tabUrl && currentPath.includes(tabUrl)) {
+            tab.classList.add('active');
+          } else {
+            tab.classList.remove('active');
+          }
+        });
+      }
+    }
+
+    customElements.define('collection-nav-{{ ai_gen_id }}', CollectionNav{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collection filter tabs",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Tab 1"
+    },
+    {
+      "type": "text",
+      "id": "tab_1_label",
+      "label": "Label",
+      "default": "All"
+    },
+    {
+      "type": "url",
+      "id": "tab_1_url",
+      "label": "URL"
+    },
+    {
+      "type": "header",
+      "content": "Tab 2"
+    },
+    {
+      "type": "text",
+      "id": "tab_2_label",
+      "label": "Label",
+      "default": "Jars"
+    },
+    {
+      "type": "url",
+      "id": "tab_2_url",
+      "label": "URL"
+    },
+    {
+      "type": "header",
+      "content": "Tab 3"
+    },
+    {
+      "type": "text",
+      "id": "tab_3_label",
+      "label": "Label",
+      "default": "Snap-Click Sachets"
+    },
+    {
+      "type": "url",
+      "id": "tab_3_url",
+      "label": "URL"
+    },
+    {
+      "type": "header",
+      "content": "Tab 4"
+    },
+    {
+      "type": "text",
+      "id": "tab_4_label",
+      "label": "Label",
+      "default": "The Nectar Edit"
+    },
+    {
+      "type": "url",
+      "id": "tab_4_url",
+      "label": "URL"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "tab_spacing",
+      "label": "Tab spacing",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "label": "Vertical padding",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "tab_padding_vertical",
+      "label": "Tab vertical padding",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "tab_padding_horizontal",
+      "label": "Tab horizontal padding",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "tab_font",
+      "label": "Font",
+      "default": "raleway_n4"
+    },
+    {
+      "type": "range",
+      "id": "tab_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "tab_text_transform",
+      "label": "Text transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "tab_letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "tab_text_color",
+      "label": "Tab text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "tab_hover_color",
+      "label": "Tab hover",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "active_underline_color",
+      "label": "Active underline",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border",
+      "default": "#e8dcc8"
+    },
+    {
+      "type": "header",
+      "content": "Active state"
+    },
+    {
+      "type": "range",
+      "id": "underline_thickness",
+      "label": "Underline thickness",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection filter tabs"
+    }
+  ]
+}
+{% endschema %}

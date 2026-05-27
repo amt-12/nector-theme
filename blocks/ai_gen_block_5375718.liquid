@@ -1,0 +1,496 @@
+{% doc %}
+  @prompt
+    Regenerate the Editorial Split block for the About Us page of an ultra-luxury premium honey brand. Two columns side by side — left text column, right image column. Requirements: Customizable top padding and bottom padding settings with separate controls for desktop and mobile. Image size and height options (small/medium/large/full or vh input). Image focal point control. Text column: Chapter label in small caps with letter-spacing, large serif headline, body paragraph, minimal CTA button. Image column: full cover image with optional overlay text in gold serif font. Background color setting for text column. Use theme heading font (Cormorant) for headlines and Raleway for labels and body. Sharp 0px border radius on buttons. Fully responsive with separate mobile padding controls. Premium editorial luxury aesthetic with generous whitespace and no decorative borders.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-editorial-split-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding-top: {{ block.settings.padding_top_desktop }}px;
+    padding-bottom: {{ block.settings.padding_bottom_desktop }}px;
+  }
+
+  .ai-editorial-split-container-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .ai-editorial-split-text-column-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px;
+    background-color: {{ block.settings.text_background_color }};
+  }
+
+  .ai-editorial-split-chapter-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: {{ block.settings.chapter_color }};
+    margin: 0 0 24px 0;
+  }
+
+  .ai-editorial-split-headline-{{ ai_gen_id }} {
+    font-family: 'Cormorant', serif;
+    font-size: {{ block.settings.headline_size }}px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: {{ block.settings.headline_color }};
+    margin: 0 0 32px 0;
+  }
+
+  .ai-editorial-split-body-{{ ai_gen_id }} {
+    font-family: 'Raleway', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    color: {{ block.settings.body_color }};
+    margin: 0 0 40px 0;
+  }
+
+  .ai-editorial-split-cta-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 14px 32px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: {{ block.settings.button_text_color }};
+    background-color: {{ block.settings.button_background_color }};
+    border: 1px solid {{ block.settings.button_border_color }};
+    border-radius: 0px;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+  }
+
+  .ai-editorial-split-cta-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_background_color }};
+    color: {{ block.settings.button_hover_text_color }};
+    border-color: {{ block.settings.button_hover_border_color }};
+  }
+
+  .ai-editorial-split-image-column-{{ ai_gen_id }} {
+    position: relative;
+    overflow: hidden;
+    {% if block.settings.image_height == 'small' %}
+      height: 400px;
+    {% elsif block.settings.image_height == 'medium' %}
+      height: 600px;
+    {% elsif block.settings.image_height == 'large' %}
+      height: 800px;
+    {% elsif block.settings.image_height == 'full' %}
+      height: 100vh;
+    {% elsif block.settings.image_height == 'custom' %}
+      height: {{ block.settings.custom_height }}vh;
+    {% endif %}
+  }
+
+  .ai-editorial-split-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: {{ block.settings.image_focal_point }};
+  }
+
+  .ai-editorial-split-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-editorial-split-image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 400px;
+  }
+
+  .ai-editorial-split-overlay-text-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    font-family: 'Cormorant', serif;
+    font-size: {{ block.settings.overlay_text_size }}px;
+    font-weight: 400;
+    color: {{ block.settings.overlay_text_color }};
+    margin: 0;
+    z-index: 2;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-editorial-split-{{ ai_gen_id }} {
+      padding-top: {{ block.settings.padding_top_mobile }}px;
+      padding-bottom: {{ block.settings.padding_bottom_mobile }}px;
+    }
+
+    .ai-editorial-split-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-editorial-split-text-column-{{ ai_gen_id }} {
+      padding: 40px 24px;
+    }
+
+    .ai-editorial-split-headline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.headline_size | times: 0.7 }}px;
+    }
+
+    .ai-editorial-split-image-column-{{ ai_gen_id }} {
+      {% if block.settings.image_height == 'small' %}
+        height: 300px;
+      {% elsif block.settings.image_height == 'medium' %}
+        height: 400px;
+      {% elsif block.settings.image_height == 'large' %}
+        height: 500px;
+      {% elsif block.settings.image_height == 'full' %}
+        height: 60vh;
+      {% elsif block.settings.image_height == 'custom' %}
+        height: {{ block.settings.custom_height | times: 0.6 }}vh;
+      {% endif %}
+    }
+
+    .ai-editorial-split-overlay-text-{{ ai_gen_id }} {
+      bottom: 24px;
+      left: 24px;
+      font-size: {{ block.settings.overlay_text_size | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-editorial-split-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-editorial-split-container-{{ ai_gen_id }}">
+    <div class="ai-editorial-split-text-column-{{ ai_gen_id }}">
+      {% if block.settings.chapter_label != blank %}
+        <div class="ai-editorial-split-chapter-{{ ai_gen_id }}">
+          {{ block.settings.chapter_label }}
+        </div>
+      {% endif %}
+
+      {% if block.settings.headline != blank %}
+        <h2 class="ai-editorial-split-headline-{{ ai_gen_id }}">
+          {{ block.settings.headline }}
+        </h2>
+      {% endif %}
+
+      {% if block.settings.body_text != blank %}
+        <div class="ai-editorial-split-body-{{ ai_gen_id }}">
+          {{ block.settings.body_text }}
+        </div>
+      {% endif %}
+
+      {% if block.settings.cta_text != blank %}
+        <a href="{{ block.settings.cta_link }}" class="ai-editorial-split-cta-{{ ai_gen_id }}">
+          {{ block.settings.cta_text }}
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="ai-editorial-split-image-column-{{ ai_gen_id }}">
+      {% if block.settings.image %}
+        <img
+          src="{{ block.settings.image | image_url: width: 2000 }}"
+          alt="{{ block.settings.image.alt | escape }}"
+          loading="lazy"
+          width="{{ block.settings.image.width }}"
+          height="{{ block.settings.image.height }}"
+          class="ai-editorial-split-image-{{ ai_gen_id }}"
+        >
+      {% else %}
+        <div class="ai-editorial-split-image-placeholder-{{ ai_gen_id }}">
+          {{ 'image' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+
+      {% if block.settings.overlay_text != blank %}
+        <div class="ai-editorial-split-overlay-text-{{ ai_gen_id }}">
+          {{ block.settings.overlay_text }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Editorial split",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Desktop top padding",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Desktop bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Mobile top padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Mobile bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Text column"
+    },
+    {
+      "type": "text",
+      "id": "chapter_label",
+      "label": "Chapter label",
+      "default": "Chapter One"
+    },
+    {
+      "type": "color",
+      "id": "chapter_color",
+      "label": "Chapter color",
+      "default": "#8b7355"
+    },
+    {
+      "type": "textarea",
+      "id": "headline",
+      "label": "Headline",
+      "default": "The Art of Pure Honey"
+    },
+    {
+      "type": "range",
+      "id": "headline_size",
+      "label": "Headline size",
+      "min": 24,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "headline_color",
+      "label": "Headline color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "textarea",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "Sourced from pristine landscapes, our honey embodies the essence of nature's finest work. Each jar tells a story of dedication, purity, and the timeless craft of beekeeping."
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body color",
+      "default": "#6b5345"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Discover More"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Button background",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button border",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_background_color",
+      "label": "Button hover background",
+      "default": "#0f0f0f"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Button hover text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_border_color",
+      "label": "Button hover border",
+      "default": "#0f0f0f"
+    },
+    {
+      "type": "color",
+      "id": "text_background_color",
+      "label": "Background color",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "header",
+      "content": "Image column"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_height",
+      "label": "Image height",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "full",
+          "label": "Full viewport"
+        },
+        {
+          "value": "custom",
+          "label": "Custom"
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "range",
+      "id": "custom_height",
+      "label": "Custom height",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 60
+    },
+    {
+      "type": "select",
+      "id": "image_focal_point",
+      "label": "Image focal point",
+      "options": [
+        {
+          "value": "center center",
+          "label": "Center"
+        },
+        {
+          "value": "top center",
+          "label": "Top"
+        },
+        {
+          "value": "bottom center",
+          "label": "Bottom"
+        },
+        {
+          "value": "center left",
+          "label": "Left"
+        },
+        {
+          "value": "center right",
+          "label": "Right"
+        },
+        {
+          "value": "top left",
+          "label": "Top left"
+        },
+        {
+          "value": "top right",
+          "label": "Top right"
+        },
+        {
+          "value": "bottom left",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom right",
+          "label": "Bottom right"
+        }
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "text",
+      "id": "overlay_text",
+      "label": "Overlay text"
+    },
+    {
+      "type": "range",
+      "id": "overlay_text_size",
+      "label": "Overlay text size",
+      "min": 16,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "overlay_text_color",
+      "label": "Overlay text color",
+      "default": "#d4af37"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial split"
+    }
+  ]
+}
+{% endschema %}

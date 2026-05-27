@@ -1,0 +1,615 @@
+{% doc %}
+  @prompt
+    Create a full-width two-column editorial split section for an About Us page. No container constraints — 100vw full bleed. Left column (cream/off-white background): small all-caps label "CHAPTER 2" at top, large serif headline "Single-origin. Cold-extracted. Fully traceable." (each phrase on its own line), followed by two body text paragraphs. A "Shop Now" button below the text that links to /products/9309163815163. Right column: full-height product image of a Eucalyptus honey jar on a dark moody background. Overlaid on the image in large italic serif gold/cream text: 'We treat honey like wine. Origin is everything.' Both columns equal height, image fills the right column completely. Premium, editorial, minimalist aesthetic.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-editorial-split-{{ ai_gen_id }} {
+    display: block;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
+
+  .ai-editorial-split__container-{{ ai_gen_id }} {
+    display: flex;
+    min-height: {{ block.settings.min_height }}px;
+  }
+
+  .ai-editorial-split__column-{{ ai_gen_id }} {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-editorial-split__text-column-{{ ai_gen_id }} {
+    background-color: {{ block.settings.text_bg_color }};
+    padding: {{ block.settings.text_padding }}px;
+  }
+
+  .ai-editorial-split__text-content-{{ ai_gen_id }} {
+    max-width: {{ block.settings.text_max_width }}px;
+  }
+
+  .ai-editorial-split__label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.label_size }}px;
+    letter-spacing: {{ block.settings.label_spacing }}px;
+    text-transform: uppercase;
+    color: {{ block.settings.label_color }};
+    margin-bottom: {{ block.settings.label_margin }}px;
+    font-family: {{ block.settings.label_font.family }}, {{ block.settings.label_font.fallback_families }};
+    font-weight: {{ block.settings.label_font.weight }};
+  }
+
+  .ai-editorial-split__headline-{{ ai_gen_id }} {
+    font-size: {{ block.settings.headline_size }}px;
+    line-height: {{ block.settings.headline_line_height }};
+    color: {{ block.settings.headline_color }};
+    margin-bottom: {{ block.settings.headline_margin }}px;
+    font-family: {{ block.settings.headline_font.family }}, {{ block.settings.headline_font.fallback_families }};
+    font-weight: {{ block.settings.headline_font.weight }};
+    font-style: {{ block.settings.headline_font.style }};
+  }
+
+  .ai-editorial-split__body-{{ ai_gen_id }} {
+    font-size: {{ block.settings.body_size }}px;
+    line-height: {{ block.settings.body_line_height }};
+    color: {{ block.settings.body_color }};
+    margin-bottom: {{ block.settings.body_margin }}px;
+  }
+
+  .ai-editorial-split__body-{{ ai_gen_id }} p {
+    margin-bottom: 1em;
+  }
+
+  .ai-editorial-split__body-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-editorial-split__button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border: {{ block.settings.button_border_width }}px solid {{ block.settings.button_border_color }};
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: {{ block.settings.button_font_size }}px;
+    transition: all 0.3s ease;
+    text-transform: {{ block.settings.button_text_transform }};
+    letter-spacing: {{ block.settings.button_letter_spacing }}px;
+  }
+
+  .ai-editorial-split__button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg_color }};
+    color: {{ block.settings.button_hover_text_color }};
+    border-color: {{ block.settings.button_hover_border_color }};
+  }
+
+  .ai-editorial-split__image-column-{{ ai_gen_id }} {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-editorial-split__image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-editorial-split__image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #1c1812;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-editorial-split__image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 400px;
+    opacity: 0.3;
+  }
+
+  .ai-editorial-split__overlay-text-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: {{ block.settings.overlay_size }}px;
+    line-height: {{ block.settings.overlay_line_height }};
+    color: {{ block.settings.overlay_color }};
+    font-family: {{ block.settings.overlay_font.family }}, {{ block.settings.overlay_font.fallback_families }};
+    font-weight: {{ block.settings.overlay_font.weight }};
+    font-style: {{ block.settings.overlay_font.style }};
+    text-align: center;
+    max-width: 80%;
+    z-index: 2;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-editorial-split__container-{{ ai_gen_id }} {
+      flex-direction: column;
+      min-height: auto;
+    }
+
+    .ai-editorial-split__text-column-{{ ai_gen_id }} {
+      padding: {{ block.settings.text_padding | times: 0.6 }}px;
+    }
+
+    .ai-editorial-split__label-{{ ai_gen_id }} {
+      font-size: {{ block.settings.label_size | times: 0.8 }}px;
+    }
+
+    .ai-editorial-split__headline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.headline_size | times: 0.6 }}px;
+    }
+
+    .ai-editorial-split__body-{{ ai_gen_id }} {
+      font-size: {{ block.settings.body_size | times: 0.9 }}px;
+    }
+
+    .ai-editorial-split__overlay-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.overlay_size | times: 0.5 }}px;
+    }
+
+    .ai-editorial-split__image-column-{{ ai_gen_id }} {
+      min-height: 400px;
+    }
+  }
+{% endstyle %}
+
+<editorial-split-{{ ai_gen_id }} class="ai-editorial-split-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-editorial-split__container-{{ ai_gen_id }}">
+    <div class="ai-editorial-split__column-{{ ai_gen_id }} ai-editorial-split__text-column-{{ ai_gen_id }}">
+      <div class="ai-editorial-split__text-content-{{ ai_gen_id }}">
+        {% if block.settings.label != blank %}
+          <div class="ai-editorial-split__label-{{ ai_gen_id }}">{{ block.settings.label }}</div>
+        {% endif %}
+
+        {% if block.settings.headline != blank %}
+          <h2 class="ai-editorial-split__headline-{{ ai_gen_id }}">{{ block.settings.headline }}</h2>
+        {% endif %}
+
+        {% if block.settings.body_text != blank %}
+          <div class="ai-editorial-split__body-{{ ai_gen_id }}">{{ block.settings.body_text }}</div>
+        {% endif %}
+
+        {% if block.settings.button_text != blank %}
+          <a href="{{ block.settings.button_link }}" class="ai-editorial-split__button-{{ ai_gen_id }}">
+            {{ block.settings.button_text }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ai-editorial-split__column-{{ ai_gen_id }} ai-editorial-split__image-column-{{ ai_gen_id }}">
+      {% if block.settings.image %}
+        <img
+          src="{{ block.settings.image | image_url: width: 2000 }}"
+          alt="{{ block.settings.image.alt | escape }}"
+          loading="lazy"
+          width="{{ block.settings.image.width }}"
+          height="{{ block.settings.image.height }}"
+          class="ai-editorial-split__image-{{ ai_gen_id }}"
+        >
+      {% else %}
+        <div class="ai-editorial-split__image-placeholder-{{ ai_gen_id }}">
+          {{ 'product-1' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+
+      {% if block.settings.overlay_text != blank %}
+        <div class="ai-editorial-split__overlay-text-{{ ai_gen_id }}">{{ block.settings.overlay_text }}</div>
+      {% endif %}
+    </div>
+  </div>
+</editorial-split-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class EditorialSplit{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.style.display = 'block';
+      }
+    }
+
+    customElements.define('editorial-split-{{ ai_gen_id }}', EditorialSplit{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Editorial split",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "label": "Minimum height",
+      "min": 400,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "default": 700
+    },
+    {
+      "type": "header",
+      "content": "Text column"
+    },
+    {
+      "type": "color",
+      "id": "text_bg_color",
+      "label": "Background color",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "range",
+      "id": "text_padding",
+      "label": "Padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "text_max_width",
+      "label": "Content max width",
+      "min": 300,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "default": 500
+    },
+    {
+      "type": "header",
+      "content": "Label"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label text",
+      "default": "CHAPTER 2"
+    },
+    {
+      "type": "font_picker",
+      "id": "label_font",
+      "label": "Font",
+      "default": "work_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "label": "Size",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "label_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "label_margin",
+      "label": "Bottom margin",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "textarea",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Single-origin.\nCold-extracted.\nFully traceable."
+    },
+    {
+      "type": "font_picker",
+      "id": "headline_font",
+      "label": "Font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "headline_size",
+      "label": "Size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "headline_line_height",
+      "label": "Line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.2
+    },
+    {
+      "type": "color",
+      "id": "headline_color",
+      "label": "Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "headline_margin",
+      "label": "Bottom margin",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Body text"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "<p>Every jar tells a story of origin, season, and the unique flora that shaped it. We source from single apiaries across India, working with migratory beekeepers who understand the land.</p><p>Our cold-extraction process preserves the natural enzymes and delicate flavor profiles that heat would destroy. The result is honey in its purest form.</p>"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "body_line_height",
+      "label": "Line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "body_margin",
+      "label": "Bottom margin",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 16,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "button_text_transform",
+      "label": "Text transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "button_letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0.5
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Border color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Hover background",
+      "default": "#0f0f0f"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_border_color",
+      "label": "Hover border color",
+      "default": "#0f0f0f"
+    },
+    {
+      "type": "header",
+      "content": "Image column"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Overlay text"
+    },
+    {
+      "type": "textarea",
+      "id": "overlay_text",
+      "label": "Overlay text",
+      "default": "We treat honey like wine. Origin is everything."
+    },
+    {
+      "type": "font_picker",
+      "id": "overlay_font",
+      "label": "Font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "overlay_size",
+      "label": "Size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "overlay_line_height",
+      "label": "Line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.3
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Color",
+      "default": "#e8dcc8"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial split"
+    }
+  ]
+}
+{% endschema %}

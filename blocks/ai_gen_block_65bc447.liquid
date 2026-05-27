@@ -1,0 +1,437 @@
+{% doc %}
+  @prompt
+    Create an editorial mid-article content block for a premium honey brand blog. The block should contain the following elements in order, all editable via block settings:
+    
+    1. IMAGE + CAPTION (first): A full-width editorial image (max ~680px centered) with a short italic caption below it in small serif text, left-aligned. E.g. "A beekeeper inspects the comb during the eucalyptus bloom, Punjab."
+    
+    2. BODY PARAGRAPH: One regular body paragraph in serif or clean sans-serif, ~16px, generous line height. E.g. "At Nectar & Comb, we work with these beekeepers in partnership, not as suppliers, but as custodians of the land. Our honey is cold-extracted, unblended, and unfiltered — just as it comes from the hive. Each batch is single-origin, carrying the character of a place and a season that can never be replicated."
+    
+    3. IMAGE + CAPTION (second): Another full-width editorial image (max ~680px centered) with italic caption below. E.g. "Eucalyptus groves near Phagwara, Punjab — the source of our Eucalyptus Honey."
+    
+    4. BODY PARAGRAPHS: Two more regular body paragraphs. E.g. "When you taste our Eucalyptus Honey, you're tasting October in Punjab..." and "This is slow honey. Honest honey. Honey with a sense of place."
+    
+    5. PULL QUOTE: Centered blockquote with thin horizontal rules above and below. Large italic serif font. E.g. "Geography is an ingredient. The specific angle of light through eucalyptus leaves in October — that's in the jar." No attribution needed for this one.
+    
+    Design: cream/off-white background (#FAF8F4), dark near-black text, max content width ~680px centered, generous vertical spacing between elements, captions in light grey italic small text. Fully responsive on mobile. All text and images editable via block settings (image pickers and text fields).
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-editorial-content-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.vertical_spacing }}px 20px;
+  }
+
+  .ai-editorial-content__container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-editorial-content__image-wrapper-{{ ai_gen_id }} {
+    margin-bottom: {{ block.settings.element_spacing }}px;
+  }
+
+  .ai-editorial-content__image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ai-editorial-content__image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+  }
+
+  .ai-editorial-content__image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 500px;
+    max-height: 400px;
+  }
+
+  .ai-editorial-content__caption-{{ ai_gen_id }} {
+    font-family: {{ block.settings.caption_font.family }}, {{ block.settings.caption_font.fallback_families }};
+    font-weight: {{ block.settings.caption_font.weight }};
+    font-style: italic;
+    font-size: {{ block.settings.caption_size }}px;
+    line-height: 1.5;
+    color: {{ block.settings.caption_color }};
+    margin-top: 12px;
+    text-align: left;
+  }
+
+  .ai-editorial-content__paragraph-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-size: {{ block.settings.body_size }}px;
+    line-height: {{ block.settings.body_line_height }};
+    color: {{ block.settings.text_color }};
+    margin-bottom: {{ block.settings.element_spacing }}px;
+  }
+
+  .ai-editorial-content__quote-wrapper-{{ ai_gen_id }} {
+    margin: {{ block.settings.element_spacing }}px 0;
+    padding: {{ block.settings.quote_padding }}px 0;
+    border-top: {{ block.settings.quote_rule_width }}px solid {{ block.settings.quote_rule_color }};
+    border-bottom: {{ block.settings.quote_rule_width }}px solid {{ block.settings.quote_rule_color }};
+  }
+
+  .ai-editorial-content__quote-{{ ai_gen_id }} {
+    font-family: {{ block.settings.quote_font.family }}, {{ block.settings.quote_font.fallback_families }};
+    font-weight: {{ block.settings.quote_font.weight }};
+    font-style: italic;
+    font-size: {{ block.settings.quote_size }}px;
+    line-height: {{ block.settings.quote_line_height }};
+    color: {{ block.settings.text_color }};
+    text-align: center;
+    margin: 0;
+    padding: 0 20px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-editorial-content-{{ ai_gen_id }} {
+      padding: {{ block.settings.vertical_spacing | times: 0.6 }}px 16px;
+    }
+
+    .ai-editorial-content__paragraph-{{ ai_gen_id }} {
+      font-size: {{ block.settings.body_size | times: 0.9 }}px;
+      margin-bottom: {{ block.settings.element_spacing | times: 0.7 }}px;
+    }
+
+    .ai-editorial-content__caption-{{ ai_gen_id }} {
+      font-size: {{ block.settings.caption_size | times: 0.9 }}px;
+    }
+
+    .ai-editorial-content__quote-{{ ai_gen_id }} {
+      font-size: {{ block.settings.quote_size | times: 0.75 }}px;
+      padding: 0 10px;
+    }
+
+    .ai-editorial-content__image-wrapper-{{ ai_gen_id }} {
+      margin-bottom: {{ block.settings.element_spacing | times: 0.7 }}px;
+    }
+
+    .ai-editorial-content__quote-wrapper-{{ ai_gen_id }} {
+      margin: {{ block.settings.element_spacing | times: 0.7 }}px 0;
+      padding: {{ block.settings.quote_padding | times: 0.7 }}px 0;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-editorial-content-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-editorial-content__container-{{ ai_gen_id }}">
+    {% if block.settings.image_1 != blank or block.settings.caption_1 != blank %}
+      <div class="ai-editorial-content__image-wrapper-{{ ai_gen_id }}">
+        {% if block.settings.image_1 %}
+          <img
+            src="{{ block.settings.image_1 | image_url: width: 1400 }}"
+            alt="{{ block.settings.image_1.alt | escape }}"
+            loading="lazy"
+            width="{{ block.settings.image_1.width }}"
+            height="{{ block.settings.image_1.height }}"
+            class="ai-editorial-content__image-{{ ai_gen_id }}"
+          >
+        {% else %}
+          <div class="ai-editorial-content__image-placeholder-{{ ai_gen_id }}">
+            {{ 'image' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+        {% if block.settings.caption_1 != blank %}
+          <div class="ai-editorial-content__caption-{{ ai_gen_id }}">
+            {{ block.settings.caption_1 }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.paragraph_1 != blank %}
+      <div class="ai-editorial-content__paragraph-{{ ai_gen_id }}">
+        {{ block.settings.paragraph_1 }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.image_2 != blank or block.settings.caption_2 != blank %}
+      <div class="ai-editorial-content__image-wrapper-{{ ai_gen_id }}">
+        {% if block.settings.image_2 %}
+          <img
+            src="{{ block.settings.image_2 | image_url: width: 1400 }}"
+            alt="{{ block.settings.image_2.alt | escape }}"
+            loading="lazy"
+            width="{{ block.settings.image_2.width }}"
+            height="{{ block.settings.image_2.height }}"
+            class="ai-editorial-content__image-{{ ai_gen_id }}"
+          >
+        {% else %}
+          <div class="ai-editorial-content__image-placeholder-{{ ai_gen_id }}">
+            {{ 'image' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+        {% if block.settings.caption_2 != blank %}
+          <div class="ai-editorial-content__caption-{{ ai_gen_id }}">
+            {{ block.settings.caption_2 }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.paragraph_2 != blank %}
+      <div class="ai-editorial-content__paragraph-{{ ai_gen_id }}">
+        {{ block.settings.paragraph_2 }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.paragraph_3 != blank %}
+      <div class="ai-editorial-content__paragraph-{{ ai_gen_id }}">
+        {{ block.settings.paragraph_3 }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.pull_quote != blank %}
+      <div class="ai-editorial-content__quote-wrapper-{{ ai_gen_id }}">
+        <blockquote class="ai-editorial-content__quote-{{ ai_gen_id }}">
+          {{ block.settings.pull_quote }}
+        </blockquote>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Editorial content",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "First image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_1",
+      "label": "Caption",
+      "default": "A beekeeper inspects the comb during the eucalyptus bloom, Punjab."
+    },
+    {
+      "type": "header",
+      "content": "First paragraph"
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph_1",
+      "label": "Text",
+      "default": "At Nectar & Comb, we work with these beekeepers in partnership, not as suppliers, but as custodians of the land. Our honey is cold-extracted, unblended, and unfiltered — just as it comes from the hive. Each batch is single-origin, carrying the character of a place and a season that can never be replicated."
+    },
+    {
+      "type": "header",
+      "content": "Second image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_2",
+      "label": "Caption",
+      "default": "Eucalyptus groves near Phagwara, Punjab — the source of our Eucalyptus Honey."
+    },
+    {
+      "type": "header",
+      "content": "Body paragraphs"
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph_2",
+      "label": "Second paragraph",
+      "default": "When you taste our Eucalyptus Honey, you're tasting October in Punjab. The menthol clarity, the faint herbal edge, the way it coats your throat — that's not a flavor profile. That's a place."
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph_3",
+      "label": "Third paragraph",
+      "default": "This is slow honey. Honest honey. Honey with a sense of place."
+    },
+    {
+      "type": "header",
+      "content": "Pull quote"
+    },
+    {
+      "type": "textarea",
+      "id": "pull_quote",
+      "label": "Quote text",
+      "default": "Geography is an ingredient. The specific angle of light through eucalyptus leaves in October — that's in the jar."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum content width",
+      "min": 500,
+      "max": 1000,
+      "step": 20,
+      "unit": "px",
+      "default": 680
+    },
+    {
+      "type": "range",
+      "id": "vertical_spacing",
+      "label": "Vertical padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "element_spacing",
+      "label": "Space between elements",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FAF8F4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "caption_color",
+      "label": "Caption",
+      "default": "#6b6b6b"
+    },
+    {
+      "type": "color",
+      "id": "quote_rule_color",
+      "label": "Quote rule",
+      "default": "#e8dcc8"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "cormorant_n4"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Body size",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 17
+    },
+    {
+      "type": "range",
+      "id": "body_line_height",
+      "label": "Body line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "unit": "em",
+      "default": 1.7
+    },
+    {
+      "type": "font_picker",
+      "id": "caption_font",
+      "label": "Caption font",
+      "default": "cormorant_n4"
+    },
+    {
+      "type": "range",
+      "id": "caption_size",
+      "label": "Caption size",
+      "min": 11,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "font_picker",
+      "id": "quote_font",
+      "label": "Quote font",
+      "default": "cormorant_n4"
+    },
+    {
+      "type": "range",
+      "id": "quote_size",
+      "label": "Quote size",
+      "min": 18,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "quote_line_height",
+      "label": "Quote line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "unit": "em",
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "quote_padding",
+      "label": "Quote padding",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "quote_rule_width",
+      "label": "Quote rule width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial content"
+    }
+  ]
+}
+{% endschema %}

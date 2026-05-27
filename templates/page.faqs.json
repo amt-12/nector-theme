@@ -1,0 +1,191 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "1779097074e3402f02": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_1798b4d_P9LWHb": {
+          "type": "ai_gen_block_1798b4d",
+          "settings": {
+            "heading": "Frequently Asked Questions",
+            "subheading": "We believe transparency is part of the product.",
+            "heading_font": "cormorant_n4",
+            "heading_size": 48,
+            "subheading_font": "raleway_n4",
+            "subheading_size": 16,
+            "text_alignment": "center",
+            "background_color": "#fafaf5",
+            "heading_color": "#1a1a1a",
+            "subheading_color": "#6b6b6b",
+            "padding_top": 80,
+            "padding_bottom": 80
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_1798b4d_P9LWHb"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "full-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "1779098732ba3b6680": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_e8f44e8_9XJx7W": {
+          "type": "ai_gen_block_e8f44e8",
+          "settings": {
+            "container_width": 1400,
+            "padding_top": 0,
+            "padding_bottom": 80,
+            "background_color": "#fafaf5",
+            "border_color": "#e8dcc8",
+            "divider_color": "#e8dcc8",
+            "question_hover_bg": "#fff8e7",
+            "caret_color": "#b5813a",
+            "category_label_size": 11,
+            "category_label_color": "#6b6b6b",
+            "category_label_spacing": "0.15em",
+            "category_label_margin_top": 40,
+            "category_label_margin_bottom": 12,
+            "question_font_size": 18,
+            "question_font_weight": 400,
+            "question_color": "#1a1a1a",
+            "question_letter_spacing": "0.02em",
+            "question_padding_vertical": 20,
+            "question_padding_horizontal": 25,
+            "answer_font_size": 16,
+            "answer_color": "#1a1a1a",
+            "answer_line_height": "1.7",
+            "answer_padding_vertical": 16,
+            "answer_padding_horizontal": 25,
+            "border_radius": 0,
+            "category_1_label": "Product & Sourcing",
+            "q1": "What is the difference between your honey varieties?",
+            "a1": "NECTAR&COMB offers a range of honey varieties, each with a distinct flavour profile, colour, and nutritional character depending on the floral source. Details on each variety — including tasting notes and origin — are available on the individual product pages.",
+            "q2": "Where is your honey sourced from?",
+            "a2": "Our honey is sourced from carefully selected apiaries across India's most distinctive landscapes — from the Himalayan foothills to the Nilgiris. We work exclusively with migratory beekeepers who follow the seasons and the bloom, moving their hives to ensure each variety captures the full character of its floral source. Every batch is traceable from hive to jar.",
+            "q3": "What is the shelf life of your honey?",
+            "a3": "Honey has an indefinite shelf life when stored correctly. We recommend consuming within 24 months of the harvest date printed on the jar or sachet.",
+            "q4": "How does the Snap-Click Sachet work?",
+            "a4": "Bend the sachet in half over your cup or hand. Apply pressure — a precision-engineered slit along the centre edge snaps open. Squeeze gently and the honey dispenses cleanly from the centre. Release, and the slit closes naturally — no dripping, no mess. One-handed, hygienic, no spoon required.",
+            "q5": "What are your products packaged in?",
+            "a5": "Our honey jars are packaged in premium glass — inert, reusable, and infinitely recyclable. Glass is the only vessel that preserves the purity of what's inside without compromise. Our Snap-Click Sachets are single-dose and crafted from 100% recyclable mono-material polypropylene — a considered choice for on-the-go without unnecessary waste. No multi-layer laminates. No unnecessary materials.",
+            "category_2_label": "Purity & Quality",
+            "q6": "How do I know your honey is not adulterated?",
+            "a6": "Our honey is tested for purity using standard FSSAI-approved methods. We source directly from verified apiaries and maintain full traceability from hive to jar. No sugar syrups, no blending, no additives — ever. Crystallisation is a natural sign of purity; if your honey crystallises, it is behaving exactly as pure honey should.",
+            "q7": "Why doesn't supermarket honey crystallise?",
+            "a7": "Most commercial honey is ultra-filtered and heat-treated to remove pollen and extend shelf life — but this also strips out the very compounds that cause natural crystallisation. If your honey never crystallises, it has likely been heavily processed. Pure honey crystallises. It is supposed to.",
+            "q8": "What is the difference between raw and processed honey?",
+            "a8": "Raw honey is extracted and cold-filtered to remove debris, leaving all natural enzymes, pollen, antioxidants, and beneficial compounds intact. Processed honey is heated above 40°C and ultra-filtered, which extends shelf life and keeps it liquid — but destroys much of what makes honey nutritionally valuable. NECTAR&COMB honey is always cold-filtered, never heat-treated.",
+            "q9": "Why is your honey never heated?",
+            "a9": "Heating honey above 40°C begins to destroy its natural enzymes — including diastase and invertase — as well as antioxidants and volatile aromatic compounds. The result is a product that looks like honey but has lost much of its nutritional character. We cold-filter only, so everything the bees put in stays in.",
+            "q10": "My honey has crystallised — what should I do?",
+            "a10": "Crystallisation is completely natural and is actually a sign of pure, unadulterated honey. To bring it back to liquid form, place the jar or sachet in a bowl of warm (not boiling) water and let it sit for a few minutes. Do not microwave or place in direct sunlight, as excessive heat can degrade the natural enzymes and flavour. Your honey is perfectly safe to eat in its crystallised form too.",
+            "category_3_label": "Health & Safety",
+            "q11": "Is honey safe for babies and young children?",
+            "a11": "No. Honey should never be given to infants under 12 months of age due to the risk of infant botulism, a rare but serious illness. This applies to all varieties of honey, including raw, processed, and infused. For children above 1 year, honey is generally safe in moderation. If you have any concerns, please consult your pediatrician.",
+            "q12": "How can I test if my honey is pure at home?",
+            "a12": "Two simple tests:\n(1) Drop a small amount into a glass of water — pure honey sinks and dissolves slowly, adulterated honey disperses quickly.\n(2) Watch for crystallisation over time — pure honey crystallises naturally; heavily processed honey stays liquid indefinitely. These are not foolproof, but they are a good starting point.",
+            "q13": "",
+            "a13": "",
+            "q14": "How should I store honey?",
+            "a14": "Store at room temperature in a tightly sealed jar, away from direct sunlight, moisture, and heat. Never use a wet spoon — water contamination can cause fermentation. Do not refrigerate. Honey has an indefinite shelf life when stored correctly; the harvest date on the label is a guide to peak flavour, not a safety expiry.",
+            "q15": "Is NECTAR&COMB honey FSSAI certified?",
+            "a15": "Yes. NECTAR&COMB is fully FSSAI licensed and compliant with all food safety standards applicable to honey in India. Our license number is displayed on every product label.",
+            "category_4_label": "Ordering & Shipping",
+            "q16": "",
+            "a16": "",
+            "q17": "When will I get my order?",
+            "a17": "Orders are dispatched within 1–2 business days. Standard delivery takes 4–7 business days depending on your location. All orders are tracked and you'll receive updates via email. For any delivery concerns, reach us at info@farmure.in.",
+            "q18": "Do you ship across India?",
+            "a18": "Yes, we ship to most serviceable pin codes across India. Enter your pin code at checkout to confirm delivery availability. Metro cities are typically fulfilled within 2–4 business days; Tier 2 and Tier 3 cities within 4–7 business days.",
+            "q19": "Do you offer bulk or wholesale orders?",
+            "a19": "We currently offer bulk pricing for orders above a certain quantity. Please reach out to us at info@farmure.in with your requirements and we'll get back to you with a custom quote. We also offer gifting and corporate hamper options for large orders.",
+            "q20": "What is your return and refund policy?",
+            "a20": "All sales are final. As a food product, we are unable to accept returns or exchanges once an order has been placed. If you receive a damaged, defective, or incorrect item, please contact us within 48 hours of delivery at info@farmure.in with your order number and clear photographs. We will arrange a replacement at no additional cost, subject to availability. For full details, please see our Returns & Refunds policy."
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_e8f44e8_9XJx7W"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "content_direction": "column",
+        "gap": 48,
+        "color_scheme": "scheme-1",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    }
+  },
+  "order": [
+    "1779097074e3402f02",
+    "1779098732ba3b6680",
+    "main"
+  ]
+}

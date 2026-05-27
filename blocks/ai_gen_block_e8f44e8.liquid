@@ -1,0 +1,796 @@
+{% doc %}
+  @prompt
+    Build a premium 20FAQ section for an ultra-luxury honey brand called NECTAR&COMB. The section must support category group headers between question groups, with each group containing accordion-style expandable Q&A rows.
+    
+    STRUCTURE:
+    - Questions are grouped into 4 categories, each with a small category label above the group
+    - Each category label: Raleway font, 11px, uppercase, loose letter spacing, muted color #6b6b6b, 40px top margin, 12px bottom margin
+    - Each question row is an accordion (click to expand/collapse)
+    - A thin divider line between each question row
+    - A caret icon on the right side of each question, colored warm amber #b5813a, rotates when expanded
+    - Merchant can add more accordion rows to any category group in future via theme editor blocks
+    
+    TYPOGRAPHY:
+    - Question headings: Cormorant font (var(--font-heading--family)), 18px, font-weight 400, Title Case (NO uppercase), color #1a1a1a, letter-spacing 0.02em
+    - Answer text: Raleway (var(--font-body--family)), 16px, line-height 1.7, color #1a1a1a, padding 16px top and bottom
+    - Category labels: Raleway, 11px, uppercase, letter-spacing 0.15em, color #6b6b6b
+    
+    COLORS & DESIGN:
+    - Background: #fafaf5 (warm cream)
+    - Dividers: #e8dcc8 (warm beige)
+    - Border around entire accordion: 1px solid #e8dcc8
+    - Border radius: 0px
+    - Section padding: 60px top, 100px bottom
+    - Page-width constrained
+    
+    CATEGORY 1 — "Product & Sourcing"
+    Q1: What is the difference between your honey varieties?
+    A1: NECTAR&COMB offers a range of honey varieties, each with a distinct flavour profile, colour, and nutritional character depending on the floral source. Details on each variety — including tasting notes and origin — are available on the individual product pages.
+    Q2: Where is your honey sourced from?
+    A2: Our honey is sourced from carefully selected apiaries across India's most distinctive landscapes — from the Himalayan foothills to the Nilgiris. We work exclusively with migratory beekeepers who follow the seasons and the bloom, moving their hives to ensure each variety captures the full character of its floral source. Every batch is traceable from hive to jar.
+    Q3: What is the shelf life of your honey?
+    A3: Honey has an indefinite shelf life when stored correctly. We recommend consuming within 24 months of the harvest date printed on the jar or sachet.
+    
+    CATEGORY 2 — "Purity & Quality"
+    Q4: How do I know your honey is not adulterated?
+    A4: Our honey is tested for purity using standard FSSAI-approved methods. We source directly from verified apiaries and maintain full traceability from hive to jar. No sugar syrups, no blending, no additives — ever. Crystallisation is a natural sign of purity; if your honey crystallises, it is behaving exactly as pure honey should.
+    Q5: Why doesn't supermarket honey crystallise?
+    A5: Most commercial honey is ultra-filtered and heat-treated to remove pollen and extend shelf life — but this also strips out the very compounds that cause natural crystallisation. If your honey never crystallises, it has likely been heavily processed. Pure honey crystallises. It is supposed to.
+    Q6: What is the difference between raw and processed honey?
+    A6: Raw honey is extracted and cold-filtered to remove debris, leaving all natural enzymes, pollen, antioxidants, and beneficial compounds intact. Processed honey is heated above 40°C and ultra-filtered, which extends shelf life and keeps it liquid — but destroys much of what makes honey nutritionally valuable. NECTAR&COMB honey is always cold-filtered, never heat-treated.
+    Q7: Why is your honey never heated?
+    A7: Heating honey above 40°C begins to destroy its natural enzymes — including diastase and invertase — as well as antioxidants and volatile aromatic compounds. The result is a product that looks like honey but has lost much of its nutritional character. We cold-filter only, so everything the bees put in stays in.
+    Q8: My honey has crystallised — what should I do?
+    A8: Crystallisation is completely natural and is actually a sign of pure, unadulterated honey. To bring it back to liquid form, place the jar or sachet in a bowl of warm (not boiling) water and let it sit for a few minutes. Do not microwave or place in direct sunlight, as excessive heat can degrade the natural enzymes and flavour. Your honey is perfectly safe to eat in its crystallised form too.
+    
+    CATEGORY 3 — "Health & Safety"
+    Q9: Is honey safe for babies and young children?
+    A9: No. Honey should never be given to infants under 12 months of age due to the risk of infant botulism, a rare but serious illness. This applies to all varieties of honey, including raw, processed, and infused. For children above 1 year, honey is generally safe in moderation. If you have any concerns, please consult your pediatrician.
+    Q10: How can I test if my honey is pure at home?
+    A10: Two simple tests: (1) Drop a small amount into a glass of water — pure honey sinks and dissolves slowly, adulterated honey disperses quickly (2) Watch for crystallisation over time — pure honey crystallises naturally, this just has 10 slots for q&a i want 20 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-faq-section-{{ ai_gen_id }} {
+    display: block;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_top }}px 0 {{ block.settings.padding_bottom }}px;
+  }
+
+  .ai-faq-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-faq-category-label-{{ ai_gen_id }} {
+    font-family: var(--font-body-family);
+    font-size: {{ block.settings.category_label_size }}px;
+    text-transform: uppercase;
+    letter-spacing: {{ block.settings.category_label_spacing }};
+    color: {{ block.settings.category_label_color }};
+    margin-top: {{ block.settings.category_label_margin_top }}px;
+    margin-bottom: {{ block.settings.category_label_margin_bottom }}px;
+    font-weight: 400;
+  }
+
+  .ai-faq-category-label-{{ ai_gen_id }}:first-child {
+    margin-top: 0;
+  }
+
+  .ai-faq-accordion-wrapper-{{ ai_gen_id }} {
+    border: 1px solid {{ block.settings.border_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    margin-bottom: {{ block.settings.category_label_margin_top }}px;
+  }
+
+  .ai-faq-accordion-wrapper-{{ ai_gen_id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-faq-accordion-item-{{ ai_gen_id }} {
+    border-bottom: 1px solid {{ block.settings.divider_color }};
+  }
+
+  .ai-faq-accordion-item-{{ ai_gen_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .ai-faq-question-button-{{ ai_gen_id }} {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: {{ block.settings.question_padding_vertical }}px {{ block.settings.question_padding_horizontal }}px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.3s ease;
+  }
+
+  .ai-faq-question-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.question_hover_bg }};
+  }
+
+  .ai-faq-question-text-{{ ai_gen_id }} {
+    font-family: var(--font-heading-family);
+    font-size: {{ block.settings.question_font_size }}px;
+    font-weight: {{ block.settings.question_font_weight }};
+    color: {{ block.settings.question_color }};
+    letter-spacing: {{ block.settings.question_letter_spacing }};
+    line-height: 1.4;
+    flex: 1;
+    padding-right: 20px;
+  }
+
+  .ai-faq-caret-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-faq-caret-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    stroke: {{ block.settings.caret_color }};
+    stroke-width: 2;
+    fill: none;
+  }
+
+  .ai-faq-accordion-item-{{ ai_gen_id }}.active .ai-faq-caret-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  .ai-faq-answer-wrapper-{{ ai_gen_id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .ai-faq-answer-content-{{ ai_gen_id }} {
+    font-family: var(--font-body-family);
+    font-size: {{ block.settings.answer_font_size }}px;
+    line-height: {{ block.settings.answer_line_height }};
+    color: {{ block.settings.answer_color }};
+    padding: {{ block.settings.answer_padding_vertical }}px {{ block.settings.answer_padding_horizontal }}px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-faq-question-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.question_font_size | times: 0.9 }}px;
+    }
+
+    .ai-faq-answer-content-{{ ai_gen_id }} {
+      font-size: {{ block.settings.answer_font_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<faq-accordion-{{ ai_gen_id }} class="ai-faq-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-faq-container-{{ ai_gen_id }}">
+    {% if block.settings.category_1_label != blank %}
+      <div class="ai-faq-category-label-{{ ai_gen_id }}">{{ block.settings.category_1_label }}</div>
+      <div class="ai-faq-accordion-wrapper-{{ ai_gen_id }}">
+        {% for i in (1..5) %}
+          {% assign q_key = 'q' | append: i %}
+          {% assign a_key = 'a' | append: i %}
+          {% if block.settings[q_key] != blank %}
+            <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+              <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+                <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings[q_key] }}</span>
+                <span class="ai-faq-caret-{{ ai_gen_id }}">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+              </button>
+              <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+                <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings[a_key] }}</div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.category_2_label != blank %}
+      <div class="ai-faq-category-label-{{ ai_gen_id }}">{{ block.settings.category_2_label }}</div>
+      <div class="ai-faq-accordion-wrapper-{{ ai_gen_id }}">
+        {% for i in (6..10) %}
+          {% assign q_key = 'q' | append: i %}
+          {% assign a_key = 'a' | append: i %}
+          {% if block.settings[q_key] != blank %}
+            <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+              <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+                <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings[q_key] }}</span>
+                <span class="ai-faq-caret-{{ ai_gen_id }}">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+              </button>
+              <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+                <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings[a_key] }}</div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.category_3_label != blank %}
+      <div class="ai-faq-category-label-{{ ai_gen_id }}">{{ block.settings.category_3_label }}</div>
+      <div class="ai-faq-accordion-wrapper-{{ ai_gen_id }}">
+        {% for i in (11..15) %}
+          {% assign q_key = 'q' | append: i %}
+          {% assign a_key = 'a' | append: i %}
+          {% if block.settings[q_key] != blank %}
+            <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+              <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+                <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings[q_key] }}</span>
+                <span class="ai-faq-caret-{{ ai_gen_id }}">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+              </button>
+              <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+                <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings[a_key] }}</div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.category_4_label != blank %}
+      <div class="ai-faq-category-label-{{ ai_gen_id }}">{{ block.settings.category_4_label }}</div>
+      <div class="ai-faq-accordion-wrapper-{{ ai_gen_id }}">
+        {% for i in (16..20) %}
+          {% assign q_key = 'q' | append: i %}
+          {% assign a_key = 'a' | append: i %}
+          {% if block.settings[q_key] != blank %}
+            <div class="ai-faq-accordion-item-{{ ai_gen_id }}" data-faq-item>
+              <button class="ai-faq-question-button-{{ ai_gen_id }}" aria-expanded="false">
+                <span class="ai-faq-question-text-{{ ai_gen_id }}">{{ block.settings[q_key] }}</span>
+                <span class="ai-faq-caret-{{ ai_gen_id }}">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+              </button>
+              <div class="ai-faq-answer-wrapper-{{ ai_gen_id }}">
+                <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings[a_key] }}</div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</faq-accordion-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class FaqAccordion{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.items = this.querySelectorAll('[data-faq-item]');
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.items.forEach((item) => {
+          const button = item.querySelector('.ai-faq-question-button-{{ ai_gen_id }}');
+          const answerWrapper = item.querySelector('.ai-faq-answer-wrapper-{{ ai_gen_id }}');
+          const answerContent = item.querySelector('.ai-faq-answer-content-{{ ai_gen_id }}');
+
+          button.addEventListener('click', () => {
+            const isActive = item.classList.contains('active');
+
+            if (isActive) {
+              item.classList.remove('active');
+              button.setAttribute('aria-expanded', 'false');
+              answerWrapper.style.maxHeight = '0';
+            } else {
+              item.classList.add('active');
+              button.setAttribute('aria-expanded', 'true');
+              answerWrapper.style.maxHeight = answerContent.scrollHeight + 'px';
+            }
+          });
+        });
+      }
+    }
+
+    customElements.define('faq-accordion-{{ ai_gen_id }}', FaqAccordion{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "FAQ accordion",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 600,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 900
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border",
+      "default": "#e8dcc8"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider",
+      "default": "#e8dcc8"
+    },
+    {
+      "type": "color",
+      "id": "question_hover_bg",
+      "label": "Question hover background",
+      "default": "#fff8e7"
+    },
+    {
+      "type": "color",
+      "id": "caret_color",
+      "label": "Caret",
+      "default": "#b5813a"
+    },
+    {
+      "type": "header",
+      "content": "Category labels"
+    },
+    {
+      "type": "range",
+      "id": "category_label_size",
+      "label": "Font size",
+      "min": 8,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "color",
+      "id": "category_label_color",
+      "label": "Color",
+      "default": "#6b6b6b"
+    },
+    {
+      "type": "text",
+      "id": "category_label_spacing",
+      "label": "Letter spacing",
+      "default": "0.15em"
+    },
+    {
+      "type": "range",
+      "id": "category_label_margin_top",
+      "label": "Top margin",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "category_label_margin_bottom",
+      "label": "Bottom margin",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Questions"
+    },
+    {
+      "type": "range",
+      "id": "question_font_size",
+      "label": "Font size",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "question_font_weight",
+      "label": "Font weight",
+      "min": 300,
+      "max": 700,
+      "step": 100,
+      "default": 400
+    },
+    {
+      "type": "color",
+      "id": "question_color",
+      "label": "Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "text",
+      "id": "question_letter_spacing",
+      "label": "Letter spacing",
+      "default": "0.02em"
+    },
+    {
+      "type": "range",
+      "id": "question_padding_vertical",
+      "label": "Vertical padding",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "question_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 25
+    },
+    {
+      "type": "header",
+      "content": "Answers"
+    },
+    {
+      "type": "range",
+      "id": "answer_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "answer_color",
+      "label": "Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "text",
+      "id": "answer_line_height",
+      "label": "Line height",
+      "default": "1.7"
+    },
+    {
+      "type": "range",
+      "id": "answer_padding_vertical",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "answer_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 25
+    },
+    {
+      "type": "header",
+      "content": "Border"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Category 1"
+    },
+    {
+      "type": "text",
+      "id": "category_1_label",
+      "label": "Category label",
+      "default": "Product & Sourcing"
+    },
+    {
+      "type": "text",
+      "id": "q1",
+      "label": "Question 1"
+    },
+    {
+      "type": "textarea",
+      "id": "a1",
+      "label": "Answer 1"
+    },
+    {
+      "type": "text",
+      "id": "q2",
+      "label": "Question 2"
+    },
+    {
+      "type": "textarea",
+      "id": "a2",
+      "label": "Answer 2"
+    },
+    {
+      "type": "text",
+      "id": "q3",
+      "label": "Question 3"
+    },
+    {
+      "type": "textarea",
+      "id": "a3",
+      "label": "Answer 3"
+    },
+    {
+      "type": "text",
+      "id": "q4",
+      "label": "Question 4"
+    },
+    {
+      "type": "textarea",
+      "id": "a4",
+      "label": "Answer 4"
+    },
+    {
+      "type": "text",
+      "id": "q5",
+      "label": "Question 5"
+    },
+    {
+      "type": "textarea",
+      "id": "a5",
+      "label": "Answer 5"
+    },
+    {
+      "type": "header",
+      "content": "Category 2"
+    },
+    {
+      "type": "text",
+      "id": "category_2_label",
+      "label": "Category label",
+      "default": "Purity & Quality"
+    },
+    {
+      "type": "text",
+      "id": "q6",
+      "label": "Question 6"
+    },
+    {
+      "type": "textarea",
+      "id": "a6",
+      "label": "Answer 6"
+    },
+    {
+      "type": "text",
+      "id": "q7",
+      "label": "Question 7"
+    },
+    {
+      "type": "textarea",
+      "id": "a7",
+      "label": "Answer 7"
+    },
+    {
+      "type": "text",
+      "id": "q8",
+      "label": "Question 8"
+    },
+    {
+      "type": "textarea",
+      "id": "a8",
+      "label": "Answer 8"
+    },
+    {
+      "type": "text",
+      "id": "q9",
+      "label": "Question 9"
+    },
+    {
+      "type": "textarea",
+      "id": "a9",
+      "label": "Answer 9"
+    },
+    {
+      "type": "text",
+      "id": "q10",
+      "label": "Question 10"
+    },
+    {
+      "type": "textarea",
+      "id": "a10",
+      "label": "Answer 10"
+    },
+    {
+      "type": "header",
+      "content": "Category 3"
+    },
+    {
+      "type": "text",
+      "id": "category_3_label",
+      "label": "Category label",
+      "default": "Health & Safety"
+    },
+    {
+      "type": "text",
+      "id": "q11",
+      "label": "Question 11"
+    },
+    {
+      "type": "textarea",
+      "id": "a11",
+      "label": "Answer 11"
+    },
+    {
+      "type": "text",
+      "id": "q12",
+      "label": "Question 12"
+    },
+    {
+      "type": "textarea",
+      "id": "a12",
+      "label": "Answer 12"
+    },
+    {
+      "type": "text",
+      "id": "q13",
+      "label": "Question 13"
+    },
+    {
+      "type": "textarea",
+      "id": "a13",
+      "label": "Answer 13"
+    },
+    {
+      "type": "text",
+      "id": "q14",
+      "label": "Question 14"
+    },
+    {
+      "type": "textarea",
+      "id": "a14",
+      "label": "Answer 14"
+    },
+    {
+      "type": "text",
+      "id": "q15",
+      "label": "Question 15"
+    },
+    {
+      "type": "textarea",
+      "id": "a15",
+      "label": "Answer 15"
+    },
+    {
+      "type": "header",
+      "content": "Category 4"
+    },
+    {
+      "type": "text",
+      "id": "category_4_label",
+      "label": "Category label",
+      "default": "Ordering & Shipping"
+    },
+    {
+      "type": "text",
+      "id": "q16",
+      "label": "Question 16"
+    },
+    {
+      "type": "textarea",
+      "id": "a16",
+      "label": "Answer 16"
+    },
+    {
+      "type": "text",
+      "id": "q17",
+      "label": "Question 17"
+    },
+    {
+      "type": "textarea",
+      "id": "a17",
+      "label": "Answer 17"
+    },
+    {
+      "type": "text",
+      "id": "q18",
+      "label": "Question 18"
+    },
+    {
+      "type": "textarea",
+      "id": "a18",
+      "label": "Answer 18"
+    },
+    {
+      "type": "text",
+      "id": "q19",
+      "label": "Question 19"
+    },
+    {
+      "type": "textarea",
+      "id": "a19",
+      "label": "Answer 19"
+    },
+    {
+      "type": "text",
+      "id": "q20",
+      "label": "Question 20"
+    },
+    {
+      "type": "textarea",
+      "id": "a20",
+      "label": "Answer 20"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ accordion"
+    }
+  ]
+}
+{% endschema %}

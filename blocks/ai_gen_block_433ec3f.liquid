@@ -1,0 +1,724 @@
+{% doc %}
+  @prompt
+    Regenerate this exact Product Showcase block for a luxury honey brand homepage. Left side: large featured product image. Right side: vertical list of 3 products with thumbnails. Keep ALL existing settings exactly the same.
+    
+    CRITICAL BUTTON REQUIREMENT: The "View All" button must render as a plain text link that looks EXACTLY like this: sentence case (not uppercase), with underline text-decoration, body font (Instrument Sans / var(--font-body--family)), 14px font size, #1a1a1a color, no border, no background, no text-transform. The button must NOT inherit any uppercase or text-transform styling from global CSS. Hardcode text-transform: none and text-decoration: underline directly in the button's inline style or scoped CSS so it cannot be overridden by global link styles.
+    
+    Exact settings to replicate:
+    - section_label text field (current: "Curated Selection")
+    - heading text field (current: "Discover Our Finest Honey")
+    - subheading textarea (current: "Single-origin, cold-extracted varieties from trusted beekeepers")
+    - featured_product picker (current: sidr-honey-snap-click-sachets), featured_product_tagline text field (blank)
+    - list_product_1 picker (eucalyptus-honey), list_product_1_tagline (blank)
+    - list_product_2 picker (multiflora-honey-snap-click-sachets), list_product_2_tagline (blank)
+    - list_product_3 picker (vanilla-honey), list_product_3_tagline (blank)
+    - show_view_all checkbox (true), view_all_text field (default: "View All →"), view_all_link URL field (blank), view_all_style selector: link only, button_position selector: top-left or top-right or bottom-center (current: top-right), view_all_margin_top slider 0–60px (current: 20)
+    - padding_top slider 0–120px (current: 80), padding_bottom slider 0–120px (current: 80), padding_horizontal slider 0–120px (current: 40), max_width slider (current: 1200), grid_gap slider (current: 60)
+    - featured_image_width slider 30–100% (current: 55), featured_image_aspect_ratio slider 0.5–1.5 (current: 1.3), list_thumbnail_size slider 60–200px (current: 100)
+    - background_color (#fafaf5), label_color (#8b7355), heading_color (#1a1a1a), subheading_color (#1a1a1a), product_name_color (#1a1a1a), price_color (#1a1a1a), tagline_color (#6b5a48), divider_color (#e8dcc8)
+    - heading_font_size (48), subheading_font_size (16), featured_product_name_font_size (32), list_product_name_font_size (24)
+    Design: clean, editorial, ultra-luxury, subtle horizontal dividers between list items, prices inline with product names.
+    
+    and the view all button should look like the image i uploaded 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-showcase-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_top }}px {{ block.settings.padding_horizontal }}px {{ block.settings.padding_bottom }}px;
+  }
+
+  .ai-product-showcase-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-product-showcase-header-{{ ai_gen_id }} {
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .ai-product-showcase-label-{{ ai_gen_id }} {
+    font-family: var(--font-body-family);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: {{ block.settings.label_color }};
+    margin-bottom: 12px;
+  }
+
+  .ai-product-showcase-heading-{{ ai_gen_id }} {
+    font-family: "var(--font-heading--family)" ;
+    font-size: {{ block.settings.heading_font_size }}px;
+    line-height: 1.1;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 16px;
+  }
+
+  .ai-product-showcase-subheading-{{ ai_gen_id }} {
+    font-family: "var(--font-body--family)" ;
+    font-size: {{ block.settings.subheading_font_size }}px;
+    line-height: 1.5;
+    color: {{ block.settings.subheading_color }};
+    margin: 0;
+  }
+
+  .ai-product-showcase-view-all-{{ ai_gen_id }} {
+    position: absolute;
+    {% if block.settings.button_position == 'top-left' %}
+      top: 0;
+      left: 0;
+    {% elsif block.settings.button_position == 'top-right' %}
+      top: 0;
+      right: 0;
+    {% elsif block.settings.button_position == 'bottom-center' %}
+      bottom: -{{ block.settings.view_all_margin_top }}px;
+      left: 50%;
+      transform: translateX(-50%);
+    {% endif %}
+  }
+
+  .ai-product-showcase-view-all-link-{{ ai_gen_id }} {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    color: #1a1a1a;
+    text-decoration: underline;
+    text-transform: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .ai-product-showcase-view-all-link-{{ ai_gen_id }}:hover {
+    opacity: 0.7;
+  }
+
+  .ai-product-showcase-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: {{ block.settings.featured_image_width }}% calc(100% - {{ block.settings.featured_image_width }}% - {{ block.settings.grid_gap }}px);
+    gap: {{ block.settings.grid_gap }}px;
+    align-items: start;
+  }
+
+  .ai-product-showcase-featured-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ai-product-showcase-featured-image-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: {{ block.settings.featured_image_aspect_ratio }};
+    object-fit: cover;
+    margin-bottom: 20px;
+  }
+
+  .ai-product-showcase-featured-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: {{ block.settings.featured_image_aspect_ratio }};
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .ai-product-showcase-featured-image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 300px;
+    max-height: 300px;
+  }
+
+  .ai-product-showcase-featured-info-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ai-product-showcase-featured-name-{{ ai_gen_id }} {
+    font-family: "var(--font-heading--family)" ;
+    font-size: {{ block.settings.featured_product_name_font_size }}px;
+    line-height: 1.2;
+    color: {{ block.settings.product_name_color }};
+    margin: 0;
+  }
+
+  .ai-product-showcase-featured-price-{{ ai_gen_id }} {
+    font-family: "var(--font-body--family)" ;
+    font-size: {{ block.settings.featured_product_name_font_size | times: 0.625 }}px;
+    color: {{ block.settings.price_color }};
+  }
+
+  .ai-product-showcase-featured-tagline-{{ ai_gen_id }} {
+    font-family: "var(--font-heading--family)" ;
+    font-size: 14px;
+    color: {{ block.settings.tagline_color }};
+    font-style: italic;
+  }
+
+  .ai-product-showcase-list-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .ai-product-showcase-list-item-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: {{ block.settings.list_thumbnail_size }}px 1fr;
+    gap: 20px;
+    align-items: center;
+    padding: 24px 0;
+    border-bottom: 1px solid {{ block.settings.divider_color }};
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .ai-product-showcase-list-item-{{ ai_gen_id }}:first-child {
+    padding-top: 0;
+  }
+
+  .ai-product-showcase-list-item-{{ ai_gen_id }}:hover {
+    opacity: 0.7;
+  }
+
+  .ai-product-showcase-list-thumbnail-{{ ai_gen_id }} {
+    width: {{ block.settings.list_thumbnail_size }}px;
+    height: {{ block.settings.list_thumbnail_size }}px;
+    object-fit: cover;
+  }
+
+  .ai-product-showcase-list-thumbnail-placeholder-{{ ai_gen_id }} {
+    width: {{ block.settings.list_thumbnail_size }}px;
+    height: {{ block.settings.list_thumbnail_size }}px;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-product-showcase-list-thumbnail-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+  }
+
+  .ai-product-showcase-list-info-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ai-product-showcase-list-name-{{ ai_gen_id }} {
+    font-family: "var(--font-heading--family)" ;
+    font-size: {{ block.settings.list_product_name_font_size }}px;
+    line-height: 1.2;
+    color: {{ block.settings.product_name_color }};
+    margin: 0;
+  }
+
+  .ai-product-showcase-list-price-{{ ai_gen_id }} {
+    font-family: "var(--font-body--family)" ;
+    font-size: {{ block.settings.list_product_name_font_size | times: 0.625 }}px;
+    color: {{ block.settings.price_color }};
+  }
+
+  .ai-product-showcase-list-tagline-{{ ai_gen_id }} {
+    font-family: "var(--font-body--family)" ;
+    font-size: 13px;
+    color: {{ block.settings.tagline_color }};
+    font-style: italic;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-product-showcase-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .ai-product-showcase-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_font_size | times: 0.625 }}px;
+    }
+
+    .ai-product-showcase-featured-name-{{ ai_gen_id }} {
+      font-size: {{ block.settings.featured_product_name_font_size | times: 0.75 }}px;
+    }
+
+    .ai-product-showcase-list-name-{{ ai_gen_id }} {
+      font-size: {{ block.settings.list_product_name_font_size | times: 0.75 }}px;
+    }
+
+    .ai-product-showcase-view-all-{{ ai_gen_id }} {
+      position: static;
+      margin-top: {{ block.settings.view_all_margin_top }}px;
+      transform: none;
+    }
+  }
+{% endstyle %}
+
+<product-showcase-{{ ai_gen_id }} class="ai-product-showcase-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-product-showcase-container-{{ ai_gen_id }}">
+    <div class="ai-product-showcase-header-{{ ai_gen_id }}">
+      {% if block.settings.section_label != blank %}
+        <div class="ai-product-showcase-label-{{ ai_gen_id }}">{{ block.settings.section_label }}</div>
+      {% endif %}
+      
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-product-showcase-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+      {% endif %}
+      
+      {% if block.settings.subheading != blank %}
+        <p class="ai-product-showcase-subheading-{{ ai_gen_id }}">{{ block.settings.subheading }}</p>
+      {% endif %}
+
+      {% if block.settings.show_view_all and block.settings.view_all_style == 'link' %}
+        <div class="ai-product-showcase-view-all-{{ ai_gen_id }}">
+          {% if block.settings.view_all_link != blank %}
+            <a href="{{ block.settings.view_all_link }}" class="ai-product-showcase-view-all-link-{{ ai_gen_id }}">
+              {{ block.settings.view_all_text }}
+            </a>
+          {% else %}
+            <span class="ai-product-showcase-view-all-link-{{ ai_gen_id }}">
+              {{ block.settings.view_all_text }}
+            </span>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="ai-product-showcase-grid-{{ ai_gen_id }}">
+  <div class="ai-product-showcase-featured-{{ ai_gen_id }}"> 
+    {% if block.settings.featured_product != blank %}
+      {% assign featured = block.settings.featured_product %}
+      <a href="{{ featured.url }}" style="text-decoration: none; display: contents;" aria-label="{{ featured.title | escape }}">   
+          {% if featured.featured_image %}
+            <img
+              src="{{ featured.featured_image | image_url: width: 1200 }}"
+              alt="{{ featured.featured_image.alt | escape }}"
+              class="ai-product-showcase-featured-image-{{ ai_gen_id }}"
+              loading="lazy"
+              width="{{ featured.featured_image.width }}"
+              height="{{ featured.featured_image.height }}"
+            >
+          {% else %}
+            <div class="ai-product-showcase-featured-image-placeholder-{{ ai_gen_id }}">
+              {{ 'product-1' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+          
+          <div class="ai-product-showcase-featured-info-{{ ai_gen_id }}">
+            <h3 class="ai-product-showcase-featured-name-{{ ai_gen_id }}">{{ featured.title }}</h3>
+            <div class="ai-product-showcase-featured-price-{{ ai_gen_id }}">{{ featured.price | money }}</div>
+            {% if block.settings.featured_product_tagline != blank %}
+              <div class="ai-product-showcase-featured-tagline-{{ ai_gen_id }}">{{ block.settings.featured_product_tagline }}</div>
+            {% endif %}
+          </div>
+      </a>
+    {% else %}
+          <div class="ai-product-showcase-featured-image-placeholder-{{ ai_gen_id }}">
+            {{ 'product-1' | placeholder_svg_tag }}
+          </div>
+          <div class="ai-product-showcase-featured-info-{{ ai_gen_id }}">
+            <h3 class="ai-product-showcase-featured-name-{{ ai_gen_id }}">Featured Product</h3>
+            <div class="ai-product-showcase-featured-price-{{ ai_gen_id }}">₹0.00</div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="ai-product-showcase-list-{{ ai_gen_id }}">
+        {% for i in (1..3) %}
+          {% liquid
+            assign product_key = 'list_product_' | append: i
+            assign tagline_key = 'list_product_' | append: i | append: '_tagline'
+            assign product = block.settings[product_key]
+            assign tagline = block.settings[tagline_key]
+          %}
+          
+          {% if product != blank %}
+            <a href="{{ product.url }}" class="ai-product-showcase-list-item-{{ ai_gen_id }}" aria-label="{{ product.title | escape }}">
+              {% if product.featured_image %}
+                <img
+                  src="{{ product.featured_image | image_url: width: 300 }}"
+                  alt="{{ product.featured_image.alt | escape }}"
+                  class="ai-product-showcase-list-thumbnail-{{ ai_gen_id }}"
+                  loading="lazy"
+                  width="{{ product.featured_image.width }}"
+                  height="{{ product.featured_image.height }}"
+                >
+              {% else %}
+                <div class="ai-product-showcase-list-thumbnail-placeholder-{{ ai_gen_id }}">
+                  {{ 'product-1' | placeholder_svg_tag }}
+                </div>
+              {% endif %}
+              
+              <div class="ai-product-showcase-list-info-{{ ai_gen_id }}">
+                <h4 class="ai-product-showcase-list-name-{{ ai_gen_id }}">{{ product.title }}</h4>
+                <div class="ai-product-showcase-list-price-{{ ai_gen_id }}">{{ product.price | money }}</div>
+                {% if tagline != blank %}
+                  <div class="ai-product-showcase-list-tagline-{{ ai_gen_id }}">{{ tagline }}</div>
+                {% endif %}
+              </div>
+            </a>
+          {% else %}
+            <div class="ai-product-showcase-list-item-{{ ai_gen_id }}">
+              <div class="ai-product-showcase-list-thumbnail-placeholder-{{ ai_gen_id }}">
+                {{ 'product-1' | placeholder_svg_tag }}
+              </div>
+              <div class="ai-product-showcase-list-info-{{ ai_gen_id }}">
+                <h4 class="ai-product-showcase-list-name-{{ ai_gen_id }}">Product {{ i }}</h4>
+                <div class="ai-product-showcase-list-price-{{ ai_gen_id }}">₹0.00</div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</product-showcase-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ProductShowcase{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+      }
+    }
+
+    customElements.define('product-showcase-{{ ai_gen_id }}', ProductShowcase{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product showcase",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "section_label",
+      "label": "Section label",
+      "default": "Curated Selection"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Discover Our Finest Honey"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Single-origin, cold-extracted varieties from trusted beekeepers"
+    },
+    {
+      "type": "header",
+      "content": "Featured product"
+    },
+    {
+      "type": "product",
+      "id": "featured_product",
+      "label": "Featured product"
+    },
+    {
+      "type": "text",
+      "id": "featured_product_tagline",
+      "label": "Featured product tagline"
+    },
+    {
+      "type": "header",
+      "content": "Product list"
+    },
+    {
+      "type": "product",
+      "id": "list_product_1",
+      "label": "Product 1"
+    },
+    {
+      "type": "text",
+      "id": "list_product_1_tagline",
+      "label": "Product 1 tagline"
+    },
+    {
+      "type": "product",
+      "id": "list_product_2",
+      "label": "Product 2"
+    },
+    {
+      "type": "text",
+      "id": "list_product_2_tagline",
+      "label": "Product 2 tagline"
+    },
+    {
+      "type": "product",
+      "id": "list_product_3",
+      "label": "Product 3"
+    },
+    {
+      "type": "text",
+      "id": "list_product_3_tagline",
+      "label": "Product 3 tagline"
+    },
+    {
+      "type": "header",
+      "content": "View all button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show view all button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "Button text",
+      "default": "View All →"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "view_all_style",
+      "label": "Button style",
+      "options": [
+        {
+          "value": "link",
+          "label": "Link only"
+        }
+      ],
+      "default": "link"
+    },
+    {
+      "type": "select",
+      "id": "button_position",
+      "label": "Button position",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "Top left"
+        },
+        {
+          "value": "top-right",
+          "label": "Top right"
+        },
+        {
+          "value": "bottom-center",
+          "label": "Bottom center"
+        }
+      ],
+      "default": "top-right"
+    },
+    {
+      "type": "range",
+      "id": "view_all_margin_top",
+      "label": "Button margin top",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Padding horizontal",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Grid gap",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Featured product layout"
+    },
+    {
+      "type": "range",
+      "id": "featured_image_width",
+      "label": "Featured image width",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 55
+    },
+    {
+      "type": "range",
+      "id": "featured_image_aspect_ratio",
+      "label": "Featured image aspect ratio",
+      "min": 0.5,
+      "max": 1.5,
+      "step": 0.1,
+      "default": 1.3
+    },
+    {
+      "type": "range",
+      "id": "list_thumbnail_size",
+      "label": "List thumbnail size",
+      "min": 60,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label",
+      "default": "#8b7355"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "product_name_color",
+      "label": "Product name",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "tagline_color",
+      "label": "Tagline",
+      "default": "#6b5a48"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider",
+      "default": "#e8dcc8"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Heading font size",
+      "min": 24,
+      "max": 72,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "subheading_font_size",
+      "label": "Subheading font size",
+      "min": 12,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "featured_product_name_font_size",
+      "label": "Featured product name font size",
+      "min": 20,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "list_product_name_font_size",
+      "label": "List product name font size",
+      "min": 16,
+      "max": 36,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product showcase"
+    }
+  ]
+}
+{% endschema %}

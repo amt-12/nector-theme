@@ -1,0 +1,550 @@
+{% doc %}
+  @prompt
+    Create a full-width homepage section with these exact specs:
+    
+    BACKGROUND: #1C1812 (dark near-black). Padding 80px top and bottom. Everything center-aligned.
+    
+    Three stacked elements:
+    1. Small uppercase label, letter-spacing 0.15em, muted warm gold color (#C9A96E): "Snap Click Sachets"
+    2. Large italic serif headline, light font weight (300), cream color (#F7F4EF): "The finest honey, freed from the jar."
+    3. Short body paragraph, small font size (~15px), slightly muted cream (rgba(247,244,239,0.75)): "Raw, single-origin honey from India's migratory beekeepers — sealed into a single 10g sachet. Snap it open in seconds. Into your morning cup, your gym bottle, your travels, your everyday."
+    
+    Below the paragraph: a short horizontal rule, ~40px wide, centered, in muted warm gold (#C9A96E), 1px height.
+    
+    Below the rule: three short phrases on one row, separated by a centered dot, in small uppercase spaced-out text, same warm gold (#C9A96E):
+    "At your desk · In your morning cup · On your travels"
+    
+    At the bottom: an outline button — transparent background, cream border (#F7F4EF) and cream text, no fill, no box shadow. Label: "Discover the sachets". Links to /collections/20-day-pack.
+    
+    All fields (eyebrow, headline, body, phrases, button label, button URL) must be configurable in the Shopify theme editor schema. No image. No cards. No shadows.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-sachet-hero-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_top }}px 20px {{ block.settings.padding_bottom }}px;
+    text-align: center;
+  }
+
+  .ai-sachet-hero__container-{{ ai_gen_id }} {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .ai-sachet-hero__eyebrow-{{ ai_gen_id }} {
+    font-size: {{ block.settings.eyebrow_size }}px;
+    text-transform: uppercase;
+    letter-spacing: {{ block.settings.eyebrow_spacing }};
+    color: {{ block.settings.eyebrow_color }};
+    margin: 0;
+  }
+
+  .ai-sachet-hero__headline-{{ ai_gen_id }} {
+    font-size: {{ block.settings.headline_size }}px;
+    font-style: italic;
+    font-weight: {{ block.settings.headline_weight }};
+    color: {{ block.settings.headline_color }};
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .ai-sachet-hero__body-{{ ai_gen_id }} {
+    font-size: {{ block.settings.body_size }}px;
+    color: {{ block.settings.body_color }};
+    margin: 0;
+    line-height: 1.6;
+    max-width: 600px;
+  }
+
+  .ai-sachet-hero__divider-{{ ai_gen_id }} {
+    width: {{ block.settings.divider_width }}px;
+    height: {{ block.settings.divider_height }}px;
+    background-color: {{ block.settings.divider_color }};
+    border: none;
+    margin: 8px 0;
+  }
+
+  .ai-sachet-hero__features-{{ ai_gen_id }} {
+    font-size: {{ block.settings.features_size }}px;
+    text-transform: uppercase;
+    letter-spacing: {{ block.settings.features_spacing }};
+    color: {{ block.settings.features_color }};
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .ai-sachet-hero__feature-dot-{{ ai_gen_id }} {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: {{ block.settings.features_color }};
+  }
+
+  .ai-sachet-hero__button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    background-color: transparent;
+    border: {{ block.settings.button_border_width }}px solid {{ block.settings.button_border_color }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    font-size: {{ block.settings.button_size }}px;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+  }
+
+  .ai-sachet-hero__button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg }};
+    border-color: {{ block.settings.button_hover_border }};
+    color: {{ block.settings.button_hover_text }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-sachet-hero-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_top_mobile }}px 16px {{ block.settings.padding_bottom_mobile }}px;
+    }
+
+    .ai-sachet-hero__headline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.headline_size_mobile }}px;
+    }
+
+    .ai-sachet-hero__body-{{ ai_gen_id }} {
+      font-size: {{ block.settings.body_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<sachet-hero-{{ ai_gen_id }} class="ai-sachet-hero-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-sachet-hero__container-{{ ai_gen_id }}">
+    {% if block.settings.eyebrow != blank %}
+      <p class="ai-sachet-hero__eyebrow-{{ ai_gen_id }}">{{ block.settings.eyebrow }}</p>
+    {% endif %}
+
+    {% if block.settings.headline != blank %}
+      <h2 class="ai-sachet-hero__headline-{{ ai_gen_id }}">{{ block.settings.headline }}</h2>
+    {% endif %}
+
+    {% if block.settings.body != blank %}
+      <p class="ai-sachet-hero__body-{{ ai_gen_id }}">{{ block.settings.body }}</p>
+    {% endif %}
+
+    <hr class="ai-sachet-hero__divider-{{ ai_gen_id }}">
+
+    {% if block.settings.feature_1 != blank or block.settings.feature_2 != blank or block.settings.feature_3 != blank %}
+      <div class="ai-sachet-hero__features-{{ ai_gen_id }}">
+        {% if block.settings.feature_1 != blank %}
+          <span>{{ block.settings.feature_1 }}</span>
+        {% endif %}
+        {% if block.settings.feature_1 != blank and block.settings.feature_2 != blank %}
+          <span class="ai-sachet-hero__feature-dot-{{ ai_gen_id }}"></span>
+        {% endif %}
+        {% if block.settings.feature_2 != blank %}
+          <span>{{ block.settings.feature_2 }}</span>
+        {% endif %}
+        {% if block.settings.feature_2 != blank and block.settings.feature_3 != blank %}
+          <span class="ai-sachet-hero__feature-dot-{{ ai_gen_id }}"></span>
+        {% endif %}
+        {% if block.settings.feature_3 != blank %}
+          <span>{{ block.settings.feature_3 }}</span>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.button_label != blank %}
+      <a href="{{ block.settings.button_url }}" class="ai-sachet-hero__button-{{ ai_gen_id }}">
+        {{ block.settings.button_label }}
+      </a>
+    {% endif %}
+  </div>
+</sachet-hero-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class SachetHero{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+    }
+    customElements.define('sachet-hero-{{ ai_gen_id }}', SachetHero{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Sachet hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#1C1812"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Snap Click Sachets"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Color",
+      "default": "#C9A96E"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "label": "Font size",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_spacing",
+      "label": "Letter spacing",
+      "default": "0.15em"
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline text",
+      "default": "The finest honey, freed from the jar."
+    },
+    {
+      "type": "color",
+      "id": "headline_color",
+      "label": "Color",
+      "default": "#F7F4EF"
+    },
+    {
+      "type": "range",
+      "id": "headline_size",
+      "label": "Font size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "headline_size_mobile",
+      "label": "Font size (mobile)",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "headline_weight",
+      "label": "Font weight",
+      "options": [
+        {
+          "value": "100",
+          "label": "Thin"
+        },
+        {
+          "value": "200",
+          "label": "Extra light"
+        },
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        },
+        {
+          "value": "800",
+          "label": "Extra bold"
+        },
+        {
+          "value": "900",
+          "label": "Black"
+        }
+      ],
+      "default": "300"
+    },
+    {
+      "type": "header",
+      "content": "Body"
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body text",
+      "default": "Raw, single-origin honey from India's migratory beekeepers — sealed into a single 10g sachet. Snap it open in seconds. Into your morning cup, your gym bottle, your travels, your everyday."
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Color",
+      "default": "#F7F4EF"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "body_size_mobile",
+      "label": "Font size (mobile)",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Divider"
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "label": "Width",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "divider_height",
+      "label": "Height",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Color",
+      "default": "#C9A96E"
+    },
+    {
+      "type": "header",
+      "content": "Features"
+    },
+    {
+      "type": "text",
+      "id": "feature_1",
+      "label": "Feature 1",
+      "default": "At your desk"
+    },
+    {
+      "type": "text",
+      "id": "feature_2",
+      "label": "Feature 2",
+      "default": "In your morning cup"
+    },
+    {
+      "type": "text",
+      "id": "feature_3",
+      "label": "Feature 3",
+      "default": "On your travels"
+    },
+    {
+      "type": "color",
+      "id": "features_color",
+      "label": "Color",
+      "default": "#C9A96E"
+    },
+    {
+      "type": "range",
+      "id": "features_size",
+      "label": "Font size",
+      "min": 8,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "text",
+      "id": "features_spacing",
+      "label": "Letter spacing",
+      "default": "0.1em"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Label",
+      "default": "Discover the sachets"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#F7F4EF"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Border color",
+      "default": "#F7F4EF"
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "label": "Border width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "button_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "label": "Padding vertical",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "label": "Padding horizontal",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg",
+      "label": "Hover background",
+      "default": "#F7F4EF"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_border",
+      "label": "Hover border",
+      "default": "#F7F4EF"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text",
+      "label": "Hover text",
+      "default": "#1C1812"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sachet hero"
+    }
+  ]
+}
+{% endschema %}

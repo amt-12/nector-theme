@@ -1,0 +1,338 @@
+{% doc %}
+  @prompt
+    Create a full-width hero block for a blog article page on a premium honey brand. The block should display the article's featured image as a full-width, full-bleed background (no margins, no padding on sides). Overlaid at the bottom of the image should be: the article read time (e.g. "8 min read") and publish date in small text, and the article title in a large serif font — all in white text with a subtle dark gradient at the bottom of the image for legibility. No border radius. The image should be tall on desktop (around 70vh) and adapt on mobile. Use article.title, article.published_at, and article.image from Liquid. and make it full page width 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-article-hero-{{ ai_gen_id }} {
+    position: relative;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    height: {{ block.settings.desktop_height }}vh;
+    overflow: hidden;
+    display: block;
+  }
+
+  .ai-article-hero-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-article-hero-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .ai-article-hero-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 500px;
+    max-height: 500px;
+  }
+
+  .ai-article-hero-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .ai-article-hero-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(
+      to top,
+      {{ block.settings.gradient_color }} 0%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    padding: {{ block.settings.overlay_padding }}px;
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.text_spacing }}px;
+  }
+
+  .ai-article-hero-meta-{{ ai_gen_id }} {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-size: {{ block.settings.meta_font_size }}px;
+    color: {{ block.settings.text_color }};
+    font-family: {{ block.settings.meta_font.family }}, {{ block.settings.meta_font.fallback_families }};
+    font-weight: {{ block.settings.meta_font.weight }};
+    text-transform: {{ block.settings.meta_text_transform }};
+    letter-spacing: {{ block.settings.meta_letter_spacing }}px;
+  }
+
+  .ai-article-hero-meta-separator-{{ ai_gen_id }} {
+    width: 1px;
+    height: 12px;
+    background-color: {{ block.settings.text_color }};
+    opacity: 0.5;
+  }
+
+  .ai-article-hero-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_font_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    font-family: {{ block.settings.title_font.family }}, {{ block.settings.title_font.fallback_families }};
+    font-weight: {{ block.settings.title_font.weight }};
+    line-height: {{ block.settings.title_line_height }};
+    max-width: {{ block.settings.title_max_width }}%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-article-hero-{{ ai_gen_id }} {
+      height: {{ block.settings.mobile_height }}vh;
+    }
+
+    .ai-article-hero-overlay-{{ ai_gen_id }} {
+      padding: {{ block.settings.overlay_padding | times: 0.6 }}px;
+    }
+
+    .ai-article-hero-meta-{{ ai_gen_id }} {
+      font-size: {{ block.settings.meta_font_size | times: 0.9 }}px;
+    }
+
+    .ai-article-hero-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_font_size | times: 0.6 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-article-hero-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if article.image %}
+    <img
+      src="{{ article.image | image_url: width: 2000 }}"
+      alt="{{ article.image.alt | default: article.title | escape }}"
+      loading="eager"
+      width="{{ article.image.width }}"
+      height="{{ article.image.height }}"
+      class="ai-article-hero-image-{{ ai_gen_id }}"
+    >
+  {% else %}
+    <div class="ai-article-hero-placeholder-{{ ai_gen_id }}">
+      {{ 'hero-apparel-1' | placeholder_svg_tag }}
+      <div class="ai-article-hero-empty-state-{{ ai_gen_id }}">
+        Next, add a featured image to this article
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="ai-article-hero-overlay-{{ ai_gen_id }}">
+    <div class="ai-article-hero-meta-{{ ai_gen_id }}">
+      {% if block.settings.show_read_time and article.content %}
+        {% assign word_count = article.content | strip_html | split: ' ' | size %}
+        {% assign read_time = word_count | divided_by: 200 %}
+        {% if read_time == 0 %}
+          {% assign read_time = 1 %}
+        {% endif %}
+        <span>{{ read_time }} min read</span>
+      {% endif %}
+
+      {% if block.settings.show_read_time and block.settings.show_date %}
+        <span class="ai-article-hero-meta-separator-{{ ai_gen_id }}"></span>
+      {% endif %}
+
+      {% if block.settings.show_date and article.published_at %}
+        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+          {{ article.published_at | date: block.settings.date_format }}
+        </time>
+      {% endif %}
+    </div>
+
+    <h1 class="ai-article-hero-title-{{ ai_gen_id }}">
+      {{ article.title }}
+    </h1>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Article hero",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "label": "Desktop height",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "overlay_padding",
+      "label": "Overlay padding",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Font",
+      "default": "cormorant_n4"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "label": "Font size",
+      "min": 24,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "title_line_height",
+      "label": "Line height",
+      "min": 1,
+      "max": 1.5,
+      "step": 0.1,
+      "default": 1.1
+    },
+    {
+      "type": "range",
+      "id": "title_max_width",
+      "label": "Max width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Metadata"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_read_time",
+      "label": "Show read time",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show publish date",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "date_format",
+      "label": "Date format",
+      "default": "%B %d, %Y"
+    },
+    {
+      "type": "font_picker",
+      "id": "meta_font",
+      "label": "Font",
+      "default": "instrument_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "meta_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "meta_text_transform",
+      "label": "Text case",
+      "options": [
+        {
+          "value": "none",
+          "label": "Default"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "meta_letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "text_spacing",
+      "label": "Spacing between metadata and title",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "gradient_color",
+      "label": "Gradient color",
+      "default": "#000000"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article hero"
+    }
+  ]
+}
+{% endschema %}

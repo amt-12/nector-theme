@@ -1,0 +1,448 @@
+{% doc %}
+  @prompt
+    Create a full-width Rich text section with a background image and two-column text layout for an About Us page. Left column shows "OUR VISION" as a small uppercase label with the text "A world where purity is the standard, not the exception." below it. Right column shows "OUR MISSION" as a small uppercase label with the text "To bring the world's purest honey to those who refuse to compromise." below it. Both columns should have a vertical divider between them. Text should be white, centered within each column, with generous padding. The section should support a background image setting. Premium luxury brand aesthetic., background will be a video not image, not a link its in the library so i should be able to select it juts like images , can you make the video full page , can you make the video full page in terms of the width, give me options where i can adjust the height and the width 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-vision-mission-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    height: {{ block.settings.section_height }}vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .ai-vision-mission-background-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .ai-vision-mission-background-{{ ai_gen_id }} video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-vision-mission-background-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-vision-mission-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: {{ block.settings.overlay_color }};
+    opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};
+    z-index: 1;
+  }
+
+  .ai-vision-mission-content-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 2;
+    width: {{ block.settings.content_width }}%;
+    max-width: 100%;
+    padding: {{ block.settings.padding_vertical }}px {{ block.settings.padding_horizontal }}px;
+    margin: 0 auto;
+  }
+
+  .ai-vision-mission-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: {{ block.settings.column_gap }}px;
+    align-items: center;
+  }
+
+  .ai-vision-mission-column-{{ ai_gen_id }} {
+    text-align: center;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-vision-mission-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.label_size }}px;
+    letter-spacing: {{ block.settings.label_spacing }}px;
+    text-transform: uppercase;
+    margin-bottom: {{ block.settings.label_margin }}px;
+    font-weight: 600;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-vision-mission-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    line-height: {{ block.settings.text_line_height }};
+    color: {{ block.settings.text_color }};
+    margin: 0;
+  }
+
+  .ai-vision-mission-divider-{{ ai_gen_id }} {
+    width: 1px;
+    height: {{ block.settings.divider_height }}px;
+    background-color: {{ block.settings.divider_color }};
+    opacity: {{ block.settings.divider_opacity | divided_by: 100.0 }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-vision-mission-{{ ai_gen_id }} {
+      height: {{ block.settings.mobile_section_height }}vh;
+    }
+
+    .ai-vision-mission-content-{{ ai_gen_id }} {
+      width: {{ block.settings.mobile_content_width }}%;
+      padding: {{ block.settings.mobile_padding_vertical }}px {{ block.settings.mobile_padding_horizontal }}px;
+    }
+
+    .ai-vision-mission-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ block.settings.mobile_gap }}px;
+    }
+
+    .ai-vision-mission-divider-{{ ai_gen_id }} {
+      display: none;
+    }
+
+    .ai-vision-mission-label-{{ ai_gen_id }} {
+      font-size: {{ block.settings.label_size | times: 0.9 }}px;
+    }
+
+    .ai-vision-mission-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.text_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-vision-mission-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-vision-mission-background-{{ ai_gen_id }}">
+    {% if block.settings.background_video %}
+      {{
+        block.settings.background_video
+        | video_tag:
+          autoplay: true,
+          loop: true,
+          muted: true,
+          controls: false,
+          image_size: '1920x'
+      }}
+    {% elsif block.settings.background_image %}
+      <img
+        src="{{ block.settings.background_image | image_url: width: 2000 }}"
+        alt="{{ block.settings.background_image.alt | escape }}"
+        loading="lazy"
+        width="{{ block.settings.background_image.width }}"
+        height="{{ block.settings.background_image.height }}"
+      >
+    {% else %}
+      <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #8b7355 0%, #6b5345 100%);"></div>
+    {% endif %}
+  </div>
+
+  <div class="ai-vision-mission-overlay-{{ ai_gen_id }}"></div>
+
+  <div class="ai-vision-mission-content-{{ ai_gen_id }}">
+    <div class="ai-vision-mission-grid-{{ ai_gen_id }}">
+      <div class="ai-vision-mission-column-{{ ai_gen_id }}">
+        {% if block.settings.vision_label != blank %}
+          <div class="ai-vision-mission-label-{{ ai_gen_id }}">{{ block.settings.vision_label }}</div>
+        {% endif %}
+        {% if block.settings.vision_text != blank %}
+          <p class="ai-vision-mission-text-{{ ai_gen_id }}">{{ block.settings.vision_text }}</p>
+        {% endif %}
+      </div>
+
+      <div class="ai-vision-mission-divider-{{ ai_gen_id }}"></div>
+
+      <div class="ai-vision-mission-column-{{ ai_gen_id }}">
+        {% if block.settings.mission_label != blank %}
+          <div class="ai-vision-mission-label-{{ ai_gen_id }}">{{ block.settings.mission_label }}</div>
+        {% endif %}
+        {% if block.settings.mission_text != blank %}
+          <p class="ai-vision-mission-text-{{ ai_gen_id }}">{{ block.settings.mission_text }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Vision and mission",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "video",
+      "id": "background_video",
+      "label": "Background video"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Fallback image",
+      "info": "Used if no video is selected"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Vision column"
+    },
+    {
+      "type": "text",
+      "id": "vision_label",
+      "label": "Label",
+      "default": "OUR VISION"
+    },
+    {
+      "type": "textarea",
+      "id": "vision_text",
+      "label": "Text",
+      "default": "A world where purity is the standard, not the exception."
+    },
+    {
+      "type": "header",
+      "content": "Mission column"
+    },
+    {
+      "type": "text",
+      "id": "mission_label",
+      "label": "Label",
+      "default": "OUR MISSION"
+    },
+    {
+      "type": "textarea",
+      "id": "mission_text",
+      "label": "Text",
+      "default": "To bring the world's purest honey to those who refuse to compromise."
+    },
+    {
+      "type": "header",
+      "content": "Section dimensions"
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "label": "Desktop height",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 100,
+      "info": "100vh = full screen height"
+    },
+    {
+      "type": "range",
+      "id": "mobile_section_height",
+      "label": "Mobile height",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Desktop content width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "mobile_content_width",
+      "label": "Mobile content width",
+      "min": 80,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 90
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Desktop vertical padding",
+      "min": 20,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Desktop horizontal padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Desktop column gap",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_vertical",
+      "label": "Mobile vertical padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_horizontal",
+      "label": "Mobile horizontal padding",
+      "min": 15,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "label": "Mobile gap",
+      "min": 20,
+      "max": 80,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "label": "Label size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "label_spacing",
+      "label": "Label letter spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "label_margin",
+      "label": "Label margin bottom",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "text_line_height",
+      "label": "Text line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "header",
+      "content": "Divider"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "divider_height",
+      "label": "Height",
+      "min": 50,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "divider_opacity",
+      "label": "Opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 30
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vision and mission"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

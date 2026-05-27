@@ -1,0 +1,352 @@
+{% doc %}
+  @prompt
+    Create a "Shop This Recipe" section for Shopify blog article pages. It should display a row of product cards using the theme's default card styling. Each card shows the product image, product title, price, and a "Shop Now" button that links to the product page. The section should support 1–3 products, be configurable in the theme editor (merchant picks which products to feature), and have a heading "Shop This Recipe" above the cards. Include a theme editor setting called "Card Size" with three options: Small (compact cards, image height ~120px, small typography), Medium (default size, image height ~200px), and Large (full size, image height ~280px). Use the theme's existing button styles. The section is designed to sit at the bottom of a recipe blog post.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-shop-recipe-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: 40px 0;
+  }
+
+  .ai-shop-recipe-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-shop-recipe-heading-{{ ai_gen_id }} {
+    font-family: var(--font-heading-family);
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: var(--heading-tight);
+    line-height: var(--display-tight);
+    color: #1a1a1a;
+    margin: 0 0 32px;
+    text-align: center;
+  }
+
+  .ai-shop-recipe-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    justify-items: center;
+  }
+
+  .ai-shop-recipe-card-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    background-color: #ffffff;
+    border: 1px solid #e8dcc8;
+    border-radius: 0;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .ai-shop-recipe-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-shop-recipe-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background-color: #fafaf5;
+  }
+
+  .ai-shop-recipe-image-wrapper-{{ ai_gen_id }}--small {
+    height: 120px;
+  }
+
+  .ai-shop-recipe-image-wrapper-{{ ai_gen_id }}--medium {
+    height: 200px;
+  }
+
+  .ai-shop-recipe-image-wrapper-{{ ai_gen_id }}--large {
+    height: 280px;
+  }
+
+  .ai-shop-recipe-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-shop-recipe-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5e8;
+  }
+
+  .ai-shop-recipe-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .ai-shop-recipe-content-{{ ai_gen_id }} {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+  }
+
+  .ai-shop-recipe-content-{{ ai_gen_id }}--small {
+    padding: 16px;
+    gap: 8px;
+  }
+
+  .ai-shop-recipe-content-{{ ai_gen_id }}--large {
+    padding: 24px;
+    gap: 16px;
+  }
+
+  .ai-shop-recipe-title-{{ ai_gen_id }} {
+    font-family: var(--font-heading-family);
+    font-weight: 400;
+    letter-spacing: var(--heading-tight);
+    line-height: 1.3;
+    color: #1a1a1a;
+    margin: 0;
+    text-decoration: none;
+  }
+
+  .ai-shop-recipe-title-{{ ai_gen_id }}--small {
+    font-size: 16px;
+  }
+
+  .ai-shop-recipe-title-{{ ai_gen_id }}--medium {
+    font-size: 18px;
+  }
+
+  .ai-shop-recipe-title-{{ ai_gen_id }}--large {
+    font-size: 20px;
+  }
+
+  .ai-shop-recipe-price-{{ ai_gen_id }} {
+    font-family: var(--font-subheading-family);
+    font-weight: 400;
+    color: #1a1a1a;
+    margin: 0;
+  }
+
+  .ai-shop-recipe-price-{{ ai_gen_id }}--small {
+    font-size: 14px;
+  }
+
+  .ai-shop-recipe-price-{{ ai_gen_id }}--medium {
+    font-size: 16px;
+  }
+
+  .ai-shop-recipe-price-{{ ai_gen_id }}--large {
+    font-size: 18px;
+  }
+
+  .ai-shop-recipe-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border: 0px solid #1a1a1a;
+    border-radius: 0px;
+    font-family: var(--font-body-family);
+    font-weight: 400;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-top: auto;
+  }
+
+  .ai-shop-recipe-button-{{ ai_gen_id }}--small {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+
+  .ai-shop-recipe-button-{{ ai_gen_id }}--medium {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .ai-shop-recipe-button-{{ ai_gen_id }}--large {
+    padding: 14px 28px;
+    font-size: 15px;
+  }
+
+  .ai-shop-recipe-button-{{ ai_gen_id }}:hover {
+    background-color: #0f0f0f;
+    color: #ffffff;
+  }
+
+  .ai-shop-recipe-empty-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-size: 14px;
+    font-style: italic;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-shop-recipe-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .ai-shop-recipe-heading-{{ ai_gen_id }} {
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-shop-recipe-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-shop-recipe-container-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-shop-recipe-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+    {% endif %}
+
+    {% liquid
+      assign product_1 = block.settings.product_1
+      assign product_2 = block.settings.product_2
+      assign product_3 = block.settings.product_3
+      assign has_products = false
+
+      if product_1 != blank or product_2 != blank or product_3 != blank
+        assign has_products = true
+      endif
+    %}
+
+    {% if has_products %}
+      <div class="ai-shop-recipe-grid-{{ ai_gen_id }}">
+        {% for i in (1..3) %}
+          {% liquid
+            assign product_key = 'product_' | append: i
+            assign product = block.settings[product_key]
+          %}
+
+          {% if product != blank %}
+            <div class="ai-shop-recipe-card-{{ ai_gen_id }}">
+              <div class="ai-shop-recipe-image-wrapper-{{ ai_gen_id }} ai-shop-recipe-image-wrapper-{{ ai_gen_id }}--{{ block.settings.card_size }}">
+                {% if product.featured_image %}
+                  <img
+                    src="{{ product.featured_image | image_url: width: 600 }}"
+                    alt="{{ product.featured_image.alt | escape }}"
+                    class="ai-shop-recipe-image-{{ ai_gen_id }}"
+                    loading="lazy"
+                    width="600"
+                    height="600"
+                  >
+                {% else %}
+                  <div class="ai-shop-recipe-placeholder-{{ ai_gen_id }}">
+                    {{ 'product-1' | placeholder_svg_tag }}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="ai-shop-recipe-content-{{ ai_gen_id }} ai-shop-recipe-content-{{ ai_gen_id }}--{{ block.settings.card_size }}">
+                <h3 class="ai-shop-recipe-title-{{ ai_gen_id }} ai-shop-recipe-title-{{ ai_gen_id }}--{{ block.settings.card_size }}">
+                  {{ product.title }}
+                </h3>
+
+                <div class="ai-shop-recipe-price-{{ ai_gen_id }} ai-shop-recipe-price-{{ ai_gen_id }}--{{ block.settings.card_size }}">
+                  {{ product.price | money }}
+                </div>
+
+                <a
+                  href="{{ product.url }}"
+                  class="ai-shop-recipe-button-{{ ai_gen_id }} ai-shop-recipe-button-{{ ai_gen_id }}--{{ block.settings.card_size }}"
+                >
+                  {{ block.settings.button_text }}
+                </a>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="ai-shop-recipe-empty-{{ ai_gen_id }}">
+        Next, add products to feature in this recipe section
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Shop this recipe",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop This Recipe"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "select",
+      "id": "card_size",
+      "label": "Card size",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "product",
+      "id": "product_1",
+      "label": "Product 1"
+    },
+    {
+      "type": "product",
+      "id": "product_2",
+      "label": "Product 2"
+    },
+    {
+      "type": "product",
+      "id": "product_3",
+      "label": "Product 3"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop this recipe"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

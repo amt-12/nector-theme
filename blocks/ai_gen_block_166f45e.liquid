@@ -1,0 +1,239 @@
+{% doc %}
+  @prompt
+    Create a footer text block with two text fields: a main text and a sub-line text below it. Each text field should have its own font size control (small, medium, large). Also include sidebar settings to adjust the block's width (as a percentage or fixed value) and vertical padding/height so the merchant can control spacing directly from the theme editor.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-footer-text-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ block.settings.vertical_padding }}px 0;
+  }
+
+  .ai-footer-text__container-{{ ai_gen_id }} {
+    {% if block.settings.width_type == 'percentage' %}
+      width: {{ block.settings.width_percentage }}%;
+    {% else %}
+      width: {{ block.settings.width_fixed }}px;
+    {% endif %}
+    max-width: 100%;
+    margin: 0 auto;
+    text-align: {{ block.settings.text_alignment }};
+  }
+
+  .ai-footer-text__main-{{ ai_gen_id }} {
+    color: {{ block.settings.main_text_color }};
+    margin: 0 0 {{ block.settings.text_spacing }}px 0;
+    {% if block.settings.main_text_size == 'small' %}
+      font-size: 14px;
+      line-height: 1.4;
+    {% elsif block.settings.main_text_size == 'medium' %}
+      font-size: 16px;
+      line-height: 1.5;
+    {% else %}
+      font-size: 20px;
+      line-height: 1.6;
+    {% endif %}
+  }
+
+  .ai-footer-text__subline-{{ ai_gen_id }} {
+    color: {{ block.settings.subline_text_color }};
+    margin: 0;
+    {% if block.settings.subline_text_size == 'small' %}
+      font-size: 12px;
+      line-height: 1.4;
+    {% elsif block.settings.subline_text_size == 'medium' %}
+      font-size: 14px;
+      line-height: 1.5;
+    {% else %}
+      font-size: 16px;
+      line-height: 1.6;
+    {% endif %}
+  }
+{% endstyle %}
+
+<div class="ai-footer-text-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-footer-text__container-{{ ai_gen_id }}">
+    {% if block.settings.main_text != blank %}
+      <div class="ai-footer-text__main-{{ ai_gen_id }}">
+        {{ block.settings.main_text }}
+      </div>
+    {% endif %}
+    
+    {% if block.settings.subline_text != blank %}
+      <div class="ai-footer-text__subline-{{ ai_gen_id }}">
+        {{ block.settings.subline_text }}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Footer text",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Main text"
+    },
+    {
+      "type": "richtext",
+      "id": "main_text",
+      "label": "Main text",
+      "default": "<p>Premium natural honey from sustainable sources</p>"
+    },
+    {
+      "type": "select",
+      "id": "main_text_size",
+      "label": "Font size",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "color",
+      "id": "main_text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Subline text"
+    },
+    {
+      "type": "richtext",
+      "id": "subline_text",
+      "label": "Subline text",
+      "default": "<p>Cold-extracted, single-origin, no blending</p>"
+    },
+    {
+      "type": "select",
+      "id": "subline_text_size",
+      "label": "Font size",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "small"
+    },
+    {
+      "type": "color",
+      "id": "subline_text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "text_spacing",
+      "label": "Spacing between texts",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Block dimensions"
+    },
+    {
+      "type": "select",
+      "id": "width_type",
+      "label": "Width type",
+      "options": [
+        {
+          "value": "percentage",
+          "label": "Percentage"
+        },
+        {
+          "value": "fixed",
+          "label": "Fixed (pixels)"
+        }
+      ],
+      "default": "percentage"
+    },
+    {
+      "type": "range",
+      "id": "width_percentage",
+      "label": "Width (percentage)",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "width_fixed",
+      "label": "Width (fixed)",
+      "min": 200,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "default": 800
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "label": "Vertical padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer text"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,435 @@
+{% doc %}
+  @prompt
+    Create an email signup coupon popup block for a premium honey brand (NECTAR&COMB). The popup should appear after a customer submits the email signup form (triggered by customer_posted=true in the URL). It must show a thank-you message, a customizable coupon code with a copy button, and a close button. CRITICAL REQUIREMENTS: The popup overlay HTML element must be rendered directly inside document.body using JavaScript (document.body.appendChild) BEFORE the custom element registers, so it always sits at the top level of the DOM and is never trapped inside a footer or any other stacking context. The overlay must use position:fixed, z-index:2147483647, top:0, left:0, width:100vw, height:100vh. Style with warm amber tones (#d4a574 accent, #fafaf5 background, #3b2a1a text). All settings (coupon code, heading, message, colors) must be customizable in the theme editor.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-coupon-popup-trigger-{{ ai_gen_id }} {
+    display: none;
+  }
+{% endstyle %}
+
+<div class="ai-coupon-popup-trigger-{{ ai_gen_id }}" {{ block.shopify_attributes }}></div>
+
+<script>
+(function() {
+  const aiGenId = '{{ ai_gen_id }}';
+  const urlParams = new URLSearchParams(window.location.search);
+  const customerPosted = urlParams.get('customer_posted') === 'true';
+
+  if (!customerPosted) {
+    return;
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'ai-coupon-popup-overlay-' + aiGenId;
+  overlay.innerHTML = `
+    <style>
+      .ai-coupon-popup-overlay-${aiGenId} {
+        position: fixed;
+        z-index: 2147483647;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .ai-coupon-popup-overlay-${aiGenId}.active {
+        opacity: 1;
+      }
+
+      .ai-coupon-popup-modal-${aiGenId} {
+        position: relative;
+        background-color: {{ block.settings.popup_background_color }};
+        border-radius: {{ block.settings.border_radius }}px;
+        padding: 40px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+
+      .ai-coupon-popup-overlay-${aiGenId}.active .ai-coupon-popup-modal-${aiGenId} {
+        transform: scale(1);
+      }
+
+      .ai-coupon-popup-close-${aiGenId} {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        color: {{ block.settings.text_color }};
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+      }
+
+      .ai-coupon-popup-close-${aiGenId}:hover {
+        opacity: 1;
+      }
+
+      .ai-coupon-popup-close-${aiGenId} svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .ai-coupon-popup-content-${aiGenId} {
+        text-align: center;
+      }
+
+      .ai-coupon-popup-heading-${aiGenId} {
+        font-size: {{ block.settings.heading_size }}px;
+        color: {{ block.settings.text_color }};
+        margin: 0 0 16px;
+        font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+        font-weight: {{ block.settings.heading_font.weight }};
+      }
+
+      .ai-coupon-popup-message-${aiGenId} {
+        font-size: {{ block.settings.message_size }}px;
+        color: {{ block.settings.text_color }};
+        margin: 0 0 24px;
+        line-height: 1.6;
+      }
+
+      .ai-coupon-popup-code-wrapper-${aiGenId} {
+        background-color: {{ block.settings.code_background_color }};
+        border: 2px dashed {{ block.settings.accent_color }};
+        border-radius: {{ block.settings.code_border_radius }}px;
+        padding: 20px;
+        margin-bottom: 24px;
+      }
+
+      .ai-coupon-popup-code-label-${aiGenId} {
+        font-size: 12px;
+        color: {{ block.settings.text_color }};
+        opacity: 0.8;
+        margin: 0 0 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .ai-coupon-popup-code-display-${aiGenId} {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .ai-coupon-popup-code-${aiGenId} {
+        font-size: {{ block.settings.code_size }}px;
+        color: {{ block.settings.accent_color }};
+        font-weight: 700;
+        letter-spacing: 2px;
+        font-family: monospace;
+      }
+
+      .ai-coupon-popup-copy-btn-${aiGenId} {
+        background-color: {{ block.settings.accent_color }};
+        color: {{ block.settings.button_text_color }};
+        border: none;
+        border-radius: {{ block.settings.button_border_radius }}px;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .ai-coupon-popup-copy-btn-${aiGenId}:hover {
+        background-color: {{ block.settings.accent_hover_color }};
+        transform: translateY(-1px);
+      }
+
+      .ai-coupon-popup-copy-btn-${aiGenId}.copied {
+        background-color: #4caf50;
+      }
+
+      .ai-coupon-popup-footer-${aiGenId} {
+        font-size: 14px;
+        color: {{ block.settings.text_color }};
+        opacity: 0.7;
+      }
+
+      @media screen and (max-width: 749px) {
+        .ai-coupon-popup-modal-${aiGenId} {
+          padding: 32px 24px;
+        }
+
+        .ai-coupon-popup-heading-${aiGenId} {
+          font-size: calc({{ block.settings.heading_size }}px * 0.8);
+        }
+
+        .ai-coupon-popup-code-${aiGenId} {
+          font-size: calc({{ block.settings.code_size }}px * 0.8);
+        }
+      }
+    </style>
+
+    <div class="ai-coupon-popup-modal-${aiGenId}">
+      <button class="ai-coupon-popup-close-${aiGenId}" aria-label="Close popup">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="ai-coupon-popup-content-${aiGenId}">
+        <h2 class="ai-coupon-popup-heading-${aiGenId}">{{ block.settings.heading }}</h2>
+        <p class="ai-coupon-popup-message-${aiGenId}">{{ block.settings.message }}</p>
+
+        <div class="ai-coupon-popup-code-wrapper-${aiGenId}">
+          <p class="ai-coupon-popup-code-label-${aiGenId}">{{ block.settings.code_label }}</p>
+          <div class="ai-coupon-popup-code-display-${aiGenId}">
+            <span class="ai-coupon-popup-code-${aiGenId}">{{ block.settings.coupon_code }}</span>
+            <button class="ai-coupon-popup-copy-btn-${aiGenId}" data-code="{{ block.settings.coupon_code }}">
+              {{ block.settings.copy_button_text }}
+            </button>
+          </div>
+        </div>
+
+        {% if block.settings.footer_text != blank %}
+          <p class="ai-coupon-popup-footer-${aiGenId}">{{ block.settings.footer_text }}</p>
+        {% endif %}
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  setTimeout(function() {
+    overlay.classList.add('active');
+  }, 100);
+
+  const closeBtn = overlay.querySelector('.ai-coupon-popup-close-' + aiGenId);
+  const copyBtn = overlay.querySelector('.ai-coupon-popup-copy-btn-' + aiGenId);
+
+  function closePopup() {
+    overlay.classList.remove('active');
+    setTimeout(function() {
+      overlay.remove();
+    }, 300);
+  }
+
+  closeBtn.addEventListener('click', closePopup);
+
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      closePopup();
+    }
+  });
+
+  copyBtn.addEventListener('click', function() {
+    const code = this.getAttribute('data-code');
+    const originalText = this.textContent;
+
+    navigator.clipboard.writeText(code).then(function() {
+      copyBtn.textContent = '{{ block.settings.copied_text }}';
+      copyBtn.classList.add('copied');
+
+      setTimeout(function() {
+        copyBtn.textContent = originalText;
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    }).catch(function() {
+      const textArea = document.createElement('textarea');
+      textArea.value = code;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+
+      copyBtn.textContent = '{{ block.settings.copied_text }}';
+      copyBtn.classList.add('copied');
+
+      setTimeout(function() {
+        copyBtn.textContent = originalText;
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Email signup coupon popup",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Thank You for Subscribing!"
+    },
+    {
+      "type": "textarea",
+      "id": "message",
+      "label": "Message",
+      "default": "Welcome to the NECTAR&COMB family. Here's a special gift for you."
+    },
+    {
+      "type": "text",
+      "id": "code_label",
+      "label": "Code label",
+      "default": "Your exclusive code"
+    },
+    {
+      "type": "text",
+      "id": "coupon_code",
+      "label": "Coupon code",
+      "default": "WELCOME15"
+    },
+    {
+      "type": "text",
+      "id": "copy_button_text",
+      "label": "Copy button text",
+      "default": "Copy"
+    },
+    {
+      "type": "text",
+      "id": "copied_text",
+      "label": "Copied confirmation text",
+      "default": "Copied!"
+    },
+    {
+      "type": "text",
+      "id": "footer_text",
+      "label": "Footer text",
+      "default": "Valid for 30 days on your first order"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "popup_background_color",
+      "label": "Background",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#3b2a1a"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#d4a574"
+    },
+    {
+      "type": "color",
+      "id": "accent_hover_color",
+      "label": "Accent hover",
+      "default": "#c49564"
+    },
+    {
+      "type": "color",
+      "id": "code_background_color",
+      "label": "Code background",
+      "default": "#fff8e7"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Popup border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "code_border_radius",
+      "label": "Code box border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "cormorant_n4"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "message_size",
+      "label": "Message size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "code_size",
+      "label": "Code size",
+      "min": 18,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "Email signup coupon popup"
+    }
+  ]
+}
+{% endschema %}

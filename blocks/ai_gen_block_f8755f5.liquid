@@ -1,0 +1,306 @@
+{% doc %}
+  @prompt
+    Create a full-width article hero block for a premium honey brand blog article page. The block must include a theme editor image picker setting so the merchant can upload or select a custom hero image. The selected image should display as a full-width, full-bleed background with no side margins. Overlaid at the bottom of the image: article read time (e.g. "8 min read") and publish date in small text, and the article title in a large serif font — all in white text with a subtle dark gradient at the bottom for legibility. Image height should be ~70vh on desktop, adaptive on mobile. No border radius. Use article.title and article.published_at from Liquid for the text overlay. The image should come from the block's image picker setting (not the article featured image).
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-article-hero-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    height: 70vh;
+    min-height: 400px;
+    overflow: hidden;
+    display: block;
+  }
+
+  .ai-article-hero-image-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-article-hero-placeholder-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-article-hero-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 600px;
+    max-height: 600px;
+  }
+
+  .ai-article-hero-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: {{ block.settings.overlay_padding_desktop }}px;
+    background: linear-gradient(to top, {{ block.settings.gradient_color }}, transparent);
+    z-index: 2;
+  }
+
+  .ai-article-hero-meta-{{ ai_gen_id }} {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: {{ block.settings.meta_font_size }}px;
+    color: {{ block.settings.text_color }};
+    font-family: {{ block.settings.meta_font.family }}, {{ block.settings.meta_font.fallback_families }};
+    font-weight: {{ block.settings.meta_font.weight }};
+  }
+
+  .ai-article-hero-meta-item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ai-article-hero-title-{{ ai_gen_id }} {
+    margin: 0;
+    font-size: {{ block.settings.title_font_size_desktop }}px;
+    line-height: 1.2;
+    color: {{ block.settings.text_color }};
+    font-family: {{ block.settings.title_font.family }}, {{ block.settings.title_font.fallback_families }};
+    font-weight: {{ block.settings.title_font.weight }};
+    font-style: {{ block.settings.title_font.style }};
+  }
+
+  .ai-article-hero-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-article-hero-{{ ai_gen_id }} {
+      height: {{ block.settings.height_mobile }}vh;
+      min-height: 300px;
+    }
+
+    .ai-article-hero-overlay-{{ ai_gen_id }} {
+      padding: {{ block.settings.overlay_padding_mobile }}px;
+    }
+
+    .ai-article-hero-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_font_size_mobile }}px;
+    }
+
+    .ai-article-hero-meta-{{ ai_gen_id }} {
+      font-size: {{ block.settings.meta_font_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<article-hero-{{ ai_gen_id }}
+  class="ai-article-hero-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  {% if block.settings.hero_image %}
+    <img
+      src="{{ block.settings.hero_image | image_url: width: 2400 }}"
+      alt="{{ block.settings.hero_image.alt | default: article.title | escape }}"
+      loading="eager"
+      width="{{ block.settings.hero_image.width }}"
+      height="{{ block.settings.hero_image.height }}"
+      class="ai-article-hero-image-{{ ai_gen_id }}"
+    >
+  {% else %}
+    <div class="ai-article-hero-placeholder-{{ ai_gen_id }}">
+      {{ 'hero-apparel-1' | placeholder_svg_tag }}
+      <div class="ai-article-hero-empty-state-{{ ai_gen_id }}">
+        Next, add a hero image
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="ai-article-hero-overlay-{{ ai_gen_id }}">
+    <div class="ai-article-hero-meta-{{ ai_gen_id }}">
+      {% if article.published_at %}
+        <span class="ai-article-hero-meta-item-{{ ai_gen_id }}">
+          {{ article.published_at | date: '%B %d, %Y' }}
+        </span>
+      {% endif %}
+      {% if block.settings.show_read_time and block.settings.read_time %}
+        <span class="ai-article-hero-meta-item-{{ ai_gen_id }}">
+          {{ block.settings.read_time }} min read
+        </span>
+      {% endif %}
+    </div>
+    {% if article.title %}
+      <h1 class="ai-article-hero-title-{{ ai_gen_id }}">{{ article.title }}</h1>
+    {% endif %}
+  </div>
+</article-hero-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ArticleHero{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+    }
+
+    customElements.define('article-hero-{{ ai_gen_id }}', ArticleHero{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Article hero",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "label": "Mobile height",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "color",
+      "id": "gradient_color",
+      "label": "Gradient color",
+      "default": "rgba(0, 0, 0, 0.7)"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "overlay_padding_desktop",
+      "label": "Desktop padding",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "overlay_padding_mobile",
+      "label": "Mobile padding",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_desktop",
+      "label": "Desktop font size",
+      "min": 24,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "title_font_size_mobile",
+      "label": "Mobile font size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Metadata"
+    },
+    {
+      "type": "font_picker",
+      "id": "meta_font",
+      "label": "Font",
+      "default": "sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "meta_font_size",
+      "label": "Desktop font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "meta_font_size_mobile",
+      "label": "Mobile font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "show_read_time",
+      "label": "Show read time",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "read_time",
+      "label": "Read time (minutes)",
+      "default": "8"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article hero"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,435 @@
+{% doc %}
+  @prompt
+    Create an editorial mid-article content block for a premium honey brand blog. The block should contain the following elements in order, all editable via block settings:
+    
+    1. IMAGE + CAPTION (first): A rectangular landscape image with fixed 3:2 aspect ratio, max height 320px, object-fit cover, max width ~680px centered. Short italic caption below in small grey serif text. Image must be selectable via an image picker setting.
+    
+    2. BODY PARAGRAPH: One regular body paragraph, serif or clean sans-serif, ~16px, generous line height 1.7. Editable via text setting.
+    
+    3. IMAGE + CAPTION (second): Same rectangular 3:2 aspect ratio image, max height 320px, object-fit cover, max width ~680px centered. Italic caption below. Image selectable via image picker setting.
+    
+    4. BODY PARAGRAPHS: Two more regular body paragraphs. Editable via text settings.
+    
+    5. PULL QUOTE: Centered blockquote with thin horizontal rules above and below. Large italic serif ~22px. No attribution.
+    
+    Design: cream/off-white background (#FAF8F4), dark near-black text, max content width ~680px centered, generous vertical spacing, captions in light grey italic small text. Images must always display as rectangular landscape (never square or portrait). Fully responsive on mobile. All images selectable via image picker settings in the theme editor.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-editorial-content-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.vertical_spacing }}px 20px;
+  }
+
+  .ai-editorial-content__inner-{{ ai_gen_id }} {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .ai-editorial-content__image-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto {{ block.settings.caption_spacing }}px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-editorial-content__image-container-{{ ai_gen_id }} {
+    width: 100%;
+    height: 0;
+    padding-bottom: 66.67%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-editorial-content__image-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-editorial-content__image-placeholder-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-editorial-content__image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-editorial-content__caption-{{ ai_gen_id }} {
+    font-family: {{ block.settings.caption_font.family }}, {{ block.settings.caption_font.fallback_families }};
+    font-weight: {{ block.settings.caption_font.weight }};
+    font-style: italic;
+    font-size: {{ block.settings.caption_size }}px;
+    line-height: 1.5;
+    color: {{ block.settings.caption_color }};
+    text-align: center;
+    margin-bottom: {{ block.settings.element_spacing }}px;
+  }
+
+  .ai-editorial-content__paragraph-{{ ai_gen_id }} {
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-size: {{ block.settings.body_size }}px;
+    line-height: {{ block.settings.body_line_height }};
+    color: {{ block.settings.text_color }};
+    margin-bottom: {{ block.settings.element_spacing }}px;
+  }
+
+  .ai-editorial-content__quote-wrapper-{{ ai_gen_id }} {
+    margin: {{ block.settings.quote_spacing }}px 0;
+    padding: {{ block.settings.quote_spacing }}px 0;
+    border-top: {{ block.settings.quote_rule_width }}px solid {{ block.settings.quote_rule_color }};
+    border-bottom: {{ block.settings.quote_rule_width }}px solid {{ block.settings.quote_rule_color }};
+  }
+
+  .ai-editorial-content__quote-{{ ai_gen_id }} {
+    font-family: {{ block.settings.quote_font.family }}, {{ block.settings.quote_font.fallback_families }};
+    font-weight: {{ block.settings.quote_font.weight }};
+    font-style: italic;
+    font-size: {{ block.settings.quote_size }}px;
+    line-height: 1.5;
+    color: {{ block.settings.text_color }};
+    text-align: center;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-editorial-content-{{ ai_gen_id }} {
+      padding: {{ block.settings.vertical_spacing | times: 0.7 }}px 16px;
+    }
+
+    .ai-editorial-content__paragraph-{{ ai_gen_id }} {
+      font-size: {{ block.settings.body_size | times: 0.9 }}px;
+    }
+
+    .ai-editorial-content__quote-{{ ai_gen_id }} {
+      font-size: {{ block.settings.quote_size | times: 0.8 }}px;
+    }
+
+    .ai-editorial-content__caption-{{ ai_gen_id }} {
+      font-size: {{ block.settings.caption_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<editorial-content-{{ ai_gen_id }} class="ai-editorial-content-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-editorial-content__inner-{{ ai_gen_id }}">
+    
+    {% if block.settings.image_1 != blank or block.settings.caption_1 != blank %}
+      <div class="ai-editorial-content__image-wrapper-{{ ai_gen_id }}">
+        <div class="ai-editorial-content__image-container-{{ ai_gen_id }}">
+          {% if block.settings.image_1 != blank %}
+            <img
+              src="{{ block.settings.image_1 | image_url: width: 1400 }}"
+              alt="{{ block.settings.image_1.alt | escape }}"
+              class="ai-editorial-content__image-{{ ai_gen_id }}"
+              loading="lazy"
+              width="{{ block.settings.image_1.width }}"
+              height="{{ block.settings.image_1.height }}"
+            >
+          {% else %}
+            <div class="ai-editorial-content__image-placeholder-{{ ai_gen_id }}">
+              {{ 'image' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      {% if block.settings.caption_1 != blank %}
+        <p class="ai-editorial-content__caption-{{ ai_gen_id }}">{{ block.settings.caption_1 }}</p>
+      {% endif %}
+    {% endif %}
+
+    {% if block.settings.paragraph_1 != blank %}
+      <p class="ai-editorial-content__paragraph-{{ ai_gen_id }}">{{ block.settings.paragraph_1 }}</p>
+    {% endif %}
+
+    {% if block.settings.image_2 != blank or block.settings.caption_2 != blank %}
+      <div class="ai-editorial-content__image-wrapper-{{ ai_gen_id }}">
+        <div class="ai-editorial-content__image-container-{{ ai_gen_id }}">
+          {% if block.settings.image_2 != blank %}
+            <img
+              src="{{ block.settings.image_2 | image_url: width: 1400 }}"
+              alt="{{ block.settings.image_2.alt | escape }}"
+              class="ai-editorial-content__image-{{ ai_gen_id }}"
+              loading="lazy"
+              width="{{ block.settings.image_2.width }}"
+              height="{{ block.settings.image_2.height }}"
+            >
+          {% else %}
+            <div class="ai-editorial-content__image-placeholder-{{ ai_gen_id }}">
+              {{ 'image' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      {% if block.settings.caption_2 != blank %}
+        <p class="ai-editorial-content__caption-{{ ai_gen_id }}">{{ block.settings.caption_2 }}</p>
+      {% endif %}
+    {% endif %}
+
+    {% if block.settings.paragraph_2 != blank %}
+      <p class="ai-editorial-content__paragraph-{{ ai_gen_id }}">{{ block.settings.paragraph_2 }}</p>
+    {% endif %}
+
+    {% if block.settings.paragraph_3 != blank %}
+      <p class="ai-editorial-content__paragraph-{{ ai_gen_id }}">{{ block.settings.paragraph_3 }}</p>
+    {% endif %}
+
+    {% if block.settings.pull_quote != blank %}
+      <div class="ai-editorial-content__quote-wrapper-{{ ai_gen_id }}">
+        <blockquote class="ai-editorial-content__quote-{{ ai_gen_id }}">
+          {{ block.settings.pull_quote }}
+        </blockquote>
+      </div>
+    {% endif %}
+
+  </div>
+</editorial-content-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class EditorialContent{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+    }
+    customElements.define('editorial-content-{{ ai_gen_id }}', EditorialContent{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Editorial content",
+  "settings": [
+    {
+      "type": "header",
+      "content": "First image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_1",
+      "label": "Caption"
+    },
+    {
+      "type": "header",
+      "content": "First paragraph"
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph_1",
+      "label": "Text",
+      "default": "The journey of honey from hive to jar is a testament to nature's precision and the dedication of beekeepers who understand the delicate balance required to preserve its essence."
+    },
+    {
+      "type": "header",
+      "content": "Second image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_2",
+      "label": "Caption"
+    },
+    {
+      "type": "header",
+      "content": "Body paragraphs"
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph_2",
+      "label": "Second paragraph",
+      "default": "Each variety tells a story of its origin—from the eucalyptus groves where bees gather nectar rich in medicinal properties, to the wild multiflora meadows that yield complex, layered flavors."
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph_3",
+      "label": "Third paragraph",
+      "default": "Understanding these nuances transforms honey from a simple sweetener into an ingredient worthy of contemplation, a bridge between the natural world and our tables."
+    },
+    {
+      "type": "header",
+      "content": "Pull quote"
+    },
+    {
+      "type": "textarea",
+      "id": "pull_quote",
+      "label": "Quote text",
+      "default": "True honey is not manufactured—it is cultivated through partnership with nature."
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Body size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "body_line_height",
+      "label": "Body line height",
+      "min": 1.4,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.7
+    },
+    {
+      "type": "font_picker",
+      "id": "quote_font",
+      "label": "Quote font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "quote_size",
+      "label": "Quote size",
+      "min": 18,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "font_picker",
+      "id": "caption_font",
+      "label": "Caption font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "caption_size",
+      "label": "Caption size",
+      "min": 11,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FAF8F4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "caption_color",
+      "label": "Caption",
+      "default": "#6b6b6b"
+    },
+    {
+      "type": "color",
+      "id": "quote_rule_color",
+      "label": "Quote rule",
+      "default": "#d4d4d4"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "vertical_spacing",
+      "label": "Vertical padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "element_spacing",
+      "label": "Element spacing",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "caption_spacing",
+      "label": "Caption spacing",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "quote_spacing",
+      "label": "Quote spacing",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "quote_rule_width",
+      "label": "Quote rule width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial content"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,465 @@
+{% doc %}
+  @prompt
+    Regenerate the "Featured article grid" block for a Recipes blog page on an ultra-luxury premium honey brand website. The block should:
+    - Display a featured article in an elegant, editorial grid layout
+    - Have a clean, minimal design with serif typography suitable for a luxury brand
+    - Include theme editor settings for: top padding and bottom padding (numeric inputs in px)
+    - Match the premium aesthetic of the page (earthy tones, restrained design, generous whitespace)
+    - No "other articles" or secondary article listings — just the featured article grid, this should have a headinf and view all button with button setings for placement - top rightanfd type - link, both buttons should not have arrow and should be underlined, HEADING FON AND SIZE OPTION MISSING 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-featured-article-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding-top: {{ block.settings.padding_top }}px;
+    padding-bottom: {{ block.settings.padding_bottom }}px;
+  }
+
+  .ai-featured-article-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-featured-article-header-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 48px;
+  }
+
+  .ai-featured-article-heading-{{ ai_gen_id }} {
+    margin: 0;
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    letter-spacing: 0.02em;
+  }
+
+  .ai-featured-article-view-all-{{ ai_gen_id }} {
+    {% if block.settings.button_placement == 'top_right' %}
+       display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: Raleway;
+    font-size: 14px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    {% else %}
+      display: none;
+    {% endif %}
+    {% if block.settings.button_type == 'link' %}
+      background: none;
+      border: none;
+      padding: 0;
+      text-decoration: underline;
+      cursor: pointer;
+    {% else %}
+      padding: 12px 24px;
+      border: 1px solid {{ block.settings.button_border_color }};
+      background-color: {{ block.settings.button_background }};
+      text-decoration: none;
+    {% endif %}
+    color: {{ block.settings.button_text_color }};
+    font-size: 14px;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-featured-article-view-all-{{ ai_gen_id }}:hover {
+    opacity: 0.7;
+  }
+
+  .ai-featured-article-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .ai-featured-article-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+
+  .ai-featured-article-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-featured-article-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f5f5e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-featured-article-image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 300px;
+    max-height: 300px;
+    opacity: 0.3;
+  }
+
+  .ai-featured-article-content-{{ ai_gen_id }} {
+    padding: 0 20px;
+  }
+
+  .ai-featured-article-meta-{{ ai_gen_id }} {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: {{ block.settings.meta_color }};
+  }
+
+  .ai-featured-article-title-{{ ai_gen_id }} {
+    margin: 0 0 20px;
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: 36px;
+    line-height: 1.3;
+    color: {{ block.settings.title_color }};
+  }
+
+  .ai-featured-article-title-link-{{ ai_gen_id }} {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-featured-article-title-link-{{ ai_gen_id }}:hover {
+    opacity: 0.7;
+  }
+
+  .ai-featured-article-excerpt-{{ ai_gen_id }} {
+    margin: 0 0 32px;
+    font-size: 16px;
+    line-height: 1.8;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-featured-article-read-more-{{ ai_gen_id }} {
+    display: inline-block;
+    {% if block.settings.button_type == 'link' %}
+      background: none;
+      border: none;
+      padding: 0;
+      text-decoration: underline;
+      cursor: pointer;
+    {% else %}
+      padding: 12px 24px;
+      border: 1px solid {{ block.settings.button_border_color }};
+      background-color: {{ block.settings.button_background }};
+      text-decoration: none;
+    {% endif %}
+    color: {{ block.settings.button_text_color }};
+    font-size: 14px;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-featured-article-read-more-{{ ai_gen_id }}:hover {
+    opacity: 0.7;
+  }
+
+  .ai-featured-article-view-all-bottom-{{ ai_gen_id }} {
+    {% if block.settings.button_placement == 'bottom' %}
+      display: block;
+      text-align: center;
+      margin-top: 48px;
+    {% else %}
+      display: none;
+    {% endif %}
+  }
+
+  .ai-featured-article-empty-state-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 80px 20px;
+    color: #999;
+  }
+
+  .ai-featured-article-empty-state-{{ ai_gen_id }} p {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-featured-article-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .ai-featured-article-header-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .ai-featured-article-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.7 }}px;
+    }
+
+    .ai-featured-article-title-{{ ai_gen_id }} {
+      font-size: 28px;
+    }
+
+    .ai-featured-article-content-{{ ai_gen_id }} {
+      padding: 0;
+    }
+  }
+{% endstyle %}
+
+<featured-article-{{ ai_gen_id }} class="ai-featured-article-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-featured-article-container-{{ ai_gen_id }}">
+    {% if block.settings.featured_article != blank %}
+      <div class="ai-featured-article-header-{{ ai_gen_id }}">
+        {% if block.settings.section_heading != blank %}
+          <h2 class="ai-featured-article-heading-{{ ai_gen_id }}">{{ block.settings.section_heading }}</h2>
+        {% endif %}
+        {% if block.settings.view_all_link != blank %}
+          <a href="{{ block.settings.view_all_link }}" class="ai-featured-article-view-all-{{ ai_gen_id }}">
+            {{ block.settings.view_all_text }}
+          </a>
+        {% endif %}
+      </div>
+
+      <div class="ai-featured-article-grid-{{ ai_gen_id }}">
+        <div class="ai-featured-article-image-wrapper-{{ ai_gen_id }}">
+          {% if block.settings.featured_article.image %}
+            <img
+              src="{{ block.settings.featured_article.image | image_url: width: 1200 }}"
+              alt="{{ block.settings.featured_article.image.alt | escape }}"
+              class="ai-featured-article-image-{{ ai_gen_id }}"
+              loading="lazy"
+              width="{{ block.settings.featured_article.image.width }}"
+              height="{{ block.settings.featured_article.image.height }}"
+            >
+          {% else %}
+            <div class="ai-featured-article-image-placeholder-{{ ai_gen_id }}">
+              {{ 'image' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="ai-featured-article-content-{{ ai_gen_id }}">
+          <div class="ai-featured-article-meta-{{ ai_gen_id }}">
+            <span>{{ block.settings.featured_article.published_at | date: '%B %d, %Y' }}</span>
+            {% if block.settings.featured_article.author %}
+              <span>{{ block.settings.featured_article.author }}</span>
+            {% endif %}
+          </div>
+
+          <h3 class="ai-featured-article-title-{{ ai_gen_id }}">
+            <a href="{{ block.settings.featured_article.url }}" class="ai-featured-article-title-link-{{ ai_gen_id }}">
+              {{ block.settings.featured_article.title }}
+            </a>
+          </h3>
+
+          {% if block.settings.featured_article.excerpt != blank %}
+            <div class="ai-featured-article-excerpt-{{ ai_gen_id }}">
+              {{ block.settings.featured_article.excerpt | strip_html | truncate: 200 }}
+            </div>
+          {% endif %}
+
+          <a href="{{ block.settings.featured_article.url }}" class="ai-featured-article-read-more-{{ ai_gen_id }}">
+            {{ block.settings.read_more_text }}
+          </a>
+        </div>
+      </div>
+
+      {% if block.settings.view_all_link != blank %}
+        <div class="ai-featured-article-view-all-bottom-{{ ai_gen_id }}">
+          <a href="{{ block.settings.view_all_link }}" class="ai-featured-article-view-all-{{ ai_gen_id }}">
+            {{ block.settings.view_all_text }}
+          </a>
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="ai-featured-article-empty-state-{{ ai_gen_id }}">
+        <p>Select a featured article to display</p>
+      </div>
+    {% endif %}
+  </div>
+</featured-article-{{ ai_gen_id }}>
+
+{% schema %}
+{
+  "name": "Featured article grid",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section heading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "section_heading",
+      "label": "Heading",
+      "default": "Featured Recipe"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 20,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Featured article"
+    },
+    {
+      "type": "article",
+      "id": "featured_article",
+      "label": "Article"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "meta_color",
+      "label": "Meta color",
+      "default": "#6b5345"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "select",
+      "id": "button_placement",
+      "label": "View all placement",
+      "options": [
+        {
+          "value": "top_right",
+          "label": "Top right"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "top_right"
+    },
+    {
+      "type": "select",
+      "id": "button_type",
+      "label": "Button type",
+      "options": [
+        {
+          "value": "link",
+          "label": "Link"
+        },
+        {
+          "value": "button",
+          "label": "Button"
+        }
+      ],
+      "default": "link"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "View all link"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "view_all_text",
+      "label": "View all text",
+      "default": "View all recipes"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "read_more_text",
+      "label": "Read more text",
+      "default": "Read more"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Button background",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button border color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured article grid"
+    }
+  ]
+}
+{% endschema %}

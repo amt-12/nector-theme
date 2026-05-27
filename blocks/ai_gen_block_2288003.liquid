@@ -1,0 +1,314 @@
+{% doc %}
+  @prompt
+    Create a Liquid theme block called "Philosophy" for a premium single-origin honey brand. LAYOUT: Two equal columns (50% / 50%) side by side, min-height 70vh, no outer padding, edge to edge full width. LEFT COLUMN (50%): Image picker setting, object-fit: cover, full column height. Optional small uppercase label overlaid top-left in white (configurable text, default "Our Philosophy"). Support for video picker as alternative media type (select: image/video). RIGHT COLUMN (50%): Background color setting, default #fafaf5 (cream). Vertically centered content with padding: 60px 48px. Large serif italic blockquote: configurable size range 1–3rem, default 1.6rem, color #1a1a1a, line-height 1.35. Thin horizontal divider line (60px wide, configurable color, default #1a1a1a), margin 28px top and bottom. Body text: configurable size 0.8–1.2rem, default 0.9rem, color #444444, line-height 1.7. Pre-fill: quote "Every sachet delivers precision — pure honey, perfectly portioned. Sourced with intention. Made without compromise.", body_text "No blending. No adulteration. Just honey — exactly as the bees made it, traced to a single origin.", right_bg_color #fafaf5, quote_size 1.6, body_size 0.9. RESPONSIVE: On mobile, stack vertically — image on top (min-height 45vh), text below with padding 36px 24px. CRITICAL: outer wrapper must be width:100%; max-width:100% !important; margin:0; padding:0; overflow:hidden;
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-philosophy-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    max-width: 100% !important;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .ai-philosophy-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    min-height: 70vh;
+    width: 100%;
+  }
+
+  .ai-philosophy-left-{{ ai_gen_id }} {
+    position: relative;
+    width: 50%;
+    min-height: 70vh;
+  }
+
+  .ai-philosophy-media-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-philosophy-label-{{ ai_gen_id }} {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+  }
+
+  .ai-philosophy-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-philosophy-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 400px;
+  }
+
+  .ai-philosophy-right-{{ ai_gen_id }} {
+    width: 50%;
+    background-color: {{ block.settings.right_bg_color }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 48px;
+  }
+
+  .ai-philosophy-content-{{ ai_gen_id }} {
+    max-width: 600px;
+    width: 100%;
+  }
+
+  .ai-philosophy-quote-{{ ai_gen_id }} {
+    font-size: {{ block.settings.quote_size }}rem;
+    font-style: italic;
+    font-family: 'var(--font-heading--family)';
+    color: {{ block.settings.quote_color }};
+    line-height: 1.35;
+    margin: 0 0 28px 0;
+  }
+
+  .ai-philosophy-divider-{{ ai_gen_id }} {
+    width: 60px;
+    height: 1px;
+    background-color: {{ block.settings.divider_color }};
+    margin: 28px 0;
+  }
+
+  .ai-philosophy-body-{{ ai_gen_id }} {
+    font-size: {{ block.settings.body_size }}rem;
+    font-family: 'var(--font-body--family)';
+    color: {{ block.settings.body_color }};
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-philosophy-wrapper-{{ ai_gen_id }} {
+      flex-direction: column;
+      min-height: auto;
+      padding-top: 0px;
+    }
+
+    .ai-philosophy-left-{{ ai_gen_id }} {
+      width: 100%;
+      min-height: 35vh;
+      max-height: 35vh;
+      overflow: hidden;
+      margin-bottom: 0;
+    }
+
+    .ai-philosophy-right-{{ ai_gen_id }} {
+      width: 100%;
+      padding: 0px 0px 0px 0px;
+      align-items: flex-start;
+    }
+
+    .ai-philosophy-quote-{{ ai_gen_id }} {
+      margin: 0 0 12px 0;
+    }
+
+    .ai-philosophy-divider-{{ ai_gen_id }} {
+      margin: 12px 0;
+    }
+
+    .ai-philosophy-label-{{ ai_gen_id }} {
+      top: 0px;
+      left: 16px;
+    }
+  }
+  }
+{% endstyle %}
+
+<ai-philosophy-{{ ai_gen_id }} class="ai-philosophy-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-philosophy-wrapper-{{ ai_gen_id }}">
+    <div class="ai-philosophy-left-{{ ai_gen_id }}">
+      {% if block.settings.media_type == 'video' and block.settings.video != blank %}
+        {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, class: 'ai-philosophy-media-' | append: ai_gen_id }}
+      {% elsif block.settings.media_type == 'image' and block.settings.image != blank %}
+        <img
+          src="{{ block.settings.image | image_url: width: 2000 }}"
+          alt="{{ block.settings.image.alt | escape }}"
+          loading="lazy"
+          width="{{ block.settings.image.width }}"
+          height="{{ block.settings.image.height }}"
+          class="ai-philosophy-media-{{ ai_gen_id }}"
+        >
+      {% else %}
+        <div class="ai-philosophy-placeholder-{{ ai_gen_id }}">
+          {{ 'image' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+
+      {% if block.settings.label != blank %}
+        <div class="ai-philosophy-label-{{ ai_gen_id }}">{{ block.settings.label }}</div>
+      {% endif %}
+    </div>
+
+    <div class="ai-philosophy-right-{{ ai_gen_id }}">
+      <div class="ai-philosophy-content-{{ ai_gen_id }}">
+        {% if block.settings.quote != blank %}
+          <blockquote class="ai-philosophy-quote-{{ ai_gen_id }}">
+            {{ block.settings.quote }}
+          </blockquote>
+        {% endif %}
+
+        <div class="ai-philosophy-divider-{{ ai_gen_id }}"></div>
+
+        {% if block.settings.body_text != blank %}
+          <div class="ai-philosophy-body-{{ ai_gen_id }}">
+            {{ block.settings.body_text }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</ai-philosophy-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class AiPhilosophy{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        const video = this.querySelector('video');
+        if (video) {
+          video.play().catch(() => {});
+        }
+      }
+    }
+
+    customElements.define('ai-philosophy-{{ ai_gen_id }}', AiPhilosophy{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Philosophy",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "select",
+      "id": "media_type",
+      "label": "Media type",
+      "options": [
+        {
+          "value": "image",
+          "label": "Image"
+        },
+        {
+          "value": "video",
+          "label": "Video"
+        }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Overlay label",
+      "default": "Our Philosophy"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote",
+      "default": "Every sachet delivers precision — pure honey, perfectly portioned. Sourced with intention. Made without compromise."
+    },
+    {
+      "type": "textarea",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "No blending. No adulteration. Just honey — exactly as the bees made it, traced to a single origin."
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "right_bg_color",
+      "label": "Background color",
+      "default": "#fafaf5"
+    },
+    {
+      "type": "range",
+      "id": "quote_size",
+      "label": "Quote size",
+      "min": 1,
+      "max": 3,
+      "step": 0.1,
+      "unit": "rem",
+      "default": 1.6
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Quote color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Body size",
+      "min": 0.8,
+      "max": 1.2,
+      "step": 0.1,
+      "unit": "rem",
+      "default": 0.9
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body color",
+      "default": "#444444"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#1a1a1a"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Philosophy"
+    }
+  ]
+}
+{% endschema %}

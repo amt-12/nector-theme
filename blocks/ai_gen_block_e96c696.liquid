@@ -1,0 +1,148 @@
+{% doc %}
+  @prompt
+    Create a product page block that displays an FSSAI license trust line. It should show the official FSSAI logo image (configurable image picker setting) and the license number as text side by side. Settings should include: image picker for the FSSAI logo, text field for license number, and a numeric range slider for icon size from 1 to 100 (maps to pixels, default 28). Style should be minimal, premium, warm-toned — small muted license number text, no bright colors or badges. Include a thin top border divider above the whole element. The block should work inside a product page template.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-fssai-license-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    border-top: 1px solid #e8dcc8;
+    padding-top: 16px;
+    margin-top: 16px;
+  }
+
+  .ai-fssai-license__container-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ai-fssai-license__logo-wrapper-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .ai-fssai-license__logo-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: auto;
+    display: block;
+  }
+
+  .ai-fssai-license__logo-placeholder-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    background-color: #f5f0e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+  }
+
+  .ai-fssai-license__logo-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+  }
+
+  .ai-fssai-license__text-{{ ai_gen_id }} {
+    font-size: 12px;
+    line-height: 1.4;
+    color: #6b5a48;
+    letter-spacing: 0.01em;
+  }
+
+  .ai-fssai-license__label-{{ ai_gen_id }} {
+    font-weight: 400;
+    opacity: 0.8;
+  }
+
+  .ai-fssai-license__number-{{ ai_gen_id }} {
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-fssai-license-{{ ai_gen_id }} {
+      padding-top: 12px;
+      margin-top: 12px;
+    }
+
+    .ai-fssai-license__container-{{ ai_gen_id }} {
+      gap: 10px;
+    }
+
+    .ai-fssai-license__text-{{ ai_gen_id }} {
+      font-size: 11px;
+    }
+  }
+{% endstyle %}
+
+<div
+  class="ai-fssai-license-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-fssai-license__container-{{ ai_gen_id }}">
+    <div class="ai-fssai-license__logo-wrapper-{{ ai_gen_id }}">
+      {% if block.settings.fssai_logo %}
+        <img
+          src="{{ block.settings.fssai_logo | image_url: width: 200 }}"
+          alt="FSSAI Logo"
+          class="ai-fssai-license__logo-{{ ai_gen_id }}"
+          width="{{ block.settings.icon_size }}"
+          height="{{ block.settings.icon_size }}"
+          loading="lazy"
+        >
+      {% else %}
+        <div class="ai-fssai-license__logo-placeholder-{{ ai_gen_id }}">
+          {{ 'image' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="ai-fssai-license__text-{{ ai_gen_id }}">
+      <div class="ai-fssai-license__label-{{ ai_gen_id }}">FSSAI License</div>
+      {% if block.settings.license_number != blank %}
+        <div class="ai-fssai-license__number-{{ ai_gen_id }}">{{ block.settings.license_number }}</div>
+      {% else %}
+        <div class="ai-fssai-license__number-{{ ai_gen_id }}">Add license number</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "FSSAI license",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "fssai_logo",
+      "label": "FSSAI logo"
+    },
+    {
+      "type": "text",
+      "id": "license_number",
+      "label": "License number"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    }
+  ],
+  "presets": [
+    {
+      "name": "FSSAI license"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}
