@@ -183,8 +183,14 @@ export class OverflowList extends DeclarativeShadowElement {
   /**
    * @type {ResizeObserverCallback & MutationCallback}
    */
-  #handleChange = () => {
+  #handleChange = (entries) => {
     if (this.#scheduled) return;
+
+    if (entries && entries[0] && 'contentRect' in entries[0]) {
+      const width = entries[0].contentRect.width;
+      if (this.#lastWidth === width) return;
+      this.#lastWidth = width;
+    }
 
     this.#scheduled = true;
 
@@ -364,6 +370,9 @@ export class OverflowList extends DeclarativeShadowElement {
    * }}
    */
   #refs;
+
+  /** @type {number | null} */
+  #lastWidth = null;
 
   /**
    * @type {ResizeObserver}

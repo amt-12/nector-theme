@@ -141,14 +141,16 @@
       {% if block.settings.media_type == 'video' and block.settings.video != blank %}
         {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, class: 'ai-philosophy-media-' | append: ai_gen_id }}
       {% elsif block.settings.media_type == 'image' and block.settings.image != blank %}
-        <img
-          src="{{ block.settings.image | image_url: width: 2000 }}"
-          alt="{{ block.settings.image.alt | escape }}"
-          loading="lazy"
-          width="{{ block.settings.image.width }}"
-          height="{{ block.settings.image.height }}"
-          class="ai-philosophy-media-{{ ai_gen_id }}"
-        >
+        {%- assign media_class = 'ai-philosophy-media-' | append: ai_gen_id -%}
+        {{
+          block.settings.image
+          | image_url: width: 1500
+          | image_tag:
+            widths: '375, 550, 750, 1100, 1500',
+            sizes: '(min-width: 750px) 50vw, 100vw',
+            class: media_class,
+            loading: 'lazy'
+        }}
       {% else %}
         <div class="ai-philosophy-placeholder-{{ ai_gen_id }}">
           {{ 'image' | placeholder_svg_tag }}

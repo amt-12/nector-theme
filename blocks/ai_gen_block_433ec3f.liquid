@@ -295,14 +295,17 @@
       {% assign featured = block.settings.featured_product %}
       <a href="{{ featured.url }}" style="text-decoration: none; display: contents;" aria-label="{{ featured.title | escape }}">   
           {% if featured.featured_image %}
-            <img
-              src="{{ featured.featured_image | image_url: width: 1200 }}"
-              alt="{{ featured.featured_image.alt | escape }}"
-              class="ai-product-showcase-featured-image-{{ ai_gen_id }}"
-              loading="lazy"
-              width="{{ featured.featured_image.width }}"
-              height="{{ featured.featured_image.height }}"
-            >
+            {%- assign featured_class = 'ai-product-showcase-featured-image-' | append: ai_gen_id -%}
+            {%- assign featured_sizes = '(min-width: 750px) ' | append: block.settings.featured_image_width | append: 'vw, 100vw' -%}
+            {{
+              featured.featured_image
+              | image_url: width: 1200
+              | image_tag:
+                widths: '375, 550, 750, 950, 1200',
+                sizes: featured_sizes,
+                class: featured_class,
+                loading: 'lazy'
+            }}
           {% else %}
             <div class="ai-product-showcase-featured-image-placeholder-{{ ai_gen_id }}">
               {{ 'product-1' | placeholder_svg_tag }}
@@ -340,14 +343,21 @@
           {% if product != blank %}
             <a href="{{ product.url }}" class="ai-product-showcase-list-item-{{ ai_gen_id }}" aria-label="{{ product.title | escape }}">
               {% if product.featured_image %}
-                <img
-                  src="{{ product.featured_image | image_url: width: 300 }}"
-                  alt="{{ product.featured_image.alt | escape }}"
-                  class="ai-product-showcase-list-thumbnail-{{ ai_gen_id }}"
-                  loading="lazy"
-                  width="{{ product.featured_image.width }}"
-                  height="{{ product.featured_image.height }}"
-                >
+                {%- assign thumbnail_class = 'ai-product-showcase-list-thumbnail-' | append: ai_gen_id -%}
+                {%- assign thumbnail_size = block.settings.list_thumbnail_size -%}
+                {%- assign thumbnail_size_2x = thumbnail_size | times: 2 -%}
+                {%- assign thumbnail_size_3x = thumbnail_size | times: 3 -%}
+                {%- assign thumbnail_widths = thumbnail_size | append: ', ' | append: thumbnail_size_2x | append: ', ' | append: thumbnail_size_3x -%}
+                {%- assign thumbnail_sizes = thumbnail_size | append: 'px' -%}
+                {{
+                  product.featured_image
+                  | image_url: width: thumbnail_size_3x
+                  | image_tag:
+                    widths: thumbnail_widths,
+                    sizes: thumbnail_sizes,
+                    class: thumbnail_class,
+                    loading: 'lazy'
+                }}
               {% else %}
                 <div class="ai-product-showcase-list-thumbnail-placeholder-{{ ai_gen_id }}">
                   {{ 'product-1' | placeholder_svg_tag }}
