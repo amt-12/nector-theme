@@ -49,11 +49,7 @@
     <script>
       // Inline header height and menu style calculations to prevent layout shift
       // Note: Updates in calculateHeaderGroupHeight(), updateTransparentHeaderOffset() and setHeaderMenuStyle() utilities.js should be kept in sync with this function
-      (function setHeaderHeighCustomProperties() {
-        /*
-         * Header calculation functions for maintaining CSS variables
-         * Mimic calculateHeaderGroupHeight() in utilities.js
-         */
+      window.requestAnimationFrame(function setHeaderHeightCustomProperties() {
         const header = document.querySelector('header-component');
         const headerGroup = document.querySelector('#header-group');
         const hasHeaderSection = headerGroup?.querySelector('.header-section');
@@ -82,28 +78,21 @@
         document.body.style.setProperty('--header-group-height', `${headerGroupHeight}px`);
 
         if (headerTopRow) {
-          window.requestAnimationFrame(function () {
-            document.body.style.setProperty('--top-row-height', `${headerTopRow.offsetHeight}px`);
-          });
+          document.body.style.setProperty('--top-row-height', `${headerTopRow.offsetHeight}px`);
         }
 
         /**
          * Updates CSS custom properties for transparent header offset calculation
          * Mimic updateTransparentHeaderOffset() in utilities.js
          */
-
         if (!hasHeaderSection || !header?.hasAttribute('transparent')) {
           document.body.style.setProperty('--transparent-header-offset-boolean', '0');
-          return;
+        } else {
+          const hasImmediateSection = hasHeaderSection.nextElementSibling?.classList.contains('shopify-section');
+          const shouldApplyOffset = !hasImmediateSection ? '1' : '0';
+          document.body.style.setProperty('--transparent-header-offset-boolean', shouldApplyOffset);
         }
 
-        const hasImmediateSection = hasHeaderSection.nextElementSibling?.classList.contains('shopify-section');
-
-        const shouldApplyOffset = !hasImmediateSection ? '1' : '0';
-        document.body.style.setProperty('--transparent-header-offset-boolean', shouldApplyOffset);
-      })();
-
-      (function setHeaderMenuStyle() {
         const headerComponent = document.querySelector('#header-component');
         if (headerComponent) {
           const isTouchDevice = 'ontouchstart' in window && navigator.maxTouchPoints > 0;
@@ -111,7 +100,7 @@
           const hasReachedMinimum = overflowList && overflowList.hasAttribute('minimum-reached');
           headerComponent.dataset.menuStyle = isTouchDevice || hasReachedMinimum ? 'drawer' : 'menu';
         }
-      })();
+      });
     </script>
 
     <main
