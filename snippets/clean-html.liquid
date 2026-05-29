@@ -1,0 +1,289 @@
+{%- comment -%}
+  Renders the cleaned and optimized HTML by post-processing the captured page HTML.
+  Usage:
+  {%- render 'clean-html', html: page_html, needs_otp_login: needs_otp_login -%}
+{%- endcomment -%}
+
+{%- assign cleaned_html = html -%}
+
+{%- comment -%} 1. Defer base.css {%- endcomment -%}
+{%- if cleaned_html contains 'assets/base.css' -%}
+  {%- assign parts = cleaned_html | split: 'assets/base.css' -%}
+  {%- capture cleaned_html -%}
+    {{ parts[0] }}
+    {%- for part in parts offset:1 -%}
+      assets/base.css
+      {%- assign subparts = part | split: '>' -%}
+      {%- assign tag_content = subparts[0] -%}
+      {%- assign deferred_tag = tag_content -%}
+      {%- if deferred_tag contains 'rel="stylesheet"' -%}
+        {%- if deferred_tag contains 'media=' -%}
+          {%- assign deferred_tag = deferred_tag | replace: 'media="all"', 'media="print" onload="this.media=\'all\'"' -%}
+          {%- assign deferred_tag = deferred_tag | replace: "media='all'", 'media="print" onload="this.media=\'all\'"' -%}
+        {%- else -%}
+          {%- assign deferred_tag = deferred_tag | replace: 'rel="stylesheet"', 'rel="stylesheet" media="print" onload="this.media=\'all\'"' -%}
+        {%- endif -%}
+      {%- endif -%}
+      {{ deferred_tag }}>
+      {%- for sub in subparts offset:1 -%}
+        {{ sub }}{%- unless forloop.last -%}>{%- endunless -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+{%- endif -%}
+
+{%- comment -%} 2. Defer base.min.css {%- endcomment -%}
+{%- if cleaned_html contains 'assets/base.min.css' -%}
+  {%- assign parts = cleaned_html | split: 'assets/base.min.css' -%}
+  {%- capture cleaned_html -%}
+    {{ parts[0] }}
+    {%- for part in parts offset:1 -%}
+      assets/base.min.css
+      {%- assign subparts = part | split: '>' -%}
+      {%- assign tag_content = subparts[0] -%}
+      {%- assign deferred_tag = tag_content -%}
+      {%- if deferred_tag contains 'rel="stylesheet"' -%}
+        {%- if deferred_tag contains 'media=' -%}
+          {%- assign deferred_tag = deferred_tag | replace: 'media="all"', 'media="print" onload="this.media=\'all\'"' -%}
+          {%- assign deferred_tag = deferred_tag | replace: "media='all'", 'media="print" onload="this.media=\'all\'"' -%}
+        {%- else -%}
+          {%- assign deferred_tag = deferred_tag | replace: 'rel="stylesheet"', 'rel="stylesheet" media="print" onload="this.media=\'all\'"' -%}
+        {%- endif -%}
+      {%- endif -%}
+      {{ deferred_tag }}>
+      {%- for sub in subparts offset:1 -%}
+        {{ sub }}{%- unless forloop.last -%}>{%- endunless -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+{%- endif -%}
+
+{%- comment -%} 3. Defer compiled_assets/styles.css {%- endcomment -%}
+{%- if cleaned_html contains 'compiled_assets/styles.css' -%}
+  {%- assign parts = cleaned_html | split: 'compiled_assets/styles.css' -%}
+  {%- capture cleaned_html -%}
+    {{ parts[0] }}
+    {%- for part in parts offset:1 -%}
+      compiled_assets/styles.css
+      {%- assign subparts = part | split: '>' -%}
+      {%- assign tag_content = subparts[0] -%}
+      {%- assign deferred_tag = tag_content -%}
+      {%- if deferred_tag contains 'rel="stylesheet"' -%}
+        {%- if deferred_tag contains 'media=' -%}
+          {%- assign deferred_tag = deferred_tag | replace: 'media="all"', 'media="print" onload="this.media=\'all\'"' -%}
+          {%- assign deferred_tag = deferred_tag | replace: "media='all'", 'media="print" onload="this.media=\'all\'"' -%}
+        {%- else -%}
+          {%- assign deferred_tag = deferred_tag | replace: 'rel="stylesheet"', 'rel="stylesheet" media="print" onload="this.media=\'all\'"' -%}
+        {%- endif -%}
+      {%- endif -%}
+      {{ deferred_tag }}>
+      {%- for sub in subparts offset:1 -%}
+        {{ sub }}{%- unless forloop.last -%}>{%- endunless -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+{%- endif -%}
+
+{%- comment -%} 4. Defer Tailwind CSS {%- endcomment -%}
+{%- if cleaned_html contains 'tailwind-' -%}
+  {%- assign parts = cleaned_html | split: 'tailwind-' -%}
+  {%- capture cleaned_html -%}
+    {{ parts[0] }}
+    {%- for part in parts offset:1 -%}
+      tailwind-
+      {%- assign subparts = part | split: '>' -%}
+      {%- assign tag_content = subparts[0] -%}
+      {%- assign deferred_tag = tag_content -%}
+      {%- if deferred_tag contains 'rel="stylesheet"' -%}
+        {%- if deferred_tag contains 'media=' -%}
+          {%- assign deferred_tag = deferred_tag | replace: 'media="all"', 'media="print" onload="this.media=\'all\'"' -%}
+          {%- assign deferred_tag = deferred_tag | replace: "media='all'", 'media="print" onload="this.media=\'all\'"' -%}
+        {%- else -%}
+          {%- assign deferred_tag = deferred_tag | replace: 'rel="stylesheet"', 'rel="stylesheet" media="print" onload="this.media=\'all\'"' -%}
+        {%- endif -%}
+      {%- endif -%}
+      {{ deferred_tag }}>
+      {%- for sub in subparts offset:1 -%}
+        {{ sub }}{%- unless forloop.last -%}>{%- endunless -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+{%- endif -%}
+
+{%- comment -%} 5. Optimize Instafeed CSS based on page template {%- endcomment -%}
+{%- if template.name == 'index' -%}
+  {%- if cleaned_html contains 'instafeed-17.9.0.css' -%}
+    {%- assign parts = cleaned_html | split: 'instafeed-17.9.0.css' -%}
+    {%- capture cleaned_html -%}
+      {{ parts[0] }}
+      {%- for part in parts offset:1 -%}
+        instafeed-17.9.0.css
+        {%- assign subparts = part | split: '>' -%}
+        {%- assign tag_content = subparts[0] -%}
+        {%- assign deferred_tag = tag_content -%}
+        {%- if deferred_tag contains 'rel="stylesheet"' -%}
+          {%- if deferred_tag contains 'media=' -%}
+            {%- assign deferred_tag = deferred_tag | replace: 'media="all"', 'media="print" onload="this.media=\'all\'"' -%}
+            {%- assign deferred_tag = deferred_tag | replace: "media='all'", 'media="print" onload="this.media=\'all\'"' -%}
+          {%- else -%}
+            {%- assign deferred_tag = deferred_tag | replace: 'rel="stylesheet"', 'rel="stylesheet" media="print" onload="this.media=\'all\'"' -%}
+          {%- endif -%}
+        {%- endif -%}
+        {{ deferred_tag }}>
+        {%- for sub in subparts offset:1 -%}
+          {{ sub }}{%- unless forloop.last -%}>{%- endunless -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+  {%- endif -%}
+{%- else -%}
+  {%- if cleaned_html contains 'instafeed-17.9.0.css' -%}
+    {%- assign parts = cleaned_html | split: 'instafeed-17.9.0.css' -%}
+    {%- capture cleaned_html -%}
+      {%- for part in parts -%}
+        {%- assign cleaned_part = part -%}
+        {%- unless forloop.first -%}
+          {%- assign subparts = cleaned_part | split: '>' -%}
+          {%- capture cleaned_part -%}
+            {%- for sub in subparts offset:1 -%}
+              {{ sub }}{%- unless forloop.last -%}>{%- endunless -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+        {%- endunless -%}
+        {%- unless forloop.last -%}
+          {%- assign subparts = cleaned_part | split: '<link' -%}
+          {%- capture cleaned_part -%}
+            {%- for sub in subparts -%}
+              {%- unless forloop.last -%}
+                {{ sub }}{%- unless forloop.index == subparts.size | minus: 1 -%}<link{%- endunless -%}
+              {%- endunless -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+        {%- endunless -%}
+        {{ cleaned_part }}
+      {%- endfor -%}
+    {%- endcapture -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- comment -%} 6. Handle PayU OTP Assets {%- endcomment -%}
+{%- if needs_otp_login -%}
+  {%- comment -%} Defer PayU styles if login is needed {%- endcomment -%}
+  {%- if cleaned_html contains 'payu-login.css' -%}
+    {%- assign parts = cleaned_html | split: 'payu-login.css' -%}
+    {%- capture cleaned_html -%}
+      {{ parts[0] }}
+      {%- for part in parts offset:1 -%}
+        payu-login.css
+        {%- assign subparts = part | split: '>' -%}
+        {%- assign tag_content = subparts[0] -%}
+        {%- assign deferred_tag = tag_content -%}
+        {%- if deferred_tag contains 'rel="stylesheet"' -%}
+          {%- if deferred_tag contains 'media=' -%}
+            {%- assign deferred_tag = deferred_tag | replace: 'media="all"', 'media="print" onload="this.media=\'all\'"' -%}
+            {%- assign deferred_tag = deferred_tag | replace: "media='all'", 'media="print" onload="this.media=\'all\'"' -%}
+          {%- else -%}
+            {%- assign deferred_tag = deferred_tag | replace: 'rel="stylesheet"', 'rel="stylesheet" media="print" onload="this.media=\'all\'"' -%}
+          {%- endif -%}
+        {%- endif -%}
+        {{ deferred_tag }}>
+        {%- for sub in subparts offset:1 -%}
+          {{ sub }}{%- unless forloop.last -%}>{%- endunless -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+  {%- endif -%}
+{%- else -%}
+  {%- comment -%} Remove PayU styles entirely if not needed {%- endcomment -%}
+  {%- if cleaned_html contains 'payu-login.css' -%}
+    {%- assign parts = cleaned_html | split: 'payu-login.css' -%}
+    {%- capture cleaned_html -%}
+      {%- for part in parts -%}
+        {%- assign cleaned_part = part -%}
+        {%- unless forloop.first -%}
+          {%- assign subparts = cleaned_part | split: '>' -%}
+          {%- capture cleaned_part -%}
+            {%- for sub in subparts offset:1 -%}
+              {{ sub }}{%- unless forloop.last -%}>{%- endunless -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+        {%- endunless -%}
+        {%- unless forloop.last -%}
+          {%- assign subparts = cleaned_part | split: '<link' -%}
+          {%- capture cleaned_part -%}
+            {%- for sub in subparts -%}
+              {%- unless forloop.last -%}
+                {{ sub }}{%- unless forloop.index == subparts.size | minus: 1 -%}<link{%- endunless -%}
+              {%- endunless -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+        {%- endunless -%}
+        {{ cleaned_part }}
+      {%- endfor -%}
+    {%- endcapture -%}
+  {%- endif -%}
+
+  {%- comment -%} Remove PayU scripts entirely if not needed {%- endcomment -%}
+  {%- if cleaned_html contains 'payu-login.js' -%}
+    {%- assign parts = cleaned_html | split: 'payu-login.js' -%}
+    {%- capture cleaned_html -%}
+      {%- for part in parts -%}
+        {%- assign cleaned_part = part -%}
+        {%- unless forloop.first -%}
+          {%- assign subparts = cleaned_part | split: '</script>' -%}
+          {%- capture cleaned_part -%}
+            {%- for sub in subparts offset:1 -%}
+              {{ sub }}{%- unless forloop.last -%}</script>{%- endunless -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+        {%- endunless -%}
+        {%- unless forloop.last -%}
+          {%- assign subparts = cleaned_part | split: '<script' -%}
+          {%- capture cleaned_part -%}
+            {%- for sub in subparts -%}
+              {%- unless forloop.last -%}
+                {{ sub }}{%- unless forloop.index == subparts.size | minus: 1 -%}<script{%- endunless -%}
+              {%- endunless -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+        {%- endunless -%}
+        {{ cleaned_part }}
+      {%- endfor -%}
+    {%- endcapture -%}
+  {%- endif -%}
+
+  {%- comment -%} Remove PayU preconnect link entirely if not needed {%- endcomment -%}
+  {%- if cleaned_html contains 'https://ce-partnerapilayer.payu.in' -%}
+    {%- assign parts = cleaned_html | split: 'https://ce-partnerapilayer.payu.in' -%}
+    {%- capture cleaned_html -%}
+      {%- for part in parts -%}
+        {%- assign cleaned_part = part -%}
+        {%- unless forloop.first -%}
+          {%- assign subparts = cleaned_part | split: '>' -%}
+          {%- capture cleaned_part -%}
+            {%- for sub in subparts offset:1 -%}
+              {{ sub }}{%- unless forloop.last -%}>{%- endunless -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+        {%- endunless -%}
+        {%- unless forloop.last -%}
+          {%- assign subparts = cleaned_part | split: '<link' -%}
+          {%- capture cleaned_part -%}
+            {%- for sub in subparts -%}
+              {%- unless forloop.last -%}
+                {{ sub }}{%- unless forloop.index == subparts.size | minus: 1 -%}<link{%- endunless -%}
+              {%- endunless -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+        {%- endunless -%}
+        {{ cleaned_part }}
+      {%- endfor -%}
+    {%- endcapture -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- comment -%} 7. Remove redundant preconnect to cdn.shopify.com {%- endcomment -%}
+{%- assign cleaned_html = cleaned_html | replace: 'rel="dns-prefetch preconnect" href="https://cdn.shopify.com"', 'rel="dns-prefetch" href="https://cdn.shopify.com"' -%}
+{%- assign cleaned_html = cleaned_html | replace: 'rel="preconnect dns-prefetch" href="https://cdn.shopify.com"', 'rel="dns-prefetch" href="https://cdn.shopify.com"' -%}
+
+{{ cleaned_html }}

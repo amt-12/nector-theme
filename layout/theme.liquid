@@ -1,3 +1,4 @@
+{%- capture page_html -%}
 <!doctype html>
 <html
   {% if request.design_mode %}
@@ -46,10 +47,7 @@
       {%- render 'theme-editor' -%}
     {% endif %}
 
-    {%- capture captured_content_for_header -%}
-      {{ content_for_header }}
-    {%- endcapture -%}
-    {%- render 'clean-header', content_for_header: captured_content_for_header, needs_otp_login: needs_otp_login -%}
+    {{ content_for_header }}
     {% # theme-check-enable RemoteAsset %}
   </head>
 
@@ -185,3 +183,5 @@
 
   </body>
 </html>
+{%- endcapture -%}
+{%- render 'clean-html', html: page_html, needs_otp_login: needs_otp_login -%}

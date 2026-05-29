@@ -1,5 +1,6 @@
 {% layout none %}
 
+{%- capture page_html -%}
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
@@ -61,10 +62,7 @@
       content="{{ 'gift_cards.issued.subtext' | t }}"
     >
 
-    {%- capture captured_content_for_header -%}
-      {{ content_for_header }}
-    {%- endcapture -%}
-    {%- render 'clean-header', content_for_header: captured_content_for_header, needs_otp_login: false -%}
+    {{ content_for_header }}
 
     {% # theme-check-disable AssetPreload %}
     {%- unless settings.type_body_font.system? -%}
@@ -217,3 +215,5 @@
     </div>
   </body>
 </html>
+{%- endcapture -%}
+{%- render 'clean-html', html: page_html, needs_otp_login: false -%}
