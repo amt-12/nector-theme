@@ -6,8 +6,15 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
-    <link rel="preconnect" href="https://ce-partnerapilayer.payu.in">
-    <link rel="dns-prefetch" href="https://ce-partnerapilayer.payu.in">
+    {%- assign needs_otp_login = false -%}
+    {%- if template.name == 'login' or template.name == 'register' or template.name == 'cart' or template.name == 'account' or template.name == 'addresses' or template.name == 'order' or request.page_type contains 'login' or request.page_type contains 'register' or request.page_type contains 'customer' or request.page_type == 'cart' -%}
+      {%- assign needs_otp_login = true -%}
+    {%- endif -%}
+
+    {%- if needs_otp_login -%}
+      <link rel="preconnect" href="https://ce-partnerapilayer.payu.in">
+      <link rel="dns-prefetch" href="https://ce-partnerapilayer.payu.in">
+    {%- endif -%}
 
     {%- if settings.favicon != blank -%}
       <link
@@ -39,7 +46,19 @@
       {%- render 'theme-editor' -%}
     {% endif %}
 
-    {{ content_for_header }}
+    {%- if needs_otp_login -%}
+      {{ content_for_header }}
+    {%- else -%}
+      {%- capture captured_content_for_header -%}
+        {{ content_for_header }}
+      {%- endcapture -%}
+      {%- assign cleaned_content_for_header = captured_content_for_header -%}
+      {%- assign cleaned_content_for_header = cleaned_content_for_header | replace: 'https://ce-partnerapilayer.payu.in/login/otp-login.js?v2', 'data:text/javascript,console.log("PayU deferred")' -%}
+      {%- assign cleaned_content_for_header = cleaned_content_for_header | replace: 'https://ce-partnerapilayer.payu.in/login/otp-login.js', 'data:text/javascript,console.log("PayU deferred")' -%}
+      {%- assign cleaned_content_for_header = cleaned_content_for_header | replace: '//ce-partnerapilayer.payu.in/login/otp-login.js?v2', 'data:text/javascript,console.log("PayU deferred")' -%}
+      {%- assign cleaned_content_for_header = cleaned_content_for_header | replace: '//ce-partnerapilayer.payu.in/login/otp-login.js', 'data:text/javascript,console.log("PayU deferred")' -%}
+      {{ cleaned_content_for_header }}
+    {%- endif -%}
     {% # theme-check-enable RemoteAsset %}
   </head>
 

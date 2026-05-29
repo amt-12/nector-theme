@@ -16,8 +16,11 @@ export class VideoBackgroundComponent extends Component {
   connectedCallback() {
     super.connectedCallback();
 
-    const isDesktopOnly = this.classList.contains('hero__media-wrapper--desktop') || this.closest('.hero__media-wrapper--desktop');
-    const isMobileOnly = this.classList.contains('hero__media-wrapper--mobile') || this.closest('.hero__media-wrapper--mobile');
+    const hasDesktopClass = this.classList.contains('hero__media-wrapper--desktop') || this.closest('.hero__media-wrapper--desktop');
+    const hasMobileClass = this.classList.contains('hero__media-wrapper--mobile') || this.closest('.hero__media-wrapper--mobile');
+
+    const isDesktopOnly = hasDesktopClass && !hasMobileClass;
+    const isMobileOnly = hasMobileClass && !hasDesktopClass;
 
     const desktopMedia = window.matchMedia('(min-width: 750px)');
     const mobileMedia = window.matchMedia('(max-width: 749px)');
