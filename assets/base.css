@@ -3397,12 +3397,12 @@ fly-to-cart.fly-to-cart--sticky {
 
 @keyframes elementSlideInTop {
   from {
-    margin-top: var(--padding-sm);
+    transform: translateY(var(--padding-sm));
     opacity: 0;
   }
 
   to {
-    margin-top: 0;
+    transform: translateY(0);
     opacity: 1;
   }
 }
