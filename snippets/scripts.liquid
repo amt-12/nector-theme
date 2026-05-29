@@ -314,12 +314,6 @@
     fbScript.src = 'https://connect.facebook.net/en_US/fbevents.js';
     fbScript.async = true;
     document.head.appendChild(fbScript);
-    
-    // Load Payhelm
-    const payhelmScript = document.createElement('script');
-    payhelmScript.src = 'https://cdn-payhelm.s3.amazonaws.com/js/payhelm.shopify.1.0.0.js?shop={{ shop.permanent_domain }}';
-    payhelmScript.async = true;
-    document.head.appendChild(payhelmScript);
   };
   
   const eventTypes = ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'];
