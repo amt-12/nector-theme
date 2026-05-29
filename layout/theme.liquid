@@ -53,6 +53,7 @@
   </head>
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
+    <div id="debug-info" data-template-name="{{ template.name }}" data-template-string="{{ template }}" data-page-type="{{ request.page_type }}" data-needs-otp="{{ needs_otp_login }}" style="display:none;"></div>
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
     <div id="header-group">
       {% sections 'header-group' %}
