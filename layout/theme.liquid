@@ -46,19 +46,7 @@
       {%- render 'theme-editor' -%}
     {% endif %}
 
-    {%- if needs_otp_login -%}
-      {{ content_for_header }}
-    {%- else -%}
-      {%- capture captured_content_for_header -%}
-        {{ content_for_header }}
-      {%- endcapture -%}
-      {%- assign cleaned_content_for_header = captured_content_for_header -%}
-      {%- assign cleaned_content_for_header = cleaned_content_for_header | replace: 'https://ce-partnerapilayer.payu.in/login/otp-login.js?v2', 'data:text/javascript,console.log("PayU deferred")' -%}
-      {%- assign cleaned_content_for_header = cleaned_content_for_header | replace: 'https://ce-partnerapilayer.payu.in/login/otp-login.js', 'data:text/javascript,console.log("PayU deferred")' -%}
-      {%- assign cleaned_content_for_header = cleaned_content_for_header | replace: '//ce-partnerapilayer.payu.in/login/otp-login.js?v2', 'data:text/javascript,console.log("PayU deferred")' -%}
-      {%- assign cleaned_content_for_header = cleaned_content_for_header | replace: '//ce-partnerapilayer.payu.in/login/otp-login.js', 'data:text/javascript,console.log("PayU deferred")' -%}
-      {{ cleaned_content_for_header }}
-    {%- endif -%}
+    {%- render 'clean-header', needs_otp_login: needs_otp_login -%}
     {% # theme-check-enable RemoteAsset %}
   </head>
 

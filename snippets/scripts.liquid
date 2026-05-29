@@ -295,3 +295,39 @@
     },
   };
 </script>
+
+{%- comment -%} NECTOR & COMB — Dynamic Loader for Deferred Third-Party Scripts {%- endcomment -%}
+<script>
+(function() {
+  let scriptsLoaded = false;
+  const loadDeferredScripts = () => {
+    if (scriptsLoaded) return;
+    scriptsLoaded = true;
+    
+    // Remove listeners
+    eventTypes.forEach(type => {
+      window.removeEventListener(type, loadDeferredScripts, { passive: true });
+    });
+    
+    // Load Facebook Pixel
+    const fbScript = document.createElement('script');
+    fbScript.src = 'https://connect.facebook.net/en_US/fbevents.js';
+    fbScript.async = true;
+    document.head.appendChild(fbScript);
+    
+    // Load Payhelm
+    const payhelmScript = document.createElement('script');
+    payhelmScript.src = 'https://cdn-payhelm.s3.amazonaws.com/js/payhelm.shopify.1.0.0.js?shop={{ shop.permanent_domain }}';
+    payhelmScript.async = true;
+    document.head.appendChild(payhelmScript);
+  };
+  
+  const eventTypes = ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'];
+  eventTypes.forEach(type => {
+    window.addEventListener(type, loadDeferredScripts, { passive: true });
+  });
+  
+  // Safety timeout to load them after 6 seconds if no interaction
+  setTimeout(loadDeferredScripts, 6000);
+})();
+</script>

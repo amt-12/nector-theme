@@ -1,0 +1,50 @@
+{%- capture captured_content_for_header -%}
+  {{ content_for_header }}
+{%- endcapture -%}
+
+{%- assign cleaned_content = captured_content_for_header -%}
+
+{%- comment -%} Defer PayU OTP script {%- endcomment -%}
+{%- unless needs_otp_login -%}
+  {%- assign cleaned_content = cleaned_content | replace: 'https://ce-partnerapilayer.payu.in/login/otp-login.js?v2', 'data:text/javascript,console.log("PayU deferred")' -%}
+  {%- assign cleaned_content = cleaned_content | replace: 'https://ce-partnerapilayer.payu.in/login/otp-login.js', 'data:text/javascript,console.log("PayU deferred")' -%}
+  {%- assign cleaned_content = cleaned_content | replace: '//ce-partnerapilayer.payu.in/login/otp-login.js?v2', 'data:text/javascript,console.log("PayU deferred")' -%}
+  {%- assign cleaned_content = cleaned_content | replace: '//ce-partnerapilayer.payu.in/login/otp-login.js', 'data:text/javascript,console.log("PayU deferred")' -%}
+{%- endunless -%}
+
+{%- comment -%} Defer Facebook Pixel script {%- endcomment -%}
+{%- assign cleaned_content = cleaned_content | replace: 'https://connect.facebook.net/en_US/fbevents.js', 'data:text/javascript,console.log("FB Pixel deferred")' -%}
+{%- assign cleaned_content = cleaned_content | replace: '//connect.facebook.net/en_US/fbevents.js', 'data:text/javascript,console.log("FB Pixel deferred")' -%}
+
+{%- comment -%} Defer Payhelm script {%- endcomment -%}
+{%- assign cleaned_content = cleaned_content | replace: 'https://cdn-payhelm.s3.amazonaws.com/js/payhelm.shopify.1.0.0.js', 'data:text/javascript,console.log("Payhelm deferred")' -%}
+{%- assign cleaned_content = cleaned_content | replace: '//cdn-payhelm.s3.amazonaws.com/js/payhelm.shopify.1.0.0.js', 'data:text/javascript,console.log("Payhelm deferred")' -%}
+
+{%- comment -%} Defer compiled_assets/styles.css {%- endcomment -%}
+{%- if cleaned_content contains 'compiled_assets/styles.css' -%}
+  {%- assign parts = cleaned_content | split: 'compiled_assets/styles.css' -%}
+  {%- assign part0 = parts[0] -%}
+  {%- assign part1 = parts[1] -%}
+  {%- assign subparts = part1 | split: '/>' -%}
+  {%- assign subpart0 = subparts[0] -%}
+  
+  {%- if subpart0 contains 'media="all"' -%}
+    {%- assign subpart0_modified = subpart0 | replace: 'media="all"', 'media="print" onload="this.media=\'all\'"' -%}
+  {%- else -%}
+    {%- assign subpart0_modified = subpart0 | replace: 'rel="stylesheet"', 'rel="stylesheet" media="print" onload="this.media=\'all\'"' -%}
+  {%- endif -%}
+  
+  {%- comment -%} Reconstruct part1 {%- endcomment -%}
+  {%- capture reconstructed_part1 -%}
+    {{ subpart0_modified }}/>
+    {%- for subpart in subparts offset:1 -%}
+      {{ subpart }}{%- unless forloop.last -%}/>{%- endunless -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  
+  {%- capture cleaned_content -%}
+    {{ part0 }}compiled_assets/styles.css{{ reconstructed_part1 }}
+  {%- endcapture -%}
+{%- endif -%}
+
+{{ cleaned_content }}
