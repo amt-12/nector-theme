@@ -10,6 +10,7 @@
   @param {object} block_settings - Block settings object
   @param {object} [section_settings] - Section settings for layout-aware sizing
   @param {string} [block_attributes] - Block shopify attributes for theme editor
+  @param {number} [section_index] - Index of the parent section on the page
 
   @example
   {% render 'resource-image',
@@ -37,6 +38,7 @@
   assign block_settings = block_settings | default: empty
   assign section_settings = section_settings | default: empty
   assign block_attributes = block_attributes | default: ''
+  assign section_index = section_index | default: null
 
   # Early return if required parameters missing
   unless parent_block_id != blank and block_settings != empty
@@ -80,7 +82,7 @@
   
   # Default to lazy loading unless it is the first section on the page (above-the-fold)
   assign loading = 'lazy'
-  if section.index == 1
+  if section_index == 1
     assign loading = 'eager'
   endif
 

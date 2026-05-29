@@ -131,15 +131,18 @@
     <div class="ai-philosophy-left-{{ ai_gen_id }}">
       {% if block.settings.media_type == 'video' %}
         {% if block.settings.video != blank %}
-          <video
-            class="ai-philosophy-media-{{ ai_gen_id }}"
-            autoplay
-            muted
-            loop
-            playsinline
-          >
-            <source src="{{ block.settings.video.sources[1].url }}" type="{{ block.settings.video.sources[1].mime_type }}">
-          </video>
+          <video-background-component style="display: block; width: 100%; height: 100%;">
+            <video
+              class="ai-philosophy-media-{{ ai_gen_id }}"
+              autoplay
+              muted
+              loop
+              playsinline
+              ref="videoElement"
+            >
+              <source data-video-source="{{ block.settings.video.sources[1].url }}" type="{{ block.settings.video.sources[1].mime_type }}" ref="videoSources[]">
+            </video>
+          </video-background-component>
         {% else %}
           <div class="ai-philosophy-media-{{ ai_gen_id }}" style="background-color: #1a1a1a; display: flex; align-items: center; justify-content: center; color: #666;">
             <p style="text-align: center; padding: 20px;">Next, add a video</p>
