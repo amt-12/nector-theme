@@ -194,6 +194,64 @@
     {%- endcapture -%}
   {%- endif -%}
 {%- else -%}
+  {%- comment -%} Remove PayU iframe tag if not needed {%- endcomment -%}
+  {%- if cleaned_html contains 'payUCenteredIframe' -%}
+    {%- assign parts = cleaned_html | split: 'payUCenteredIframe' -%}
+    {%- capture cleaned_html -%}
+      {%- for part in parts -%}
+        {%- assign cleaned_part = part -%}
+        {%- unless forloop.first -%}
+          {%- assign subparts = cleaned_part | split: '</iframe>' -%}
+          {%- capture cleaned_part -%}
+            {%- for sub in subparts offset:1 -%}
+              {{ sub }}{%- unless forloop.last -%}</iframe>{%- endunless -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+        {%- endunless -%}
+        {%- unless forloop.last -%}
+          {%- assign subparts = cleaned_part | split: '<iframe' -%}
+          {%- capture cleaned_part -%}
+            {%- for sub in subparts -%}
+              {%- unless forloop.last -%}
+                {{ sub }}{%- unless forloop.index == subparts.size | minus: 1 -%}<iframe{%- endunless -%}
+              {%- endunless -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+        {%- endunless -%}
+        {{ cleaned_part }}
+      {%- endfor -%}
+    {%- endcapture -%}
+  {%- endif -%}
+
+  {%- comment -%} Remove window.payU script tag if not needed {%- endcomment -%}
+  {%- if cleaned_html contains 'window.payU = window.payU || {}' -%}
+    {%- assign parts = cleaned_html | split: 'window.payU = window.payU || {}' -%}
+    {%- capture cleaned_html -%}
+      {%- for part in parts -%}
+        {%- assign cleaned_part = part -%}
+        {%- unless forloop.first -%}
+          {%- assign subparts = cleaned_part | split: '</script>' -%}
+          {%- capture cleaned_part -%}
+            {%- for sub in subparts offset:1 -%}
+              {{ sub }}{%- unless forloop.last -%}</script>{%- endunless -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+        {%- endunless -%}
+        {%- unless forloop.last -%}
+          {%- assign subparts = cleaned_part | split: '<script' -%}
+          {%- capture cleaned_part -%}
+            {%- for sub in subparts -%}
+              {%- unless forloop.last -%}
+                {{ sub }}{%- unless forloop.index == subparts.size | minus: 1 -%}<script{%- endunless -%}
+              {%- endunless -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+        {%- endunless -%}
+        {{ cleaned_part }}
+      {%- endfor -%}
+    {%- endcapture -%}
+  {%- endif -%}
+
   {%- comment -%} Remove PayU styles entirely if not needed {%- endcomment -%}
   {%- if cleaned_html contains 'payu-login.css' -%}
     {%- assign parts = cleaned_html | split: 'payu-login.css' -%}
@@ -284,6 +342,10 @@
 
 {%- comment -%} 7. Remove redundant preconnect to cdn.shopify.com {%- endcomment -%}
 {%- assign cleaned_html = cleaned_html | replace: 'rel="dns-prefetch preconnect" href="https://cdn.shopify.com"', 'rel="dns-prefetch" href="https://cdn.shopify.com"' -%}
+{%- assign cleaned_html = cleaned_html | replace: 'rel="dns-prefetch preconnect" href="https://cdn.shopify.com" crossorigin=""', 'rel="dns-prefetch" href="https://cdn.shopify.com"' -%}
+{%- assign cleaned_html = cleaned_html | replace: 'rel="dns-prefetch preconnect" href="https://cdn.shopify.com" crossorigin', 'rel="dns-prefetch" href="https://cdn.shopify.com"' -%}
 {%- assign cleaned_html = cleaned_html | replace: 'rel="preconnect dns-prefetch" href="https://cdn.shopify.com"', 'rel="dns-prefetch" href="https://cdn.shopify.com"' -%}
+{%- assign cleaned_html = cleaned_html | replace: 'rel="preconnect dns-prefetch" href="https://cdn.shopify.com" crossorigin=""', 'rel="dns-prefetch" href="https://cdn.shopify.com"' -%}
+{%- assign cleaned_html = cleaned_html | replace: 'rel="preconnect dns-prefetch" href="https://cdn.shopify.com" crossorigin', 'rel="dns-prefetch" href="https://cdn.shopify.com"' -%}
 
 {{ cleaned_html }}

@@ -27,11 +27,21 @@
         assign media_width_mobile = '100vw'
         assign sizes = '(min-width: 750px) ' | append: media_width_desktop | append: ', ' | append: media_width_mobile
         assign widths = '240, 352, 832, 1200, 1600, 1920, 2560, 3840'
+
+        assign fetch_priority = 'auto'
+        assign loading = 'lazy'
+        if section and section.index == 1
+          assign fetch_priority = 'high'
+        endif
+
+        if section and section.index <= 3
+          assign loading = 'eager'
+        endif
       %}
       {{
         background_video.preview_image
         | image_url: width: 3840
-        | image_tag: width: 1100, widths: widths, sizes: sizes
+        | image_tag: width: 1100, widths: widths, sizes: sizes, loading: loading, fetchpriority: fetch_priority
       }}
       <video
         playsinline
