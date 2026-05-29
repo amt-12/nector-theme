@@ -347,6 +347,11 @@
 {%- assign cleaned_html = cleaned_html | replace: 'rel="preconnect dns-prefetch" href="https://cdn.shopify.com"', 'rel="dns-prefetch" href="https://cdn.shopify.com"' -%}
 {%- assign cleaned_html = cleaned_html | replace: 'rel="preconnect dns-prefetch" href="https://cdn.shopify.com" crossorigin=""', 'rel="dns-prefetch" href="https://cdn.shopify.com"' -%}
 {%- assign cleaned_html = cleaned_html | replace: 'rel="preconnect dns-prefetch" href="https://cdn.shopify.com" crossorigin', 'rel="dns-prefetch" href="https://cdn.shopify.com"' -%}
+{%- comment -%} 9. Map external Payhelm script to local Shopify CDN script {%- endcomment -%}
+{%- if cleaned_html contains 'https:\/\/cdn-payhelm.s3.amazonaws.com\/js\/payhelm.shopify.1.0.0.js' -%}
+  {%- assign local_payhelm_url = 'payhelm.js' | asset_url | replace: '/', '\/' -%}
+  {%- assign cleaned_html = cleaned_html | replace: 'https:\/\/cdn-payhelm.s3.amazonaws.com\/js\/payhelm.shopify.1.0.0.js', local_payhelm_url -%}
+{%- endif -%}
 
 {%- comment -%} 8. Defer Shopify's automatic asyncLoad scripts to user interaction {%- endcomment -%}
 {%- if cleaned_html contains "window.addEventListener('load', asyncLoad, false);" -%}
