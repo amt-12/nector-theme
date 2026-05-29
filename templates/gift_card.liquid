@@ -61,7 +61,10 @@
       content="{{ 'gift_cards.issued.subtext' | t }}"
     >
 
-    {%- render 'clean-header', needs_otp_login: false -%}
+    {%- capture captured_content_for_header -%}
+      {{ content_for_header }}
+    {%- endcapture -%}
+    {%- render 'clean-header', content_for_header: captured_content_for_header, needs_otp_login: false -%}
 
     {% # theme-check-disable AssetPreload %}
     {%- unless settings.type_body_font.system? -%}

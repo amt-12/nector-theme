@@ -1,8 +1,4 @@
-{%- capture captured_content_for_header -%}
-  {{ content_for_header }}
-{%- endcapture -%}
-
-{%- assign cleaned_content = captured_content_for_header -%}
+{%- assign cleaned_content = content_for_header -%}
 
 {%- comment -%} Defer PayU OTP script {%- endcomment -%}
 {%- unless needs_otp_login -%}

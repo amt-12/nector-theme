@@ -46,7 +46,10 @@
       {%- render 'theme-editor' -%}
     {% endif %}
 
-    {%- render 'clean-header', needs_otp_login: needs_otp_login -%}
+    {%- capture captured_content_for_header -%}
+      {{ content_for_header }}
+    {%- endcapture -%}
+    {%- render 'clean-header', content_for_header: captured_content_for_header, needs_otp_login: needs_otp_login -%}
     {% # theme-check-enable RemoteAsset %}
   </head>
 
