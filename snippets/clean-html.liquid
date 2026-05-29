@@ -152,10 +152,11 @@
         {%- endunless -%}
         {%- unless forloop.last -%}
           {%- assign subparts = cleaned_part | split: '<link' -%}
+          {%- assign limit = subparts.size | minus: 1 -%}
           {%- capture cleaned_part -%}
             {%- for sub in subparts -%}
               {%- unless forloop.last -%}
-                {{ sub }}{%- unless forloop.index == subparts.size | minus: 1 -%}<link{%- endunless -%}
+                {{ sub }}{%- unless forloop.index == limit -%}<link{%- endunless -%}
               {%- endunless -%}
             {%- endfor -%}
           {%- endcapture -%}
@@ -210,10 +211,11 @@
         {%- endunless -%}
         {%- unless forloop.last -%}
           {%- assign subparts = cleaned_part | split: '<iframe' -%}
+          {%- assign limit = subparts.size | minus: 1 -%}
           {%- capture cleaned_part -%}
             {%- for sub in subparts -%}
               {%- unless forloop.last -%}
-                {{ sub }}{%- unless forloop.index == subparts.size | minus: 1 -%}<iframe{%- endunless -%}
+                {{ sub }}{%- unless forloop.index == limit -%}<iframe{%- endunless -%}
               {%- endunless -%}
             {%- endfor -%}
           {%- endcapture -%}
@@ -239,10 +241,11 @@
         {%- endunless -%}
         {%- unless forloop.last -%}
           {%- assign subparts = cleaned_part | split: '<script' -%}
+          {%- assign limit = subparts.size | minus: 1 -%}
           {%- capture cleaned_part -%}
             {%- for sub in subparts -%}
               {%- unless forloop.last -%}
-                {{ sub }}{%- unless forloop.index == subparts.size | minus: 1 -%}<script{%- endunless -%}
+                {{ sub }}{%- unless forloop.index == limit -%}<script{%- endunless -%}
               {%- endunless -%}
             {%- endfor -%}
           {%- endcapture -%}
@@ -268,10 +271,11 @@
         {%- endunless -%}
         {%- unless forloop.last -%}
           {%- assign subparts = cleaned_part | split: '<link' -%}
+          {%- assign limit = subparts.size | minus: 1 -%}
           {%- capture cleaned_part -%}
             {%- for sub in subparts -%}
               {%- unless forloop.last -%}
-                {{ sub }}{%- unless forloop.index == subparts.size | minus: 1 -%}<link{%- endunless -%}
+                {{ sub }}{%- unless forloop.index == limit -%}<link{%- endunless -%}
               {%- endunless -%}
             {%- endfor -%}
           {%- endcapture -%}
@@ -297,10 +301,11 @@
         {%- endunless -%}
         {%- unless forloop.last -%}
           {%- assign subparts = cleaned_part | split: '<script' -%}
+          {%- assign limit = subparts.size | minus: 1 -%}
           {%- capture cleaned_part -%}
             {%- for sub in subparts -%}
               {%- unless forloop.last -%}
-                {{ sub }}{%- unless forloop.index == subparts.size | minus: 1 -%}<script{%- endunless -%}
+                {{ sub }}{%- unless forloop.index == limit -%}<script{%- endunless -%}
               {%- endunless -%}
             {%- endfor -%}
           {%- endcapture -%}
@@ -326,10 +331,11 @@
         {%- endunless -%}
         {%- unless forloop.last -%}
           {%- assign subparts = cleaned_part | split: '<link' -%}
+          {%- assign limit = subparts.size | minus: 1 -%}
           {%- capture cleaned_part -%}
             {%- for sub in subparts -%}
               {%- unless forloop.last -%}
-                {{ sub }}{%- unless forloop.index == subparts.size | minus: 1 -%}<link{%- endunless -%}
+                {{ sub }}{%- unless forloop.index == limit -%}<link{%- endunless -%}
               {%- endunless -%}
             {%- endfor -%}
           {%- endcapture -%}
@@ -365,6 +371,29 @@
     setTimeout(loadDeferred, 10000);
   {%- endcapture -%}
   {%- assign cleaned_html = cleaned_html | replace: "window.addEventListener('load', asyncLoad, false);", async_load_defer -%}
+{%- endif -%}
+
+{%- comment -%} 10. Defer Shopify's Web Pixels Manager to user interaction {%- endcomment -%}
+{%- if cleaned_html contains 'id="web-pixels-manager-setup"' -%}
+  {%- assign wpm_parts = cleaned_html | split: 'id="web-pixels-manager-setup"' -%}
+  {%- capture cleaned_html -%}
+    {{ wpm_parts[0] }}
+    id="web-pixels-manager-setup"
+    {%- for part in wpm_parts offset:1 -%}
+      {%- if forloop.first -%}
+        {%- assign subparts = part | split: '</script>' -%}
+        {%- assign script_content = subparts[0] -%}
+        {%- assign deferred_script = script_content | replace: 'wpmLoader({shopId:', 'const startWPM = () => { wpmLoader({shopId:' -%}
+        {%- assign deferred_script = deferred_script | replace: '});})();', '});}; const eventTypes = ["scroll", "mousemove", "touchstart", "keydown", "click"]; const loadDeferredWPM = () => { if (window.wpmLoaded) return; window.wpmLoaded = true; startWPM(); eventTypes.forEach(type => window.removeEventListener(type, loadDeferredWPM, { passive: true })); }; eventTypes.forEach(type => window.addEventListener(type, loadDeferredWPM, { passive: true })); setTimeout(loadDeferredWPM, 8000);})();' -%}
+        {{ deferred_script }}</script>
+        {%- for sub in subparts offset:1 -%}
+          {{ sub }}{%- unless forloop.last -%}</script>{%- endunless -%}
+        {%- endfor -%}
+      {%- else -%}
+        {{ part }}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
 {%- endif -%}
 
 {{ cleaned_html }}
